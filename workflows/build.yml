@@ -1,0 +1,52 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install pandas datasette
+
+      - name: Validate CSVs
+        run: python scripts/validate.py
+
+      - name: Build SQLite database
+        run: python scripts/build_db.py
+
+      - name: Upload database artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: video8-sqlite
+          path: video8.sqlite
+
+  # Uncomment and configure this job once you have a Datasette deployment target
+  # deploy:
+  #   needs: validate-and-build
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main'
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Download database
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: video8-sqlite
+  #     - name: Deploy to Datasette Cloud
+  #       run: |
+  #         pip install datasette-cloud
+  #         datasette cloud publish video8.sqlite \
+  #           --token ${{ secrets.DATASETTE_TOKEN }} \
+  #           --metadata metadata.yml

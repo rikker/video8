@@ -1,0 +1,78 @@
+title: The Video8 Archive Project
+description: >
+  A collaborative database documenting commercial releases on the Video8 format.
+  Video8 was a consumer magnetic tape format introduced by Sony in 1984.
+  Japan produced the majority of known releases.
+source: github.com/YOUR_USERNAME/video8
+license: CC0
+license_url: https://creativecommons.org/publicdomain/zero/1.0/
+
+databases:
+  video8:
+    tables:
+      releases:
+        label_column: catalog_number
+        searchmode: fulltext
+        fts_table: releases_fts
+        columns:
+          id: ID
+          title_id: Title
+          publisher_id: Publisher
+          title_release: Release Title
+          catalog_number: Catalog No.
+          release_date: Release Date
+          region: Region
+          encoding: Encoding
+          runtime_mins: Runtime (mins)
+          list_price: List Price
+          upc: UPC
+          isbn: ISBN
+          audio_format: Audio Format
+          audio_language: Audio Language
+          subtitle_language: Subtitles / CC
+          notes: Notes
+        facets:
+          - region
+          - encoding
+          - audio_format
+          - audio_language
+          - subtitle_language
+          - publisher_id
+
+      titles:
+        label_column: title
+        searchmode: fulltext
+        columns:
+          id: ID
+          title: Title
+          title_ja: Japanese Title
+          year: Year
+          content_type: Content Type
+          country_of_origin: Country of Origin
+        facets:
+          - content_type
+          - country_of_origin
+          - year
+
+      publishers:
+        label_column: name
+        columns:
+          id: ID
+          name: Publisher Name
+          country: Country
+          parent_id: Parent Entity
+          notes: Notes
+        facets:
+          - country
+
+      sources:
+        columns:
+          id: ID
+          release_id: Release
+          source_type: Source Type
+          url: URL
+          catalog_id: Catalog
+          catalog_locator: Locator
+          notes: Notes
+        facets:
+          - source_type
