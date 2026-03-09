@@ -30,7 +30,7 @@ TABLES = {
             title_ja TEXT,
             year INTEGER,
             content_type TEXT,
-            country_of_origin TEXT
+            country_origin TEXT
         )
     ''',
     'releases': '''
@@ -41,7 +41,7 @@ TABLES = {
             title_release TEXT,
             catalog_number TEXT,
             release_date TEXT,
-            region TEXT,
+            country TEXT,
             encoding TEXT,
             runtime_mins REAL,
             list_price TEXT,
@@ -49,7 +49,9 @@ TABLES = {
             isbn TEXT,
             audio_format TEXT,
             audio_language TEXT,
+            audio_dubbed TEXT,
             subtitle_language TEXT,
+            promo TEXT,
             notes TEXT
         )
     ''',

@@ -1,9 +1,10 @@
-title: The Video8 Archive Project
+title: Video8 Commercial Releases Database
 description: >
-  A collaborative database documenting commercial releases on the Video8 format.
+  A collaborative database documenting home video releases on the Video8 format.
   Video8 was a consumer magnetic tape format introduced by Sony in 1984.
-  Japan produced the majority of known releases.
-source: github.com/YOUR_USERNAME/video8
+  Japan produced the majority of known releases. The earliest US releases were 1986.
+  Releases were mainly feature films, but also music, video magazines, and other categories. 
+source: github.com/rikker/video8
 license: CC0
 license_url: https://creativecommons.org/publicdomain/zero/1.0/
 
@@ -13,7 +14,6 @@ databases:
       releases:
         label_column: catalog_number
         searchmode: fulltext
-        fts_table: releases_fts
         columns:
           id: ID
           title_id: Title
@@ -21,7 +21,7 @@ databases:
           title_release: Release Title
           catalog_number: Catalog No.
           release_date: Release Date
-          region: Region
+          country: Country
           encoding: Encoding
           runtime_mins: Runtime (mins)
           list_price: List Price
@@ -29,14 +29,18 @@ databases:
           isbn: ISBN
           audio_format: Audio Format
           audio_language: Audio Language
+          audio_dubbed: Dubbed
           subtitle_language: Subtitles / CC
+          promo: Promo
           notes: Notes
         facets:
-          - region
+          - country
           - encoding
           - audio_format
           - audio_language
+          - audio_dubbed
           - subtitle_language
+          - promo
           - publisher_id
 
       titles:
@@ -48,10 +52,10 @@ databases:
           title_ja: Japanese Title
           year: Year
           content_type: Content Type
-          country_of_origin: Country of Origin
+          country_origin: Country of Origin
         facets:
           - content_type
-          - country_of_origin
+          - country_origin
           - year
 
       publishers:
@@ -65,6 +69,16 @@ databases:
         facets:
           - country
 
+      catalogs:
+        label_column: title
+        columns:
+          id: ID
+          title: Catalog Title
+          year: Year
+          publisher_id: Publisher
+          notes: Notes
+          scan_url: Scan URL
+
       sources:
         columns:
           id: ID
@@ -76,3 +90,13 @@ databases:
           notes: Notes
         facets:
           - source_type
+
+      images:
+        columns:
+          id: ID
+          release_id: Release
+          side: Side
+          filename: Filename
+          notes: Notes
+        facets:
+          - side
