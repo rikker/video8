@@ -5,6 +5,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   validate-and-build:
@@ -19,7 +20,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install datasette
+        run: pip install datasette datasette-publish-vercel
 
       - name: Validate CSVs
         run: python scripts/validate.py
@@ -33,20 +34,14 @@ jobs:
           name: video8-sqlite
           path: video8.sqlite
 
-  # Uncomment and configure this job once you have a Datasette deployment target
-  # deploy:
-  #   needs: validate-and-build
-  #   runs-on: ubuntu-latest
-  #   if: github.ref == 'refs/heads/main'
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Download database
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: video8-sqlite
-  #     - name: Deploy to Datasette Cloud
-  #       run: |
-  #         pip install datasette-cloud
-  #         datasette cloud publish video8.sqlite \
-  #           --token ${{ secrets.DATASETTE_TOKEN }} \
-  #           --metadata metadata.yml
+      - name: Deploy to Vercel
+        if: github.ref == 'refs/heads/main'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          datasette publish vercel video8.sqlite \
+            --project=video8 \
+            --metadata=metadata.yml \
+            --token=$VERCEL_TOKEN \
+            --vercel-org-id=A8WJaU4GWCcvKDpRyDx39oAW \
+            --vercel-project-id=prj_TbBcNtYmJtGP688kWTmzJvWryW2O
