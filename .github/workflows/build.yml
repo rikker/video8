@@ -45,4 +45,5 @@ jobs:
           datasette publish vercel video8.sqlite \
             --project=video8 \
             --metadata=metadata.yml \
-            --token=$VERCEL_TOKEN
+            --token=$VERCEL_TOKEN \
+            --scope=rikkers-projects
