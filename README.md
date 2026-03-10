@@ -4,7 +4,7 @@ A collaborative, open database of commercial releases on the Video8 format.
 
 ## About this project
 
-Video8 was a consumer magnetic tape format introduced by Sony in 1985. Despite being superseded in the camcorder market by Hi8 and Digital8 formats, a substantial body of commercial software was released on Video8 — particularly in Japan, which accounts for the majority of known releases, but also the United States and Europe. This database documents those releases as comprehensively as possible.
+Video8 was a consumer magnetic tape format introduced by Sony in 1985. Despite being superseded in the camcorder market by Hi8, Digital8, and other subsequent formats, a substantial body of commercial software was released on Video8 — particularly in Japan, which accounts for the majority of known releases, but also the United States and Europe. This database documents those releases as comprehensively as possible.
 
 Airlines were the other major adopter of the format, due its small format factor. Carriers that adopted the format include United Airlines, American Airlines, British Airways, Qantas, Air New Zealand, and more. The airline market kept the format alive more than a decade after the home video market had dried up. Knowledge of airline releases is much less complete than home video releases, and some airline releases use copy protection that causes them not to play properly on all consumer devices. Nonetheless, this project covers airline releases as much as is possible as well.
 
