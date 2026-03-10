@@ -1692,7 +1692,7 @@ id,title_id,publisher_id,title_release,catalog_number,release_date,country,encod
 1691,1416,151,,,,US,NTSC,,,,,,,,,,
 1692,1417,151,,,,US,NTSC,,,,,,,,,,
 1693,1418,151,,,,US,NTSC,,,,,,,,,,
-1694,1419,151,,,,US,NTSC,,,,,,,,,,
+1694,1419,151,,#25,1990,US,NTSC,82,,,,,,,,,
 1695,1420,151,,#131,,US,NTSC,,,,,,,,,,
 1696,1421,151,,#729,1990,US,NTSC,102,,,,,,,,,
 1697,1422,151,,#430,,US,NTSC,95,,,,,French,Y,English,,
