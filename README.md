@@ -16,20 +16,20 @@ The database is normalized across six tables stored as CSV files in the `/data` 
 
 ### `titles.csv`
 
-One row per title — the film, TV program, music video, or other content itself, independent of any specific release. A single title may have many releases across different countries and publishers.
+One row per title: the film, TV program, music video, or other content itself, independent of any specific release. A single title may have many releases across different countries and publishers.
 
 | Column | Description |
 |---|---|
 | `id` | Unique integer ID |
 | `title` | The canonical English title |
-| `title_ja` | The canonical Japanese title of the content (not necessarily what is printed on any specific tape — see `releases.title_release`) |
+| `title_ja` | The canonical Japanese title of the content (not necessarily what is printed on any specific tape; see `releases.title_release`) |
 | `year` | Year of original production |
 | `content_type` | One of: `Film`, `TV`, `Music`, `Video Magazine`, `Adult`, `Other` |
 | `country_origin` | Country where the content originated (e.g. `US`, `Japan`, `UK`) |
 
 ### `publishers.csv`
 
-One row per publishing entity. Publishers are kept distinct per country even when they share a corporate parent — e.g. *RCA/Columbia Pictures Home Video* (US) and *RCA/Columbia Pictures International Video* (Japan) are separate rows, linked via `parent_id`.
+One row per publishing entity. Publishers are kept distinct per country even when they share a corporate parent. For example, *RCA/Columbia Pictures Home Video* (US) and *RCA/Columbia Pictures International Video* (Japan) are separate rows, linked via `parent_id`.
 
 | Column | Description |
 |---|---|
@@ -41,7 +41,7 @@ One row per publishing entity. Publishers are kept distinct per country even whe
 
 ### `releases.csv`
 
-The core table. One row per individual tape release — one catalog number, one tape. A single title may have many releases (different countries, publishers, or years).
+This is the core table. One row per individual tape release: one catalog number, one tape. A single title may have many releases (different countries, publishers, or years).
 
 | Column | Description |
 |---|---|
