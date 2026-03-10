@@ -1,0 +1,11 @@
+{
+  "builds": [
+    {
+      "src": "*.sqlite",
+      "use": "@vercel/python",
+      "config": {
+        "pythonVersion": "3.11"
+      }
+    }
+  ]
+}
