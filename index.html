@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video8 Database</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #181818;
+    --surface2: #222222;
+    --border: #2e2e2e;
+    --accent: #c8a84b;
+    --accent-dim: rgba(200,168,75,0.12);
+    --text: #e8e4dc;
+    --text-dim: #aaa;
+    --text-dimmer: #777;
+    --blank: rgba(200,168,75,0.08);
+    --blank-border: rgba(200,168,75,0.2);
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 300;
+    min-height: 100vh;
+  }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 24px 32px;
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .logo span {
+    color: var(--text-dimmer);
+    font-weight: 400;
+  }
+
+  .search-wrap {
+    flex: 1;
+    max-width: 600px;
+    position: relative;
+  }
+
+  #search {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 300;
+    padding: 10px 16px 10px 40px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  #search:focus { border-color: var(--accent); }
+  #search::placeholder { color: var(--text-dimmer); }
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dimmer);
+    font-size: 14px;
+    pointer-events: none;
+  }
+
+  .header-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dimmer);
+    white-space: nowrap;
+  }
+
+  main {
+    padding: 0 32px 48px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  #state {
+    padding: 80px 0;
+    text-align: center;
+    color: var(--text-dimmer);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  .state-large {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 16px;
+    opacity: 0.3;
+  }
+
+  #results-meta {
+    padding: 20px 0 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dimmer);
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+
+  .result-card {
+    border-bottom: 1px solid var(--border);
+    padding: 20px 0;
+    animation: fadeIn 0.15s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .result-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .result-title-ja {
+    font-size: 14px;
+    color: var(--text-dim);
+  }
+
+  .result-id {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 2px 7px;
+    border: 1px solid rgba(200,168,75,0.35);
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  .tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+  }
+
+  .tag.accent {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .tag.promo {
+    border-color: #c84b4b;
+    color: #c84b4b;
+  }
+
+  .fields-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+
+  .field {
+    background: var(--surface);
+    padding: 8px 10px;
+  }
+
+  .field.blank {
+    background: var(--blank);
+    border: 1px solid var(--blank-border);
+    margin: -1px;
+  }
+
+  .field-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dimmer);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+
+  .field-value {
+    font-size: 12px;
+    color: var(--text);
+    word-break: break-all;
+  }
+
+  .field.blank .field-value {
+    color: var(--text-dimmer);
+    font-style: italic;
+    font-size: 11px;
+  }
+
+  .field.blank .field-label {
+    color: var(--accent);
+    opacity: 0.6;
+  }
+
+  .sources-toggle {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    background: none;
+    border: 1px solid var(--border);
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .sources-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .sources-list {
+    margin-top: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .source-row {
+    display: flex;
+    gap: 12px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    align-items: baseline;
+  }
+
+  .source-row:last-child { border-bottom: none; }
+
+  .source-type {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    min-width: 50px;
+  }
+
+  .source-value {
+    color: var(--text-dim);
+    word-break: break-all;
+  }
+
+  .source-value a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .source-value a:hover { text-decoration: underline; }
+
+  #load-more {
+    margin: 24px auto 0;
+    display: block;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 10px 32px;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    transition: all 0.15s;
+  }
+
+  #load-more:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border: 1px solid var(--text-dimmer);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    margin-right: 6px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .adult-toggle {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dimmer);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.15s;
+  }
+
+  .adult-toggle:hover { color: var(--text-dim); }
+
+  .adult-toggle input[type=checkbox] {
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .adult-toggle.has-adult { color: var(--text-dim); }
+
+  #adult-notice {
+    display: none;
+    padding: 10px 0 0;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dimmer);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Video8 <span>/ Database</span></div>
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="search" placeholder="Search by title, catalog number, publisher…" autocomplete="off" spellcheck="false">
+  </div>
+  <div class="header-meta" id="db-meta">—</div>
+  <label class="adult-toggle" id="adult-label" title="Adult titles are hidden by default">
+    <input type="checkbox" id="show-adult"> Include Adult
+  </label>
+</header>
+
+<main>
+  <div id="state">
+    <span class="state-large">⏚</span>
+    Enter a search term to find releases
+  </div>
+  <div id="results-meta" style="display:none"></div>
+  <div id="adult-notice">⚠ Adult titles hidden — check "Include Adult" to show them</div>
+  <div id="results"></div>
+  <button id="load-more" style="display:none">Load more</button>
+</main>
+
+<script>
+const DATASETTE = 'https://video8.fly.dev';
+const PAGE_SIZE = 25;
+
+let currentQuery = '';
+let currentOffset = 0;
+let totalCount = 0;
+let searchTimer = null;
+let sourcesCache = {};
+let showAdult = false;
+
+// Fields to display in the grid (label, key)
+const FIELDS = [
+  ['Release ID',      'release_id',       true],
+  ['Publisher',       'publisher',        true],
+  ['Catalog No.',     'catalog_number',   true],
+  ['Release Date',    'release_date',     true],
+  ['Country',         'country',          true],
+  ['Encoding',        'encoding',         false],
+  ['Runtime (mins)',  'runtime_mins',     true],
+  ['List Price',      'list_price',       true],
+  ['UPC',             'upc',             true],
+  ['ISBN',            'isbn',            true],
+  ['Audio Format',    'audio_format',     true],
+  ['Audio Language',  'audio_language',   true],
+  ['Dubbed',          'audio_dubbed',     false],
+  ['Subtitles / CC',  'subtitle_language',true],
+  ['Release Title',   'title_release',    false],
+  ['Country Origin',  'country_origin',   false],
+  ['Notes',           'notes',            false],
+];
+
+const IMPORTANT_BLANK = new Set([
+  'publisher','catalog_number','release_date','country',
+  'runtime_mins','list_price','upc','isbn',
+  'audio_format','audio_language','subtitle_language'
+]);
+
+async function fetchCount(q) {
+  const sql = buildSQL(q, 0, true);
+  const url = `${DATASETTE}/video8.json?sql=${encodeURIComponent(sql)}&_shape=array`;
+  const r = await fetch(url);
+  const d = await r.json();
+  return d[0]?.count || 0;
+}
+
+async function fetchReleases(q, offset) {
+  const sql = buildSQL(q, offset, false);
+  const url = `${DATASETTE}/video8.json?sql=${encodeURIComponent(sql)}&_shape=array`;
+  const r = await fetch(url);
+  return await r.json();
+}
+
+async function fetchSources(releaseId) {
+  if (sourcesCache[releaseId]) return sourcesCache[releaseId];
+  const sql = `SELECT source_type, url, catalog_locator, notes FROM sources WHERE release_id = ${releaseId}`;
+  const url = `${DATASETTE}/video8.json?sql=${encodeURIComponent(sql)}&_shape=array`;
+  const r = await fetch(url);
+  const d = await r.json();
+  sourcesCache[releaseId] = d;
+  return d;
+}
+
+function buildSQL(q, offset, countOnly, adultOnly = false) {
+  const select = countOnly
+    ? `SELECT COUNT(*) as count`
+    : `SELECT
+        r.id as release_id,
+        t.title, t.title_ja, t.year, t.content_type, t.country_origin,
+        p.name as publisher,
+        r.title_release, r.catalog_number, r.release_date, r.country,
+        r.encoding, r.runtime_mins, r.list_price, r.upc, r.isbn,
+        r.audio_format, r.audio_language, r.audio_dubbed, r.subtitle_language,
+        r.promo, r.notes,
+        (SELECT COUNT(*) FROM sources s WHERE s.release_id = r.id) as source_count`;
+
+  const conditions = [];
+
+  if (q) {
+    const safe = q.replace(/'/g, "''");
+    conditions.push(`(
+      t.title LIKE '%${safe}%' OR
+      t.title_ja LIKE '%${safe}%' OR
+      p.name LIKE '%${safe}%' OR
+      r.catalog_number LIKE '%${safe}%' OR
+      r.upc LIKE '%${safe}%' OR
+      r.notes LIKE '%${safe}%'
+    )`);
+  }
+
+  if (adultOnly) {
+    conditions.push(`t.content_type = 'Adult'`);
+  } else if (!showAdult) {
+    conditions.push(`t.content_type != 'Adult'`);
+  }
+
+  const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+  const limit = countOnly ? '' : `LIMIT ${PAGE_SIZE} OFFSET ${offset}`;
+
+  return `${select}
+    FROM releases r
+    JOIN titles t ON r.title_id = t.id
+    LEFT JOIN publishers p ON r.publisher_id = p.id
+    ${where}
+    ORDER BY t.title, r.release_date
+    ${limit}`;
+}
+
+function val(v) {
+  return v !== null && v !== undefined && v !== '' ? String(v) : '';
+}
+
+function renderCard(row) {
+  const div = document.createElement('div');
+  div.className = 'result-card';
+
+  // Header
+  const hdr = document.createElement('div');
+  hdr.className = 'result-header';
+  hdr.innerHTML = `
+    <span class="result-title">${esc(row.title)}</span>
+    ${row.title_ja ? `<span class="result-title-ja">${esc(row.title_ja)}</span>` : ''}
+    <span class="result-id">ID: ${row.release_id}</span>
+  `;
+  div.appendChild(hdr);
+
+  // Tags
+  const tags = document.createElement('div');
+  tags.className = 'tags';
+  if (row.content_type) tags.innerHTML += `<span class="tag accent">${esc(row.content_type)}</span>`;
+  if (row.year) tags.innerHTML += `<span class="tag">${esc(row.year)}</span>`;
+  if (row.country_origin) tags.innerHTML += `<span class="tag">Origin: ${esc(row.country_origin)}</span>`;
+  if (row.promo === 'Y') tags.innerHTML += `<span class="tag promo">PROMO</span>`;
+  div.appendChild(tags);
+
+  // Fields grid
+  const grid = document.createElement('div');
+  grid.className = 'fields-grid';
+
+  for (const [label, key, showBlank] of FIELDS) {
+    if (key === 'release_id') continue; // shown in header
+    const v = val(row[key]);
+    const isBlank = !v;
+    if (isBlank && !showBlank && !IMPORTANT_BLANK.has(key)) continue;
+
+    const field = document.createElement('div');
+    field.className = 'field' + (isBlank ? ' blank' : '');
+    field.innerHTML = `
+      <div class="field-label">${label}</div>
+      <div class="field-value">${isBlank ? '—' : esc(v)}</div>
+    `;
+    grid.appendChild(field);
+  }
+  div.appendChild(grid);
+
+  // Sources toggle
+  const srcBtn = document.createElement('button');
+  srcBtn.className = 'sources-toggle';
+  const srcCount = row.source_count || 0;
+  srcBtn.innerHTML = `<span>▶</span> Sources (${srcCount})`;
+  srcBtn.dataset.id = row.release_id;
+  srcBtn.dataset.open = 'false';
+  if (srcCount === 0) srcBtn.style.opacity = '0.4';
+
+  const srcList = document.createElement('div');
+  srcList.className = 'sources-list';
+  srcList.style.display = 'none';
+
+  srcBtn.addEventListener('click', async () => {
+    const open = srcBtn.dataset.open === 'true';
+    if (open) {
+      srcList.style.display = 'none';
+      srcBtn.dataset.open = 'false';
+      srcBtn.querySelector('span').textContent = '▶';
+    } else {
+      srcBtn.querySelector('span').textContent = '▼';
+      srcBtn.dataset.open = 'true';
+      srcList.style.display = 'block';
+      if (!srcList.dataset.loaded) {
+        srcList.innerHTML = '<div class="source-row"><span class="spinner"></span></div>';
+        const sources = await fetchSources(row.release_id);
+        srcList.dataset.loaded = '1';
+        if (!sources.length) {
+          srcList.innerHTML = '<div class="source-row"><span class="source-value" style="font-style:italic;color:var(--text-dimmer)">No sources recorded</span></div>';
+        } else {
+          srcList.innerHTML = sources.map(s => {
+            let v = '';
+            if (s.url) v = `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a>`;
+            else if (s.catalog_locator) v = esc(s.catalog_locator);
+            else if (s.notes) v = esc(s.notes);
+            return `<div class="source-row">
+              <span class="source-type">${esc(s.source_type || '—')}</span>
+              <span class="source-value">${v}</span>
+            </div>`;
+          }).join('');
+        }
+
+      }
+    }
+  });
+
+  div.appendChild(srcBtn);
+  div.appendChild(srcList);
+  return div;
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+async function search(q, append = false) {
+  const resultsEl = document.getElementById('results');
+  const metaEl = document.getElementById('results-meta');
+  const stateEl = document.getElementById('state');
+  const loadMoreEl = document.getElementById('load-more');
+
+  if (!append) {
+    currentOffset = 0;
+    resultsEl.innerHTML = '';
+    stateEl.innerHTML = '<span class="spinner"></span> Searching…';
+    stateEl.style.display = 'block';
+    metaEl.style.display = 'none';
+    loadMoreEl.style.display = 'none';
+  } else {
+    loadMoreEl.innerHTML = '<span class="spinner"></span> Loading…';
+  }
+
+  try {
+    const [rows, count] = await Promise.all([
+      fetchReleases(q, currentOffset),
+      append ? Promise.resolve(totalCount) : fetchCount(q)
+    ]);
+
+    if (!append) totalCount = count;
+
+    stateEl.style.display = 'none';
+    metaEl.style.display = 'block';
+    metaEl.textContent = `${totalCount.toLocaleString()} result${totalCount !== 1 ? 's' : ''}${q ? ` for "${q}"` : ''}`;
+
+    // Check if there are hidden adult results
+    if (!append && !showAdult && q) {
+      const adultSql = buildSQL(q, 0, true, true);
+      const adultUrl = `${DATASETTE}/video8.json?sql=${encodeURIComponent(adultSql)}&_shape=array`;
+      fetch(adultUrl).then(r => r.json()).then(d => {
+        const adultCount = d[0]?.count || 0;
+        const noticeEl = document.getElementById('adult-notice');
+        const labelEl = document.getElementById('adult-label');
+        if (adultCount > 0) {
+          noticeEl.style.display = 'block';
+          noticeEl.textContent = `⚠ ${adultCount} Adult title${adultCount !== 1 ? 's' : ''} hidden — check "Include Adult" to show ${adultCount !== 1 ? 'them' : 'it'}`;
+          labelEl.classList.add('has-adult');
+        } else {
+          noticeEl.style.display = 'none';
+          labelEl.classList.remove('has-adult');
+        }
+      });
+    } else if (!append) {
+      document.getElementById('adult-notice').style.display = 'none';
+    }
+
+    if (!append && rows.length === 0) {
+      stateEl.innerHTML = '<span class="state-large">∅</span>No results found';
+      stateEl.style.display = 'block';
+      metaEl.style.display = 'none';
+      return;
+    }
+
+    rows.forEach(row => resultsEl.appendChild(renderCard(row)));
+    currentOffset += rows.length;
+
+    if (currentOffset < totalCount) {
+      loadMoreEl.style.display = 'block';
+      loadMoreEl.textContent = `Load more (${totalCount - currentOffset} remaining)`;
+    } else {
+      loadMoreEl.style.display = 'none';
+    }
+  } catch (e) {
+    stateEl.innerHTML = '<span class="state-large">✕</span>Error connecting to database';
+    stateEl.style.display = 'block';
+    console.error(e);
+  }
+}
+
+// Load DB stats on startup
+async function loadMeta() {
+  try {
+    const sql = `SELECT
+      (SELECT COUNT(*) FROM releases) as releases,
+      (SELECT COUNT(*) FROM titles) as titles`;
+    const url = `${DATASETTE}/video8.json?sql=${encodeURIComponent(sql)}&_shape=array`;
+    const r = await fetch(url);
+    const d = await r.json();
+    document.getElementById('db-meta').textContent =
+      `${d[0].releases.toLocaleString()} releases · ${d[0].titles.toLocaleString()} titles`;
+  } catch(e) {}
+}
+
+document.getElementById('search').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  const q = e.target.value.trim();
+  currentQuery = q;
+  if (!q) {
+    document.getElementById('state').innerHTML = '<span class="state-large">⏚</span>Enter a search term to find releases';
+    document.getElementById('state').style.display = 'block';
+    document.getElementById('results').innerHTML = '';
+    document.getElementById('results-meta').style.display = 'none';
+    document.getElementById('load-more').style.display = 'none';
+    return;
+  }
+  searchTimer = setTimeout(() => search(q), 350);
+});
+
+document.getElementById('show-adult').addEventListener('change', e => {
+  showAdult = e.target.checked;
+  document.getElementById('adult-notice').style.display = 'none';
+  if (currentQuery) search(currentQuery);
+});
+
+document.getElementById('load-more').addEventListener('click', () => {
+  search(currentQuery, true);
+});
+
+loadMeta();
+</script>
+</body>
+</html>
