@@ -19,8 +19,11 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: pip install datasette datasette-publish-vercel
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
 
       - name: Validate CSVs
         run: python scripts/validate.py
