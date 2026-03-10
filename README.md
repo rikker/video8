@@ -8,7 +8,7 @@ Video8 was a consumer magnetic tape format introduced by Sony in 1985. Despite b
 
 Airlines were the other major adopter of the format, due its small format factor. Carriers that adopted the format include United Airlines, American Airlines, British Airways, Qantas, Air New Zealand, and more. The airline market kept the format alive more than a decade after the home video market had dried up. Knowledge of airline releases is much less complete than home video releases, and some airline releases use copy protection that causes them not to play properly on all consumer devices. Nonetheless, this project covers airline releases as much as is possible as well.
 
-The data here was originally compiled from a spreadsheet begun by [JDHancock](http://stuff.jdhancock.com/video8-movie-list/), substantially expanded since, and is now maintained collaboratively. The goal is a permanent, citable, open record of what was commercially released on this format.
+The data here was originally compiled from an older version of a list created by [JDHancock](http://stuff.jdhancock.com/video8-movie-list/), substantially expanded since, and is now maintained collaboratively. The goal is a permanent, citable, open record of what was commercially released on this format.
 
 ## How the Data Is Organized
 
