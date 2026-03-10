@@ -42,6 +42,4 @@ jobs:
           datasette publish vercel video8.sqlite \
             --project=video8 \
             --metadata=metadata.yml \
-            --token=$VERCEL_TOKEN \
-            --vercel-org-id=A8WJaU4GWCcvKDpRyDx39oAW \
-            --vercel-project-id=prj_TbBcNtYmJtGP688kWTmzJvWryW2O
+            --token=$VERCEL_TOKEN
