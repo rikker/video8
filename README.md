@@ -1,35 +1,35 @@
-# video8
+# The Video8 Archive Project
 
 A collaborative, open database of commercial releases on the Video8 format.
 
-## About This Project
+## About this project
 
-Video8 was a consumer magnetic tape format introduced by Sony in 1985. Despite being superseded in the camcorder market by Hi8 and Digital8 formats, a substantial body of commercial software was released on Video8 — particularly in Japan, which accounts for the majority of known releases, but also the United States and Europe. This database documents those releases as comprehensively as possible.
+Video8 was a consumer magnetic tape format introduced by Sony in 1985. Despite being superseded in the camcorder market by Hi8, Digital8, and other subsequent formats, a substantial body of commercial software was released on Video8. Japan accounts for the majority of known releases, followed by the United States, but there were also releases in several countries in Europe. This database documents all of these releases as comprehensively as possible.
 
-Airlines were the other major adopter of the format, due its small format factor. Carriers that adopted the format include United Airlines, American Airlines, British Airways, Qantas, Air New Zealand, and more. The airline market kept the format alive more than a decade after the home video market had dried up. Knowledge of airline releases is much less complete than home video releases, and some airline releases use copy protection that causes them not to play properly on all consumer devices. Nonetheless, this project covers airline releases as much as is possible as well.
+Besides home video sales, the other major adopter of the format was airlines, due to the small format factor of the tapes, and the availability of Video Walkman models. Carriers that adopted the format include United Airlines, American Airlines, British Airways, Qantas, and Air New Zealand, among others. The airline market actually kept the format alive more than a decade after the home video market had dried up, meaning that there were hundreds of titles that were only released through airlines. Documentation of airline releases is much less complete than home video releases, and some airline releases use copy protection that causes them not to play properly on all consumer devices. Nonetheless, this project also covers airline releases as much as is possible.
 
-The data here was originally compiled from a spreadsheet begun by [JDHancock](http://stuff.jdhancock.com/video8-movie-list/), substantially expanded since, and is now maintained collaboratively. The goal is a permanent, citable, open record of what was commercially released on this format.
+The data here was originally compiled from an older version of a list created by [JDHancock](http://stuff.jdhancock.com/video8-movie-list/), substantially expanded since, and is now maintained collaboratively. The goal is a permanent, citable, open record of what was commercially released on this format. Future plans include high-resolution scans of tapes and packaging, and Domesday archival digitization.
 
-## How the Data Is Organized
+## How the data is organized
 
 The database is normalized across six tables stored as CSV files in the `/data` directory.
 
 ### `titles.csv`
 
-One row per title — the film, TV program, music video, or other content itself, independent of any specific release. A single title may have many releases across different countries and publishers.
+One row per title: the film, TV program, music video, or other content itself, independent of any specific release. A single title may have many releases across different countries and publishers.
 
 | Column | Description |
 |---|---|
 | `id` | Unique integer ID |
 | `title` | The canonical English title |
-| `title_ja` | The canonical Japanese title of the content (not necessarily what is printed on any specific tape — see `releases.title_release`) |
+| `title_ja` | The canonical Japanese title of the content (not necessarily what is printed on any specific tape; see `releases.title_release`) |
 | `year` | Year of original production |
 | `content_type` | One of: `Film`, `TV`, `Music`, `Video Magazine`, `Adult`, `Other` |
 | `country_origin` | Country where the content originated (e.g. `US`, `Japan`, `UK`) |
 
 ### `publishers.csv`
 
-One row per publishing entity. Publishers are kept distinct per country even when they share a corporate parent — e.g. *RCA/Columbia Pictures Home Video* (US) and *RCA/Columbia Pictures International Video* (Japan) are separate rows, linked via `parent_id`.
+One row per publishing entity. Publishers are kept distinct per country even when they share a corporate parent. For example, *RCA/Columbia Pictures Home Video* (US) and *RCA/Columbia Pictures International Video* (Japan) are separate rows, linked via `parent_id`.
 
 | Column | Description |
 |---|---|
@@ -41,7 +41,7 @@ One row per publishing entity. Publishers are kept distinct per country even whe
 
 ### `releases.csv`
 
-The core table. One row per individual tape release — one catalog number, one tape. A single title may have many releases (different countries, publishers, or years).
+This is the core table. One row per individual tape release: one catalog number, one tape. A single title may have many releases (different countries, publishers, or years).
 
 | Column | Description |
 |---|---|
@@ -52,11 +52,11 @@ The core table. One row per individual tape release — one catalog number, one 
 | `catalog_number` | The release's catalog number — important for identification and approximate dating |
 | `release_date` | Date of release. Flexible format: `1987`, `1987.10`, or `1987.10.15` |
 | `country` | Country where this release was sold. Append `?` for uncertain values (e.g. `Japan?`) |
-| `encoding` | `NTSC` or `PAL`. Japan and US releases are NTSC; almost all others are PAL |
+| `encoding` | `NTSC` or `PAL`. Japan and U.S. releases are NTSC; almost all others are PAL |
 | `runtime_mins` | Runtime as printed on the object itself — may differ from IMDb or other sources |
 | `list_price` | Price printed on the product (most relevant for Japanese releases, which almost always include spine pricing) |
 | `upc` | Barcode number. Can sometimes be extrapolated from `catalog_number` depending on the publisher's scheme, and vice versa |
-| `isbn` | ISBN number (present on many US releases) |
+| `isbn` | ISBN number (present on many U.S. releases) |
 | `audio_format` | Audio format as described on the packaging. Examples: `Mono`, `Hi-Fi Mono`, `Hi-Fi/Digital Stereo`, `Hi-Fi/Digital Stereo Dolby Surround` |
 | `audio_language` | Language(s) of the audio track. Examples: `Japanese`, `English`, `English/Japanese` |
 | `audio_dubbed` | `Y` if the audio track is dubbed (not original language); blank if original or unknown |
@@ -111,29 +111,30 @@ Placeholder table for images. Not yet actively populated.
 
 ---
 
-## The Category System
+## Content types / countries
 
-The original spreadsheet this is based on used a `Category` column combining content type and country into values like `Films - US`, `Films - Japan`, `Films - Japanese`. In this database that information is split across three fields:
+There are three fields that help us organize types of releases, as well as releases of the same film in multiple countries:
 
 - `titles.content_type` — what kind of content it is
 - `titles.country_origin` — where the content was originally produced
 - `releases.country` — where this specific tape release was sold
 
-This allows precise querying. A Japanese film released in Japan has `content_type=Film`, `country_origin=Japan`, `country=Japan`. A US film released in Japan has `content_type=Film`, `country_origin=US`, `country=Japan`.
+This lets you query the database precisely. So for instance, a Japanese film released in Japan has `content_type=Film`, `country_origin=Japan`, `country=Japan`, and a U.S. film released in Japan has `content_type=Film`, `country_origin=US`, `country=Japan`.
 
 ---
 
-## Tech Stack
+## Tech stack
 
 | Layer | Tool |
 |---|---|
-| Editing interface | Google Sheets (for non-technical contributors) or direct CSV editing |
-| Version control | Git / GitHub |
+| Editing interface | Google Sheets or direct CSV editing via GitHub |
+| Version control | GitHub [github.com/rikker/video8](https://github.com/rikker/video8) |
 | Source of truth | CSV files in `/data` |
-| Database build | `scripts/build_db.py` — assembles CSVs into SQLite |
-| Validation | `scripts/validate.py` — checks referential integrity and data conventions |
-| Automation | GitHub Actions — runs on every push to `main` |
-| Public interface | Datasette — browsable, searchable, filterable website |
+| Database build | `scripts/build_db.py` assembles CSVs into an SQLite database |
+| Validation | `scripts/validate.py` checks referential integrity and data conventions |
+| Automation | GitHub Actions validates and builds on every push to `main` |
+| Public database | [video8.fly.dev](https://video8.fly.dev) Datasette, browsable and queryable |
+| Contributor interface | [rikker.github.io/video8](https://rikker.github.io/video8) is the user friendly search and browse |
 
 ---
 
@@ -143,4 +144,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for full instructions, including how to c
 
 ## License
 
-Data is released under [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/) (public domain dedication).
+Created by Rikker Dockum. Data is released under [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/) (public domain dedication).
