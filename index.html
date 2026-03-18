@@ -37,13 +37,13 @@
     --shadow: rgba(0,0,0,0.4);
   }
   [data-theme="dark"][data-hc="1"] {
-    --bg: #000;
-    --surface: #111;
-    --surface2: #1a1a1a;
-    --border: #444;
-    --text: #fff;
-    --text-dim: #ccc;
-    --text-dimmer: #888;
+    --bg: #000000;
+    --surface: #141414;
+    --surface2: #1e1e1e;
+    --border: #666666;
+    --text: #ffffff;
+    --text-dim: #eeeeee;
+    --text-dimmer: #cccccc;
   }
   [data-theme="light"] {
     --bg: #f5f2ec;
@@ -60,17 +60,27 @@
     --shadow: rgba(0,0,0,0.12);
   }
   [data-theme="light"][data-hc="1"] {
-    --bg: #fff;
-    --surface: #fff;
-    --surface2: #f0f0f0;
-    --border: #888;
-    --text: #000;
-    --text-dim: #222;
-    --text-dimmer: #666;
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface2: #e8e8e8;
+    --border: #222222;
+    --text: #000000;
+    --text-dim: #111111;
+    --text-dimmer: #444444;
   }
+
+  /* HC accent overrides — much brighter/saturated */
+  /* HC blank highlight set dynamically in JS based on accent color */
 
   --mono: 'IBM Plex Mono', monospace;
   --sans: 'IBM Plex Sans', sans-serif;
+
+  /* Font size scale */
+  --fs-title: 16px;
+  --fs-body: 12px;
+  --fs-label: 9px;
+  --fs-meta: 11px;
+  --fs-tag: 10px;
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -82,6 +92,11 @@
     min-height: 100vh;
     transition: background 0.2s, color 0.2s;
   }
+
+  /* Font size scales */
+  [data-fs="s"] { --fs-title: 14px; --fs-body: 11px; --fs-label: 8px;  --fs-meta: 10px; --fs-tag: 9px; }
+  [data-fs="m"] { --fs-title: 16px; --fs-body: 12px; --fs-label: 9px;  --fs-meta: 11px; --fs-tag: 10px; }
+  [data-fs="l"] { --fs-title: 19px; --fs-body: 14px; --fs-label: 10px; --fs-meta: 13px; --fs-tag: 11px; }
 
   /* ── Header ───────────────────────────────────────────────────── */
   header {
@@ -253,6 +268,21 @@
     user-select: none;
   }
   .tp-hc input { accent-color: var(--accent); cursor: pointer; }
+
+  .tp-fs-row { display: flex; gap: 5px; }
+  .tp-fs-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    width: 32px; height: 28px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.12s;
+    letter-spacing: 0.05em;
+  }
+  .tp-fs-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .tp-fs-btn.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
 
   @media (max-width: 600px) {
     #theme-popup {
@@ -480,7 +510,7 @@
     margin-bottom: 12px;
     flex-wrap: wrap;
   }
-  .result-title { font-size: 16px; font-weight: 500; color: var(--text); }
+  .result-title { font-size: var(--fs-title); font-weight: 500; color: var(--text); }
   .result-title-ja { font-size: 14px; color: var(--text-dim); }
   .result-id {
     font-family: 'IBM Plex Mono', monospace;
@@ -497,7 +527,7 @@
   .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
   .tag {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 10px;
+    font-size: var(--fs-tag);
     padding: 2px 8px;
     border: 1px solid var(--border);
     color: var(--text-dim);
@@ -509,22 +539,34 @@
   .fields-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1px;
-    background: var(--border);
+    gap: 0;
+    background: var(--surface);
     border: 1px solid var(--border);
     margin-bottom: 10px;
   }
-  .field { background: var(--surface); padding: 8px 10px; }
-  .field.blank {
-    background: var(--blank);
-    border: 1px solid var(--blank-border);
-    margin: -1px;
+  .field {
+    background: var(--surface);
+    padding: 8px 10px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
   }
-  .field.blank.hidden-blank { background: var(--surface); border-color: transparent; }
+  .field-notes { grid-column: span 2; }
+  .field.blank {
+    background: var(--surface);
+    box-shadow: inset 0 0 0 2px var(--blank-border);
+  }
+  [data-hc="1"] .field.blank {
+    background: var(--surface);
+    box-shadow: inset 0 0 0 3px var(--blank-border);
+  }
+  .field.blank.hidden-blank {
+    background: var(--surface);
+    box-shadow: none;
+  }
 
   .field-label {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 9px;
+    font-size: var(--fs-label);
     color: var(--text-dimmer);
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -533,8 +575,8 @@
   .field.blank .field-label { color: var(--accent); opacity: 0.6; }
   .field.blank.hidden-blank .field-label { color: var(--text-dimmer); opacity: 1; }
 
-  .field-value { font-size: 12px; color: var(--text); word-break: break-all; }
-  .field.blank .field-value { color: var(--text-dimmer); font-style: italic; font-size: 11px; }
+  .field-value { font-size: var(--fs-body); color: var(--text); word-break: break-all; }
+  .field.blank .field-value { color: var(--text-dimmer); font-style: italic; font-size: var(--fs-body); }
 
   .sources-toggle {
     font-family: 'IBM Plex Mono', monospace;
@@ -561,7 +603,7 @@
     gap: 12px;
     padding: 8px 12px;
     border-bottom: 1px solid var(--border);
-    font-size: 12px;
+    font-size: var(--fs-body);
     align-items: baseline;
   }
   .source-row:last-child { border-bottom: none; }
@@ -647,6 +689,14 @@
           <input type="checkbox" id="tp-hc-check"> High contrast
         </label>
       </div>
+      <div class="tp-section">
+        <div class="tp-label">Font Size</div>
+        <div class="tp-fs-row" id="tp-fs-row">
+          <button class="tp-fs-btn" data-fs="s">S</button>
+          <button class="tp-fs-btn" data-fs="m">M</button>
+          <button class="tp-fs-btn" data-fs="l">L</button>
+        </div>
+      </div>
     </div>
   </div>
 </header>
@@ -716,7 +766,7 @@
     <label>Options</label>
     <div class="option-row">
       <label class="option-item">
-        <input type="checkbox" id="highlight-blanks" checked> Highlight empty fields
+        <input type="checkbox" id="highlight-blanks"> Highlight empty fields
       </label>
     </div>
   </div>
@@ -751,7 +801,7 @@ let filterCountry   = '';
 let filterPublisher = '';
 let sortBy          = 't.title';
 let sortDir         = 'ASC';
-let highlightBlanks = true;
+let highlightBlanks = false;
 
 // Adult is excluded unless explicitly in selectedTypes
 function showAdult() { return selectedTypes.has('Adult'); }
@@ -786,6 +836,7 @@ const CONTENT_TYPES = ['Film','TV','Music','Video Magazine','Adult','Other'];
 
 // ── Theme system ───────────────────────────────────────────────────────────
 const ACCENTS = {
+  // Normal contrast — warm, readable
   gold:   { dark: '#c8a84b', light: '#9a7a20' },
   blue:   { dark: '#5b9bd5', light: '#1a5fa8' },
   green:  { dark: '#6aab7e', light: '#2e7d46' },
@@ -793,34 +844,60 @@ const ACCENTS = {
   violet: { dark: '#9b7fd4', light: '#5d3fa8' },
 };
 
-const ACCENT_VARS = {
-  gold:   { darkDim: 'rgba(200,168,75,0.12)',  darkBlank: 'rgba(200,168,75,0.08)',  darkBdr: 'rgba(200,168,75,0.25)',  lightDim: 'rgba(154,122,32,0.10)',  lightBlank: 'rgba(154,122,32,0.07)',  lightBdr: 'rgba(154,122,32,0.25)' },
-  blue:   { darkDim: 'rgba(91,155,213,0.12)',  darkBlank: 'rgba(91,155,213,0.08)',  darkBdr: 'rgba(91,155,213,0.25)',  lightDim: 'rgba(26,95,168,0.10)',   lightBlank: 'rgba(26,95,168,0.07)',   lightBdr: 'rgba(26,95,168,0.25)' },
-  green:  { darkDim: 'rgba(106,171,126,0.12)', darkBlank: 'rgba(106,171,126,0.08)', darkBdr: 'rgba(106,171,126,0.25)', lightDim: 'rgba(46,125,70,0.10)',   lightBlank: 'rgba(46,125,70,0.07)',   lightBdr: 'rgba(46,125,70,0.25)' },
-  rust:   { darkDim: 'rgba(212,120,74,0.12)',  darkBlank: 'rgba(212,120,74,0.08)',  darkBdr: 'rgba(212,120,74,0.25)',  lightDim: 'rgba(184,78,30,0.10)',   lightBlank: 'rgba(184,78,30,0.07)',   lightBdr: 'rgba(184,78,30,0.25)' },
-  violet: { darkDim: 'rgba(155,127,212,0.12)', darkBlank: 'rgba(155,127,212,0.08)', darkBdr: 'rgba(155,127,212,0.25)', lightDim: 'rgba(93,63,168,0.10)',   lightBlank: 'rgba(93,63,168,0.07)',   lightBdr: 'rgba(93,63,168,0.25)' },
+// High contrast — vivid neon-adjacent but not garish
+const ACCENTS_HC = {
+  gold:   { dark: '#ffd84d', light: '#cc7700' },
+  blue:   { dark: '#4db8ff', light: '#0055dd' },
+  green:  { dark: '#3dff99', light: '#007a3d' },
+  rust:   { dark: '#ff7040', light: '#cc2200' },
+  violet: { dark: '#b87fff', light: '#6600dd' },
 };
+
+const ACCENT_VARS = {
+  gold:   { darkDim: 'rgba(200,168,75,0.12)',  darkBlank: 'rgba(200,168,75,0.08)',  darkBdr: 'rgba(200,168,75,0.75)',  lightDim: 'rgba(154,122,32,0.10)',  lightBlank: 'rgba(154,122,32,0.07)',  lightBdr: 'rgba(154,122,32,0.75)' },
+  blue:   { darkDim: 'rgba(91,155,213,0.12)',  darkBlank: 'rgba(91,155,213,0.08)',  darkBdr: 'rgba(91,155,213,0.75)',  lightDim: 'rgba(26,95,168,0.10)',   lightBlank: 'rgba(26,95,168,0.07)',   lightBdr: 'rgba(26,95,168,0.75)' },
+  green:  { darkDim: 'rgba(106,171,126,0.12)', darkBlank: 'rgba(106,171,126,0.08)', darkBdr: 'rgba(106,171,126,0.75)', lightDim: 'rgba(46,125,70,0.10)',   lightBlank: 'rgba(46,125,70,0.07)',   lightBdr: 'rgba(46,125,70,0.75)' },
+  rust:   { darkDim: 'rgba(212,120,74,0.12)',  darkBlank: 'rgba(212,120,74,0.08)',  darkBdr: 'rgba(212,120,74,0.75)',  lightDim: 'rgba(184,78,30,0.10)',   lightBlank: 'rgba(184,78,30,0.07)',   lightBdr: 'rgba(184,78,30,0.75)' },
+  violet: { darkDim: 'rgba(155,127,212,0.12)', darkBlank: 'rgba(155,127,212,0.08)', darkBdr: 'rgba(155,127,212,0.75)', lightDim: 'rgba(93,63,168,0.10)',   lightBlank: 'rgba(93,63,168,0.07)',   lightBdr: 'rgba(93,63,168,0.75)' },
+};
+
+
 
 let currentAccent = localStorage.getItem('v8accent') || 'gold';
 let currentHC     = localStorage.getItem('v8hc') === '1';
+let currentFS     = localStorage.getItem('v8fs') || 'm';
 
-function applyTheme(mode, accent, hc) {
+function applyTheme(mode, accent, hc, fs) {
   const root = document.documentElement;
-  mode   = mode   || root.getAttribute('data-theme') || 'dark';
-  accent = accent || currentAccent;
-  hc     = hc !== undefined ? hc : currentHC;
+  mode   = (mode !== undefined && mode !== null) ? mode : (root.getAttribute('data-theme') || 'dark');
+  accent = (accent !== undefined && accent !== null) ? accent : currentAccent;
+  hc     = (hc !== undefined && hc !== null) ? hc : currentHC;
+  fs     = (fs !== undefined && fs !== null) ? fs : (currentFS || 'm');
 
   root.setAttribute('data-theme', mode);
   root.setAttribute('data-hc', hc ? '1' : '0');
+  root.setAttribute('data-fs', fs);
+  currentFS = fs;
 
   const vars = ACCENT_VARS[accent];
-  const accentColor = ACCENTS[accent][mode];
   const isDark = mode === 'dark';
+  const accentColor = hc ? ACCENTS_HC[accent][mode] : ACCENTS[accent][mode];
 
-  root.style.setProperty('--accent',       accentColor);
-  root.style.setProperty('--accent-dim',   isDark ? vars.darkDim   : vars.lightDim);
-  root.style.setProperty('--blank',        isDark ? vars.darkBlank : vars.lightBlank);
-  root.style.setProperty('--blank-border', isDark ? vars.darkBdr   : vars.lightBdr);
+  root.style.setProperty('--accent', accentColor);
+  if (!hc) {
+    root.style.setProperty('--accent-dim',   isDark ? vars.darkDim   : vars.lightDim);
+    root.style.setProperty('--blank-border', isDark ? vars.darkBdr   : vars.lightBdr);
+  } else {
+    // HC: derive blank highlight from accent color directly
+    // Parse the accent hex to get r,g,b components
+    const hex = accentColor.replace('#','');
+    const r = parseInt(hex.slice(0,2),16);
+    const g = parseInt(hex.slice(2,4),16);
+    const b = parseInt(hex.slice(4,6),16);
+    root.style.setProperty('--accent-dim',   `rgba(${r},${g},${b},0.15)`);
+    root.style.setProperty('--blank',        'transparent');
+    root.style.setProperty('--blank-border', `rgba(${r},${g},${b},0.9)`);
+  }
 
   currentAccent = accent;
   currentHC     = hc;
@@ -845,10 +922,16 @@ function applyTheme(mode, accent, hc) {
   const hcCheck = document.getElementById('tp-hc-check');
   if (hcCheck) hcCheck.checked = hc;
 
+  // Update font size buttons
+  document.querySelectorAll('.tp-fs-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.fs === fs);
+  });
+
   // Save
   localStorage.setItem('v8theme',  mode);
   localStorage.setItem('v8accent', accent);
   localStorage.setItem('v8hc',     hc ? '1' : '0');
+  localStorage.setItem('v8fs',     fs);
 }
 
 // Build swatches
@@ -860,16 +943,13 @@ function buildSwatches() {
     sw.className = 'tp-swatch' + (name === currentAccent ? ' selected' : '');
     sw.dataset.accent = name;
     const mode = document.documentElement.getAttribute('data-theme') || 'dark';
-    sw.style.background = colors[mode];
+    const hcInit = document.documentElement.getAttribute('data-hc') === '1';
+    sw.style.background = hcInit ? ACCENTS_HC[name][mode] : colors[mode];
     sw.title = name.charAt(0).toUpperCase() + name.slice(1);
     sw.addEventListener('click', e => {
       e.stopPropagation();
       applyTheme(null, name, null);
-      // Update swatch colors for new mode
-      document.querySelectorAll('.tp-swatch').forEach(s => {
-        const m = document.documentElement.getAttribute('data-theme');
-        s.style.background = ACCENTS[s.dataset.accent][m];
-      });
+      updateSwatchColors();
     });
     container.appendChild(sw);
   });
@@ -891,20 +971,35 @@ document.addEventListener('click', () => {
 
 document.getElementById('theme-popup').addEventListener('click', e => e.stopPropagation());
 
+// Swatch color updater
+function updateSwatchColors() {
+  const m  = document.documentElement.getAttribute('data-theme');
+  const hc = document.documentElement.getAttribute('data-hc') === '1';
+  document.querySelectorAll('.tp-swatch').forEach(s => {
+    s.style.background = hc ? ACCENTS_HC[s.dataset.accent][m] : ACCENTS[s.dataset.accent][m];
+    s.classList.toggle('selected', s.dataset.accent === currentAccent);
+  });
+}
+
 // Mode switch
 document.getElementById('tp-mode-switch').addEventListener('click', () => {
   const cur = document.documentElement.getAttribute('data-theme');
-  const newMode = cur === 'dark' ? 'light' : 'dark';
-  applyTheme(newMode, null, null);
-  // Update swatch colors
-  document.querySelectorAll('.tp-swatch').forEach(s => {
-    s.style.background = ACCENTS[s.dataset.accent][newMode];
-  });
+  applyTheme(cur === 'dark' ? 'light' : 'dark', null, null);
+  updateSwatchColors();
 });
 
 // High contrast
 document.getElementById('tp-hc-check').addEventListener('change', e => {
   applyTheme(null, null, e.target.checked);
+  updateSwatchColors();
+});
+
+// Font size
+document.querySelectorAll('.tp-fs-btn').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    applyTheme(null, null, null, btn.dataset.fs);
+  });
 });
 
 // Init
@@ -912,7 +1007,8 @@ buildSwatches();
 const savedTheme  = localStorage.getItem('v8theme')  || 'dark';
 const savedAccent = localStorage.getItem('v8accent') || 'gold';
 const savedHC     = localStorage.getItem('v8hc') === '1';
-applyTheme(savedTheme, savedAccent, savedHC);
+const savedFS     = localStorage.getItem('v8fs') || 'm';
+applyTheme(savedTheme, savedAccent, savedHC, savedFS);
 
 // ── Highlight blanks toggle ────────────────────────────────────────────────
 document.getElementById('highlight-blanks').addEventListener('change', e => {
@@ -925,9 +1021,9 @@ document.getElementById('highlight-blanks').addEventListener('change', e => {
 });
 
 const savedHL = localStorage.getItem('v8highlights');
-if (savedHL === '0') {
-  highlightBlanks = false;
-  document.getElementById('highlight-blanks').checked = false;
+if (savedHL === '1') {
+  highlightBlanks = true;
+  document.getElementById('highlight-blanks').checked = true;
 }
 
 // ── Filter panel toggle ────────────────────────────────────────────────────
@@ -1170,7 +1266,8 @@ function renderCard(row) {
     const isBlank = !v;
     if (isBlank && !showBlank && !IMPORTANT_BLANK.has(key)) continue;
     const field = document.createElement('div');
-    field.className = 'field' + (isBlank ? ' blank' + (!highlightBlanks ? ' hidden-blank' : '') : '');
+    const isNotes = key === 'notes';
+    field.className = 'field' + (isBlank ? ' blank' + (!highlightBlanks ? ' hidden-blank' : '') : '') + (isNotes ? ' field-notes' : '');
     field.innerHTML = `<div class="field-label">${label}</div><div class="field-value">${isBlank ? '—' : esc(v)}</div>`;
     grid.appendChild(field);
   }
