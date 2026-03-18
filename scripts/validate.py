@@ -24,11 +24,12 @@ def load(filename):
 def ids(rows):
     return {r['id'] for r in rows if r.get('id')}
 
-publishers = load('publishers.csv')
-titles     = load('titles.csv')
-releases   = load('releases.csv')
-catalogs   = load('catalogs.csv')
-sources    = load('sources.csv')
+publishers        = load('publishers.csv')
+titles            = load('titles.csv')
+releases          = load('releases.csv')
+release_publishers = load('release_publishers.csv')
+catalogs          = load('catalogs.csv')
+sources           = load('sources.csv')
 
 pub_ids     = ids(publishers)
 title_ids   = ids(titles)
@@ -61,8 +62,6 @@ print("Validating releases...")
 for r in releases:
     if r.get('title_id') and r['title_id'] not in title_ids:
         errors.append(f"releases id={r['id']}: title_id={r['title_id']} not found in titles")
-    if r.get('publisher_id') and r['publisher_id'] not in pub_ids:
-        errors.append(f"releases id={r['id']}: publisher_id={r['publisher_id']} not found in publishers")
     if r.get('encoding') and r['encoding'] not in VALID_ENCODINGS:
         warnings.append(f"releases id={r['id']}: unexpected encoding '{r['encoding']}'")
     if r.get('release_date') and not DATE_PATTERN.match(r['release_date']):
@@ -71,6 +70,13 @@ for r in releases:
         warnings.append(f"releases id={r['id']}: unexpected promo value '{r['promo']}' (expected Y or blank)")
     if r.get('audio_dubbed') and r['audio_dubbed'] not in VALID_DUBBED:
         warnings.append(f"releases id={r['id']}: unexpected audio_dubbed value '{r['audio_dubbed']}' (expected Y or blank)")
+
+print("Validating release_publishers...")
+for r in release_publishers:
+    if r.get('release_id') and r['release_id'] not in release_ids:
+        errors.append(f"release_publishers id={r['id']}: release_id={r['release_id']} not found in releases")
+    if r.get('publisher_id') and r['publisher_id'] not in pub_ids:
+        errors.append(f"release_publishers id={r['id']}: publisher_id={r['publisher_id']} not found in publishers")
 
 print("Validating catalogs...")
 for r in catalogs:

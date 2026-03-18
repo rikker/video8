@@ -37,7 +37,6 @@ TABLES = {
         CREATE TABLE releases (
             id INTEGER PRIMARY KEY,
             title_id INTEGER REFERENCES titles(id),
-            publisher_id INTEGER REFERENCES publishers(id),
             title_release TEXT,
             catalog_number TEXT,
             release_date TEXT,
@@ -53,6 +52,13 @@ TABLES = {
             subtitle_language TEXT,
             promo TEXT,
             notes TEXT
+        )
+    ''',
+    'release_publishers': '''
+        CREATE TABLE release_publishers (
+            id INTEGER PRIMARY KEY,
+            release_id INTEGER REFERENCES releases(id),
+            publisher_id INTEGER REFERENCES publishers(id)
         )
     ''',
     'catalogs': '''
@@ -111,7 +117,7 @@ def main():
     cur = conn.cursor()
 
     # Build tables in dependency order
-    order = ['publishers', 'titles', 'catalogs', 'releases', 'sources', 'images']
+    order = ['publishers', 'titles', 'catalogs', 'releases', 'release_publishers', 'sources', 'images']
 
     for table in order:
         cur.execute(TABLES[table])

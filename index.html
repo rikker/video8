@@ -780,11 +780,11 @@ function updateActiveTags() {
 // ── SQL builder ────────────────────────────────────────────────────────────
 function buildSQL(q, offset, countOnly, adultOnly = false) {
   const select = countOnly
-    ? `SELECT COUNT(*) as count`
+    ? `SELECT COUNT(DISTINCT r.id) as count`
     : `SELECT
         r.id as release_id,
         t.title, t.title_ja, t.year, t.content_type, t.country_origin,
-        p.name as publisher,
+        GROUP_CONCAT(p.name, ' / ') as publisher,
         r.title_release, r.catalog_number, r.release_date, r.country,
         r.encoding, r.runtime_mins, r.list_price, r.upc, r.isbn,
         r.audio_format, r.audio_language, r.audio_dubbed, r.subtitle_language,
@@ -814,7 +814,7 @@ function buildSQL(q, offset, countOnly, adultOnly = false) {
 
   if (filterPublisher) {
     const sp = filterPublisher.replace(/'/g,"''");
-    conditions.push(`p.name = '${sp}'`);
+    conditions.push(`r.id IN (SELECT rp2.release_id FROM release_publishers rp2 JOIN publishers p2 ON p2.id = rp2.publisher_id WHERE p2.name = '${sp}')`);
   }
 
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
@@ -824,8 +824,11 @@ function buildSQL(q, offset, countOnly, adultOnly = false) {
   return `${select}
     FROM releases r
     JOIN titles t ON r.title_id = t.id
-    LEFT JOIN publishers p ON r.publisher_id = p.id
-    ${where} ${order} ${limit}`;
+    LEFT JOIN release_publishers rp ON rp.release_id = r.id
+    LEFT JOIN publishers p ON p.id = rp.publisher_id
+    ${where}
+    GROUP BY r.id
+    ${order} ${limit}`;
 }
 
 // ── Fetch helpers ──────────────────────────────────────────────────────────
