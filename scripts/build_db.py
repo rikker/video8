@@ -127,6 +127,12 @@ def main():
         cols = list(rows[0].keys())
         placeholders = ','.join(['?' for _ in cols])
         col_str = ','.join(cols)
+
+        # publishers has a self-referencing parent_id FK — insert parents first
+        if table == 'publishers':
+            rows = [r for r in rows if not r.get('parent_id')] + \
+                   [r for r in rows if r.get('parent_id')]
+
         for row in rows:
             values = [coerce(row[c]) for c in cols]
             cur.execute(f'INSERT INTO {table} ({col_str}) VALUES ({placeholders})', values)
