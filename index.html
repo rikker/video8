@@ -8,6 +8,20 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   /* ── Themes ───────────────────────────────────────────────────── */
+  /* Accent colors: gold, blue, green, rust, violet */
+  :root {
+    --accent-gold-dark:   #c8a84b; --accent-gold-dark-dim:   rgba(200,168,75,0.12);  --accent-gold-dark-blank:  rgba(200,168,75,0.08);  --accent-gold-dark-bdr:  rgba(200,168,75,0.25);
+    --accent-gold-light:  #9a7a20; --accent-gold-light-dim:  rgba(154,122,32,0.10);  --accent-gold-light-blank: rgba(154,122,32,0.07);  --accent-gold-light-bdr: rgba(154,122,32,0.25);
+    --accent-blue-dark:   #5b9bd5; --accent-blue-dark-dim:   rgba(91,155,213,0.12);  --accent-blue-dark-blank:  rgba(91,155,213,0.08);  --accent-blue-dark-bdr:  rgba(91,155,213,0.25);
+    --accent-blue-light:  #1a5fa8; --accent-blue-light-dim:  rgba(26,95,168,0.10);   --accent-blue-light-blank: rgba(26,95,168,0.07);   --accent-blue-light-bdr: rgba(26,95,168,0.25);
+    --accent-green-dark:  #6aab7e; --accent-green-dark-dim:  rgba(106,171,126,0.12); --accent-green-dark-blank: rgba(106,171,126,0.08); --accent-green-dark-bdr: rgba(106,171,126,0.25);
+    --accent-green-light: #2e7d46; --accent-green-light-dim: rgba(46,125,70,0.10);   --accent-green-light-blank:rgba(46,125,70,0.07);   --accent-green-light-bdr:rgba(46,125,70,0.25);
+    --accent-rust-dark:   #d4784a; --accent-rust-dark-dim:   rgba(212,120,74,0.12);  --accent-rust-dark-blank:  rgba(212,120,74,0.08);  --accent-rust-dark-bdr:  rgba(212,120,74,0.25);
+    --accent-rust-light:  #b84e1e; --accent-rust-light-dim:  rgba(184,78,30,0.10);   --accent-rust-light-blank: rgba(184,78,30,0.07);   --accent-rust-light-bdr: rgba(184,78,30,0.25);
+    --accent-violet-dark:  #9b7fd4; --accent-violet-dark-dim:  rgba(155,127,212,0.12); --accent-violet-dark-blank: rgba(155,127,212,0.08); --accent-violet-dark-bdr: rgba(155,127,212,0.25);
+    --accent-violet-light: #5d3fa8; --accent-violet-light-dim: rgba(93,63,168,0.10);   --accent-violet-light-blank:rgba(93,63,168,0.07);  --accent-violet-light-bdr: rgba(93,63,168,0.25);
+  }
+
   [data-theme="dark"] {
     --bg: #0f0f0f;
     --surface: #181818;
@@ -22,6 +36,15 @@
     --blank-border: rgba(200,168,75,0.25);
     --shadow: rgba(0,0,0,0.4);
   }
+  [data-theme="dark"][data-hc="1"] {
+    --bg: #000;
+    --surface: #111;
+    --surface2: #1a1a1a;
+    --border: #444;
+    --text: #fff;
+    --text-dim: #ccc;
+    --text-dimmer: #888;
+  }
   [data-theme="light"] {
     --bg: #f5f2ec;
     --surface: #fff;
@@ -35,6 +58,15 @@
     --blank: rgba(154,122,32,0.07);
     --blank-border: rgba(154,122,32,0.25);
     --shadow: rgba(0,0,0,0.12);
+  }
+  [data-theme="light"][data-hc="1"] {
+    --bg: #fff;
+    --surface: #fff;
+    --surface2: #f0f0f0;
+    --border: #888;
+    --text: #000;
+    --text-dim: #222;
+    --text-dimmer: #666;
   }
 
   --mono: 'IBM Plex Mono', monospace;
@@ -128,8 +160,111 @@
     justify-content: center;
     flex-shrink: 0;
     transition: border-color 0.15s, color 0.15s;
+    position: relative;
   }
-  #theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  #theme-toggle:hover, #theme-toggle.open { border-color: var(--accent); color: var(--accent); }
+
+  /* ── Theme popup ──────────────────────────────────────────────── */
+  #theme-popup {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    z-index: 999;
+    min-width: 200px;
+    box-shadow: 0 4px 20px var(--shadow);
+    flex-direction: column;
+    gap: 14px;
+  }
+  #theme-popup.open { display: flex; }
+
+  .tp-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dimmer);
+    margin-bottom: 2px;
+  }
+
+  .tp-section { display: flex; flex-direction: column; gap: 6px; }
+
+  /* dark/light toggle switch */
+  .tp-switch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text-dim);
+    cursor: pointer;
+    user-select: none;
+  }
+  .tp-switch-track {
+    width: 36px; height: 20px;
+    background: var(--border);
+    border-radius: 10px;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .tp-switch-track.on { background: var(--accent); }
+  .tp-switch-knob {
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 14px; height: 14px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+  .tp-switch-track.on .tp-switch-knob { transform: translateX(16px); }
+
+  /* accent swatches */
+  .tp-swatches { display: flex; gap: 6px; }
+  .tp-swatch {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.15s, transform 0.15s;
+    position: relative;
+  }
+  .tp-swatch:hover { transform: scale(1.15); }
+  .tp-swatch.selected { border-color: var(--text); }
+  .tp-swatch.selected::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.7);
+  }
+
+  /* high contrast toggle */
+  .tp-hc {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-dim);
+    cursor: pointer;
+    user-select: none;
+  }
+  .tp-hc input { accent-color: var(--accent); cursor: pointer; }
+
+  @media (max-width: 600px) {
+    #theme-popup {
+      position: fixed;
+      top: auto;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      border-bottom: none;
+      min-width: unset;
+    }
+  }
 
   /* ── About banner ─────────────────────────────────────────────── */
   #about {
@@ -491,7 +626,29 @@
     <input type="text" id="search" placeholder="Search title, catalog number, publisher…" autocomplete="off" spellcheck="false">
   </div>
   <div class="header-meta" id="db-meta">—</div>
-  <button id="theme-toggle" title="Toggle light/dark mode">☀</button>
+  <div style="position:relative;flex-shrink:0;">
+    <button id="theme-toggle" title="Appearance settings">☀</button>
+    <div id="theme-popup">
+      <div class="tp-section">
+        <div class="tp-label">Mode</div>
+        <label class="tp-switch" id="tp-mode-switch">
+          <div class="tp-switch-track" id="tp-track">
+            <div class="tp-switch-knob"></div>
+          </div>
+          <span id="tp-mode-label">Dark</span>
+        </label>
+      </div>
+      <div class="tp-section">
+        <div class="tp-label">Accent</div>
+        <div class="tp-swatches" id="tp-swatches"></div>
+      </div>
+      <div class="tp-section">
+        <label class="tp-hc">
+          <input type="checkbox" id="tp-hc-check"> High contrast
+        </label>
+      </div>
+    </div>
+  </div>
 </header>
 
 <div id="about">
@@ -627,21 +784,135 @@ const IMPORTANT_BLANK = new Set([
 
 const CONTENT_TYPES = ['Film','TV','Music','Video Magazine','Adult','Other'];
 
-// ── Theme ──────────────────────────────────────────────────────────────────
-function applyTheme(t) {
-  document.documentElement.setAttribute('data-theme', t);
-  document.getElementById('theme-toggle').textContent = t === 'dark' ? '☀' : '☾';
-  localStorage.setItem('v8theme', t);
+// ── Theme system ───────────────────────────────────────────────────────────
+const ACCENTS = {
+  gold:   { dark: '#c8a84b', light: '#9a7a20' },
+  blue:   { dark: '#5b9bd5', light: '#1a5fa8' },
+  green:  { dark: '#6aab7e', light: '#2e7d46' },
+  rust:   { dark: '#d4784a', light: '#b84e1e' },
+  violet: { dark: '#9b7fd4', light: '#5d3fa8' },
+};
+
+const ACCENT_VARS = {
+  gold:   { darkDim: 'rgba(200,168,75,0.12)',  darkBlank: 'rgba(200,168,75,0.08)',  darkBdr: 'rgba(200,168,75,0.25)',  lightDim: 'rgba(154,122,32,0.10)',  lightBlank: 'rgba(154,122,32,0.07)',  lightBdr: 'rgba(154,122,32,0.25)' },
+  blue:   { darkDim: 'rgba(91,155,213,0.12)',  darkBlank: 'rgba(91,155,213,0.08)',  darkBdr: 'rgba(91,155,213,0.25)',  lightDim: 'rgba(26,95,168,0.10)',   lightBlank: 'rgba(26,95,168,0.07)',   lightBdr: 'rgba(26,95,168,0.25)' },
+  green:  { darkDim: 'rgba(106,171,126,0.12)', darkBlank: 'rgba(106,171,126,0.08)', darkBdr: 'rgba(106,171,126,0.25)', lightDim: 'rgba(46,125,70,0.10)',   lightBlank: 'rgba(46,125,70,0.07)',   lightBdr: 'rgba(46,125,70,0.25)' },
+  rust:   { darkDim: 'rgba(212,120,74,0.12)',  darkBlank: 'rgba(212,120,74,0.08)',  darkBdr: 'rgba(212,120,74,0.25)',  lightDim: 'rgba(184,78,30,0.10)',   lightBlank: 'rgba(184,78,30,0.07)',   lightBdr: 'rgba(184,78,30,0.25)' },
+  violet: { darkDim: 'rgba(155,127,212,0.12)', darkBlank: 'rgba(155,127,212,0.08)', darkBdr: 'rgba(155,127,212,0.25)', lightDim: 'rgba(93,63,168,0.10)',   lightBlank: 'rgba(93,63,168,0.07)',   lightBdr: 'rgba(93,63,168,0.25)' },
+};
+
+let currentAccent = localStorage.getItem('v8accent') || 'gold';
+let currentHC     = localStorage.getItem('v8hc') === '1';
+
+function applyTheme(mode, accent, hc) {
+  const root = document.documentElement;
+  mode   = mode   || root.getAttribute('data-theme') || 'dark';
+  accent = accent || currentAccent;
+  hc     = hc !== undefined ? hc : currentHC;
+
+  root.setAttribute('data-theme', mode);
+  root.setAttribute('data-hc', hc ? '1' : '0');
+
+  const vars = ACCENT_VARS[accent];
+  const accentColor = ACCENTS[accent][mode];
+  const isDark = mode === 'dark';
+
+  root.style.setProperty('--accent',       accentColor);
+  root.style.setProperty('--accent-dim',   isDark ? vars.darkDim   : vars.lightDim);
+  root.style.setProperty('--blank',        isDark ? vars.darkBlank : vars.lightBlank);
+  root.style.setProperty('--blank-border', isDark ? vars.darkBdr   : vars.lightBdr);
+
+  currentAccent = accent;
+  currentHC     = hc;
+
+  // Update toggle icon
+  document.getElementById('theme-toggle').textContent = mode === 'dark' ? '☀' : '☾';
+
+  // Update switch UI
+  const track = document.getElementById('tp-track');
+  const label = document.getElementById('tp-mode-label');
+  if (track) {
+    track.classList.toggle('on', mode === 'light');
+    label.textContent = mode === 'dark' ? 'Dark' : 'Light';
+  }
+
+  // Update swatch selection
+  document.querySelectorAll('.tp-swatch').forEach(s => {
+    s.classList.toggle('selected', s.dataset.accent === accent);
+  });
+
+  // Update HC checkbox
+  const hcCheck = document.getElementById('tp-hc-check');
+  if (hcCheck) hcCheck.checked = hc;
+
+  // Save
+  localStorage.setItem('v8theme',  mode);
+  localStorage.setItem('v8accent', accent);
+  localStorage.setItem('v8hc',     hc ? '1' : '0');
 }
 
-document.getElementById('theme-toggle').addEventListener('click', () => {
-  const cur = document.documentElement.getAttribute('data-theme');
-  applyTheme(cur === 'dark' ? 'light' : 'dark');
+// Build swatches
+function buildSwatches() {
+  const container = document.getElementById('tp-swatches');
+  if (!container) return;
+  Object.entries(ACCENTS).forEach(([name, colors]) => {
+    const sw = document.createElement('div');
+    sw.className = 'tp-swatch' + (name === currentAccent ? ' selected' : '');
+    sw.dataset.accent = name;
+    const mode = document.documentElement.getAttribute('data-theme') || 'dark';
+    sw.style.background = colors[mode];
+    sw.title = name.charAt(0).toUpperCase() + name.slice(1);
+    sw.addEventListener('click', e => {
+      e.stopPropagation();
+      applyTheme(null, name, null);
+      // Update swatch colors for new mode
+      document.querySelectorAll('.tp-swatch').forEach(s => {
+        const m = document.documentElement.getAttribute('data-theme');
+        s.style.background = ACCENTS[s.dataset.accent][m];
+      });
+    });
+    container.appendChild(sw);
+  });
+}
+
+// Popup toggle
+document.getElementById('theme-toggle').addEventListener('click', e => {
+  e.stopPropagation();
+  const popup  = document.getElementById('theme-popup');
+  const btn    = document.getElementById('theme-toggle');
+  const isOpen = popup.classList.toggle('open');
+  btn.classList.toggle('open', isOpen);
 });
 
-// Restore saved theme
-const savedTheme = localStorage.getItem('v8theme');
-if (savedTheme) applyTheme(savedTheme);
+document.addEventListener('click', () => {
+  document.getElementById('theme-popup').classList.remove('open');
+  document.getElementById('theme-toggle').classList.remove('open');
+});
+
+document.getElementById('theme-popup').addEventListener('click', e => e.stopPropagation());
+
+// Mode switch
+document.getElementById('tp-mode-switch').addEventListener('click', () => {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const newMode = cur === 'dark' ? 'light' : 'dark';
+  applyTheme(newMode, null, null);
+  // Update swatch colors
+  document.querySelectorAll('.tp-swatch').forEach(s => {
+    s.style.background = ACCENTS[s.dataset.accent][newMode];
+  });
+});
+
+// High contrast
+document.getElementById('tp-hc-check').addEventListener('change', e => {
+  applyTheme(null, null, e.target.checked);
+});
+
+// Init
+buildSwatches();
+const savedTheme  = localStorage.getItem('v8theme')  || 'dark';
+const savedAccent = localStorage.getItem('v8accent') || 'gold';
+const savedHC     = localStorage.getItem('v8hc') === '1';
+applyTheme(savedTheme, savedAccent, savedHC);
 
 // ── Highlight blanks toggle ────────────────────────────────────────────────
 document.getElementById('highlight-blanks').addEventListener('change', e => {
