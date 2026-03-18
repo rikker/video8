@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
+  /* ── Themes ───────────────────────────────────────────────────── */
+  [data-theme="dark"] {
     --bg: #0f0f0f;
     --surface: #181818;
     --surface2: #222222;
@@ -18,35 +19,54 @@
     --text-dim: #aaa;
     --text-dimmer: #777;
     --blank: rgba(200,168,75,0.08);
-    --blank-border: rgba(200,168,75,0.2);
-    --mono: 'IBM Plex Mono', monospace;
-    --sans: 'IBM Plex Sans', sans-serif;
+    --blank-border: rgba(200,168,75,0.25);
+    --shadow: rgba(0,0,0,0.4);
   }
+  [data-theme="light"] {
+    --bg: #f5f2ec;
+    --surface: #fff;
+    --surface2: #f0ece4;
+    --border: #d8d2c8;
+    --accent: #9a7a20;
+    --accent-dim: rgba(154,122,32,0.1);
+    --text: #1a1814;
+    --text-dim: #555;
+    --text-dimmer: #999;
+    --blank: rgba(154,122,32,0.07);
+    --blank-border: rgba(154,122,32,0.25);
+    --shadow: rgba(0,0,0,0.12);
+  }
+
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: var(--sans);
+    font-family: 'IBM Plex Sans', sans-serif;
     font-weight: 300;
     min-height: 100vh;
+    transition: background 0.2s, color 0.2s;
   }
 
+  /* ── Header ───────────────────────────────────────────────────── */
   header {
     border-bottom: 1px solid var(--border);
-    padding: 24px 32px;
+    padding: 16px 24px;
     display: flex;
-    align-items: baseline;
-    gap: 24px;
+    align-items: center;
+    gap: 16px;
     position: sticky;
     top: 0;
     background: var(--bg);
     z-index: 100;
+    flex-wrap: wrap;
   }
 
   .logo {
-    font-family: var(--mono);
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 13px;
     font-weight: 500;
     color: var(--accent);
@@ -54,15 +74,11 @@
     text-transform: uppercase;
     white-space: nowrap;
   }
-
-  .logo span {
-    color: var(--text-dimmer);
-    font-weight: 400;
-  }
+  .logo span { color: var(--text-dimmer); font-weight: 400; }
 
   .search-wrap {
     flex: 1;
-    max-width: 600px;
+    min-width: 180px;
     position: relative;
   }
 
@@ -71,20 +87,19 @@
     background: var(--surface);
     border: 1px solid var(--border);
     color: var(--text);
-    font-family: var(--sans);
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 14px;
     font-weight: 300;
-    padding: 10px 16px 10px 40px;
+    padding: 9px 16px 9px 36px;
     outline: none;
     transition: border-color 0.2s;
   }
-
   #search:focus { border-color: var(--accent); }
   #search::placeholder { color: var(--text-dimmer); }
 
   .search-icon {
     position: absolute;
-    left: 14px;
+    left: 12px;
     top: 50%;
     transform: translateY(-50%);
     color: var(--text-dimmer);
@@ -93,14 +108,194 @@
   }
 
   .header-meta {
-    font-family: var(--mono);
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
     color: var(--text-dimmer);
     white-space: nowrap;
   }
 
+  /* theme toggle */
+  #theme-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 14px;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  #theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── About banner ─────────────────────────────────────────────── */
+  #about {
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    background: var(--surface);
+  }
+  #about p { font-size: 12px; color: var(--text-dim); line-height: 1.6; }
+  #about-links { display: flex; gap: 16px; white-space: nowrap; flex-shrink: 0; flex-wrap: wrap; }
+  #about-links a {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+    transition: opacity 0.15s;
+  }
+  #about-links a:hover { opacity: 1; }
+
+  /* ── Filter panel ─────────────────────────────────────────────── */
+  #filter-bar {
+    padding: 10px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  #filter-toggle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 6px 14px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  #filter-toggle:hover, #filter-toggle.active {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .active-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    letter-spacing: 0.04em;
+  }
+  .active-tag button {
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 0;
+    line-height: 1;
+    opacity: 0.7;
+  }
+  .active-tag button:hover { opacity: 1; }
+
+  #filter-panel {
+    display: none;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  #filter-panel.open { display: flex; }
+
+  .filter-group { display: flex; flex-direction: column; gap: 6px; min-width: 160px; }
+  .filter-group label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dimmer);
+  }
+
+  .chip-row { display: flex; gap: 5px; flex-wrap: wrap; }
+  .chip {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 3px 9px;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    background: none;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: all 0.12s;
+    white-space: nowrap;
+  }
+  .chip:hover { border-color: var(--text-dim); }
+  .chip.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+  .chip.adult-chip.selected { background: rgba(200,75,75,0.1); border-color: #c84b4b; color: #c84b4b; }
+
+  .filter-select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    padding: 6px 10px;
+    outline: none;
+    width: 100%;
+    max-width: 220px;
+    cursor: pointer;
+  }
+  .filter-select:focus { border-color: var(--accent); }
+
+  .filter-divider {
+    width: 1px;
+    background: var(--border);
+    align-self: stretch;
+    margin: 0 4px;
+  }
+
+  .sort-row { display: flex; gap: 6px; align-items: center; }
+  .sort-dir {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: all 0.12s;
+    white-space: nowrap;
+  }
+  .sort-dir:hover, .sort-dir.asc { border-color: var(--accent); color: var(--accent); }
+
+  .option-row { display: flex; flex-direction: column; gap: 8px; }
+  .option-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-dim);
+    cursor: pointer;
+    user-select: none;
+  }
+  .option-item input { accent-color: var(--accent); cursor: pointer; }
+
+  /* ── Main content ─────────────────────────────────────────────── */
   main {
-    padding: 0 32px 48px;
+    padding: 0 24px 48px;
     max-width: 1400px;
     margin: 0 auto;
   }
@@ -109,60 +304,51 @@
     padding: 80px 0;
     text-align: center;
     color: var(--text-dimmer);
-    font-family: var(--mono);
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 12px;
     letter-spacing: 0.05em;
   }
-
-  .state-large {
-    font-size: 48px;
-    display: block;
-    margin-bottom: 16px;
-    opacity: 0.3;
-  }
+  .state-large { font-size: 48px; display: block; margin-bottom: 16px; opacity: 0.3; }
 
   #results-meta {
-    padding: 20px 0 12px;
-    font-family: var(--mono);
+    padding: 16px 0 10px;
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
     color: var(--text-dimmer);
     letter-spacing: 0.05em;
     border-bottom: 1px solid var(--border);
-    margin-bottom: 0;
   }
 
+  #adult-notice {
+    display: none;
+    padding: 8px 0 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dimmer);
+  }
+
+  /* ── Result cards ─────────────────────────────────────────────── */
   .result-card {
     border-bottom: 1px solid var(--border);
-    padding: 20px 0;
+    padding: 18px 0;
     animation: fadeIn 0.15s ease;
   }
-
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   .result-header {
     display: flex;
     align-items: baseline;
-    gap: 12px;
-    margin-bottom: 14px;
+    gap: 10px;
+    margin-bottom: 12px;
     flex-wrap: wrap;
   }
-
-  .result-title {
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--text);
-  }
-
-  .result-title-ja {
-    font-size: 14px;
-    color: var(--text-dim);
-  }
-
+  .result-title { font-size: 16px; font-weight: 500; color: var(--text); }
+  .result-title-ja { font-size: 14px; color: var(--text-dim); }
   .result-id {
-    font-family: var(--mono);
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 10px;
     color: var(--accent);
     background: var(--accent-dim);
@@ -171,32 +357,19 @@
     margin-left: auto;
     white-space: nowrap;
   }
+  [data-theme="light"] .result-id { border-color: rgba(154,122,32,0.35); }
 
-  .tags {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-bottom: 14px;
-  }
-
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
   .tag {
-    font-family: var(--mono);
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 10px;
     padding: 2px 8px;
     border: 1px solid var(--border);
     color: var(--text-dim);
     letter-spacing: 0.04em;
   }
-
-  .tag.accent {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .tag.promo {
-    border-color: #c84b4b;
-    color: #c84b4b;
-  }
+  .tag.accent { border-color: var(--accent); color: var(--accent); }
+  .tag.promo  { border-color: #c84b4b; color: #c84b4b; }
 
   .fields-grid {
     display: grid;
@@ -204,48 +377,32 @@
     gap: 1px;
     background: var(--border);
     border: 1px solid var(--border);
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
-
-  .field {
-    background: var(--surface);
-    padding: 8px 10px;
-  }
-
+  .field { background: var(--surface); padding: 8px 10px; }
   .field.blank {
     background: var(--blank);
     border: 1px solid var(--blank-border);
     margin: -1px;
   }
+  .field.blank.hidden-blank { background: var(--surface); border-color: transparent; }
 
   .field-label {
-    font-family: var(--mono);
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 9px;
     color: var(--text-dimmer);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     margin-bottom: 3px;
   }
+  .field.blank .field-label { color: var(--accent); opacity: 0.6; }
+  .field.blank.hidden-blank .field-label { color: var(--text-dimmer); opacity: 1; }
 
-  .field-value {
-    font-size: 12px;
-    color: var(--text);
-    word-break: break-all;
-  }
-
-  .field.blank .field-value {
-    color: var(--text-dimmer);
-    font-style: italic;
-    font-size: 11px;
-  }
-
-  .field.blank .field-label {
-    color: var(--accent);
-    opacity: 0.6;
-  }
+  .field-value { font-size: 12px; color: var(--text); word-break: break-all; }
+  .field.blank .field-value { color: var(--text-dimmer); font-style: italic; font-size: 11px; }
 
   .sources-toggle {
-    font-family: var(--mono);
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
     color: var(--text-dim);
     background: none;
@@ -257,18 +414,13 @@
     align-items: center;
     gap: 6px;
   }
-
-  .sources-toggle:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
+  .sources-toggle:hover { border-color: var(--accent); color: var(--accent); }
 
   .sources-list {
     margin-top: 10px;
     border: 1px solid var(--border);
     background: var(--surface);
   }
-
   .source-row {
     display: flex;
     gap: 12px;
@@ -277,11 +429,9 @@
     font-size: 12px;
     align-items: baseline;
   }
-
   .source-row:last-child { border-bottom: none; }
-
   .source-type {
-    font-family: var(--mono);
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 9px;
     color: var(--accent);
     letter-spacing: 0.08em;
@@ -289,116 +439,47 @@
     white-space: nowrap;
     min-width: 50px;
   }
-
-  .source-value {
-    color: var(--text-dim);
-    word-break: break-all;
-  }
-
-  .source-value a {
-    color: var(--accent);
-    text-decoration: none;
-  }
-
+  .source-value { color: var(--text-dim); word-break: break-all; }
+  .source-value a { color: var(--accent); text-decoration: none; }
   .source-value a:hover { text-decoration: underline; }
 
+  /* ── Load more / spinner ──────────────────────────────────────── */
   #load-more {
     margin: 24px auto 0;
     display: block;
     background: none;
     border: 1px solid var(--border);
     color: var(--text-dim);
-    font-family: var(--mono);
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
     padding: 10px 32px;
     cursor: pointer;
     letter-spacing: 0.08em;
     transition: all 0.15s;
   }
-
-  #load-more:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
+  #load-more:hover { border-color: var(--accent); color: var(--accent); }
 
   .spinner {
     display: inline-block;
-    width: 10px;
-    height: 10px;
+    width: 10px; height: 10px;
     border: 1px solid var(--text-dimmer);
     border-top-color: var(--accent);
     border-radius: 50%;
     animation: spin 0.6s linear infinite;
     margin-right: 6px;
   }
-
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .adult-toggle {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dimmer);
-    white-space: nowrap;
-    cursor: pointer;
-    user-select: none;
-    transition: color 0.15s;
+  /* ── Mobile ───────────────────────────────────────────────────── */
+  @media (max-width: 600px) {
+    header { padding: 12px 16px; gap: 10px; }
+    #about { padding: 10px 16px; }
+    #filter-bar { padding: 8px 16px; }
+    #filter-panel { padding: 14px 16px; }
+    main { padding: 0 16px 48px; }
+    .fields-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    .header-meta { display: none; }
   }
-
-  .adult-toggle:hover { color: var(--text-dim); }
-
-  .adult-toggle input[type=checkbox] {
-    accent-color: var(--accent);
-    cursor: pointer;
-  }
-
-  .adult-toggle.has-adult { color: var(--text-dim); }
-
-  #adult-notice {
-    display: none;
-    padding: 10px 0 0;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dimmer);
-  }
-
-  #about {
-    border-bottom: 1px solid var(--border);
-    padding: 12px 32px;
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 24px;
-    flex-wrap: wrap;
-    background: var(--surface);
-  }
-
-  #about p {
-    font-size: 12px;
-    color: var(--text-dim);
-    line-height: 1.6;
-  }
-
-  #about-links {
-    display: flex;
-    gap: 16px;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  #about-links a {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--accent);
-    text-decoration: none;
-    letter-spacing: 0.05em;
-    opacity: 0.8;
-    transition: opacity 0.15s;
-  }
-
-  #about-links a:hover { opacity: 1; }
 </style>
 </head>
 <body>
@@ -407,21 +488,80 @@
   <div class="logo">Video8 <span>/ Database</span></div>
   <div class="search-wrap">
     <span class="search-icon">⌕</span>
-    <input type="text" id="search" placeholder="Search by title, catalog number, publisher…" autocomplete="off" spellcheck="false">
+    <input type="text" id="search" placeholder="Search title, catalog number, publisher…" autocomplete="off" spellcheck="false">
   </div>
   <div class="header-meta" id="db-meta">—</div>
-  <label class="adult-toggle" id="adult-label" title="Adult titles are hidden by default">
-    <input type="checkbox" id="show-adult"> Include Adult
-  </label>
+  <button id="theme-toggle" title="Toggle light/dark mode">☀</button>
 </header>
 
 <div id="about">
-  <p>A collaborative database documenting releases on Sony's Video8 format. Enter a search term to check existing records before contributing. Incomplete fields will be highlighted in yellow. For more information click on one of these links:</p>
+  <p>A collaborative open database documenting commercial releases on the Video8 format (Sony, 1985). Japan produced the majority of known releases. Browse below to check existing records before contributing — incomplete records are highlighted in amber.</p>
   <div id="about-links">
     <a href="https://github.com/rikker/video8#readme" target="_blank" rel="noopener">README</a>
     <a href="https://github.com/rikker/video8/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">How to Contribute</a>
     <a href="https://github.com/rikker/video8" target="_blank" rel="noopener">GitHub</a>
     <a href="https://video8.fly.dev" target="_blank" rel="noopener">Full Database ↗</a>
+  </div>
+</div>
+
+<div id="filter-bar">
+  <button id="filter-toggle">⚙ Filters &amp; Sort</button>
+  <div id="active-tags"></div>
+</div>
+
+<div id="filter-panel">
+  <!-- Content type chips -->
+  <div class="filter-group">
+    <label>Content Type</label>
+    <div class="chip-row" id="ct-chips"></div>
+  </div>
+
+  <div class="filter-divider"></div>
+
+  <!-- Country -->
+  <div class="filter-group">
+    <label>Country</label>
+    <select class="filter-select" id="filter-country">
+      <option value="">All countries</option>
+    </select>
+  </div>
+
+  <!-- Publisher -->
+  <div class="filter-group">
+    <label>Publisher</label>
+    <select class="filter-select" id="filter-publisher">
+      <option value="">All publishers</option>
+    </select>
+  </div>
+
+  <div class="filter-divider"></div>
+
+  <!-- Sort -->
+  <div class="filter-group">
+    <label>Sort By</label>
+    <div class="sort-row">
+      <select class="filter-select" id="sort-by" style="max-width:160px">
+        <option value="t.title">Title</option>
+        <option value="r.release_date">Release Date</option>
+        <option value="r.catalog_number">Catalog No.</option>
+        <option value="p.name">Publisher</option>
+        <option value="t.year">Year</option>
+        <option value="r.country">Country</option>
+      </select>
+      <button class="sort-dir" id="sort-dir" title="Toggle sort direction">↑ ASC</button>
+    </div>
+  </div>
+
+  <div class="filter-divider"></div>
+
+  <!-- Options -->
+  <div class="filter-group">
+    <label>Options</label>
+    <div class="option-row">
+      <label class="option-item">
+        <input type="checkbox" id="highlight-blanks" checked> Highlight empty fields
+      </label>
+    </div>
   </div>
 </div>
 
@@ -431,7 +571,7 @@
     Enter a search term to find releases
   </div>
   <div id="results-meta" style="display:none"></div>
-  <div id="adult-notice">⚠ Adult titles hidden — check "Include Adult" to show them</div>
+  <div id="adult-notice"></div>
   <div id="results"></div>
   <button id="load-more" style="display:none">Load more</button>
 </main>
@@ -440,65 +580,204 @@
 const DATASETTE = 'https://video8.fly.dev';
 const PAGE_SIZE = 25;
 
-let currentQuery = '';
+// ── State ──────────────────────────────────────────────────────────────────
+let currentQuery  = '';
 let currentOffset = 0;
-let totalCount = 0;
-let searchTimer = null;
-let sourcesCache = {};
-let showAdult = false;
+let totalCount    = 0;
+let searchTimer   = null;
+let sourcesCache  = {};
 
-// Fields to display in the grid (label, key)
+let selectedTypes   = new Set(); // empty = all (except adult)
+let filterCountry   = '';
+let filterPublisher = '';
+let sortBy          = 't.title';
+let sortDir         = 'ASC';
+let highlightBlanks = true;
+
+// Adult is excluded unless explicitly in selectedTypes
+function showAdult() { return selectedTypes.has('Adult'); }
+
+// ── Fields ─────────────────────────────────────────────────────────────────
 const FIELDS = [
-  ['Release ID',      'release_id',       true],
-  ['Publisher',       'publisher',        true],
-  ['Catalog No.',     'catalog_number',   true],
-  ['Release Date',    'release_date',     true],
-  ['Country',         'country',          true],
-  ['Encoding',        'encoding',         false],
-  ['Runtime (mins)',  'runtime_mins',     true],
-  ['List Price',      'list_price',       true],
-  ['UPC',             'upc',             true],
-  ['ISBN',            'isbn',            true],
-  ['Audio Format',    'audio_format',     true],
-  ['Audio Language',  'audio_language',   true],
-  ['Dubbed',          'audio_dubbed',     false],
-  ['Subtitles / CC',  'subtitle_language',true],
-  ['Release Title',   'title_release',    false],
-  ['Country Origin',  'country_origin',   false],
-  ['Notes',           'notes',            false],
+  ['Publisher',       'publisher',         true],
+  ['Catalog No.',     'catalog_number',    true],
+  ['Release Date',    'release_date',      true],
+  ['Country',         'country',           true],
+  ['Encoding',        'encoding',          false],
+  ['Runtime (mins)',  'runtime_mins',      true],
+  ['List Price',      'list_price',        true],
+  ['UPC',             'upc',               true],
+  ['ISBN',            'isbn',              true],
+  ['Audio Format',    'audio_format',      true],
+  ['Audio Language',  'audio_language',    true],
+  ['Dubbed',          'audio_dubbed',      false],
+  ['Subtitles / CC',  'subtitle_language', true],
+  ['Release Title',   'title_release',     false],
+  ['Country Origin',  'country_origin',    false],
+  ['Notes',           'notes',             false],
 ];
 
 const IMPORTANT_BLANK = new Set([
   'publisher','catalog_number','release_date','country',
-  'runtime_mins','list_price','upc','isbn',
-  'audio_format','audio_language','subtitle_language'
+  'runtime_mins','list_price','upc','isbn','audio_format',
+  'audio_language','subtitle_language'
 ]);
 
-async function fetchCount(q) {
-  const sql = buildSQL(q, 0, true);
-  const url = `${DATASETTE}/video8.json?sql=${encodeURIComponent(sql)}&_shape=array`;
-  const r = await fetch(url);
-  const d = await r.json();
-  return d[0]?.count || 0;
+const CONTENT_TYPES = ['Film','TV','Music','Video Magazine','Adult','Other'];
+
+// ── Theme ──────────────────────────────────────────────────────────────────
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('theme-toggle').textContent = t === 'dark' ? '☀' : '☾';
+  localStorage.setItem('v8theme', t);
 }
 
-async function fetchReleases(q, offset) {
-  const sql = buildSQL(q, offset, false);
-  const url = `${DATASETTE}/video8.json?sql=${encodeURIComponent(sql)}&_shape=array`;
-  const r = await fetch(url);
-  return await r.json();
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const cur = document.documentElement.getAttribute('data-theme');
+  applyTheme(cur === 'dark' ? 'light' : 'dark');
+});
+
+// Restore saved theme
+const savedTheme = localStorage.getItem('v8theme');
+if (savedTheme) applyTheme(savedTheme);
+
+// ── Highlight blanks toggle ────────────────────────────────────────────────
+document.getElementById('highlight-blanks').addEventListener('change', e => {
+  highlightBlanks = e.target.checked;
+  localStorage.setItem('v8highlights', highlightBlanks ? '1' : '0');
+  // Update existing cards without re-fetching
+  document.querySelectorAll('.field.blank').forEach(el => {
+    el.classList.toggle('hidden-blank', !highlightBlanks);
+  });
+});
+
+const savedHL = localStorage.getItem('v8highlights');
+if (savedHL === '0') {
+  highlightBlanks = false;
+  document.getElementById('highlight-blanks').checked = false;
 }
 
-async function fetchSources(releaseId) {
-  if (sourcesCache[releaseId]) return sourcesCache[releaseId];
-  const sql = `SELECT source_type, url, catalog_locator, notes FROM sources WHERE release_id = ${releaseId}`;
-  const url = `${DATASETTE}/video8.json?sql=${encodeURIComponent(sql)}&_shape=array`;
-  const r = await fetch(url);
-  const d = await r.json();
-  sourcesCache[releaseId] = d;
-  return d;
+// ── Filter panel toggle ────────────────────────────────────────────────────
+document.getElementById('filter-toggle').addEventListener('click', () => {
+  const panel = document.getElementById('filter-panel');
+  const btn   = document.getElementById('filter-toggle');
+  const open  = panel.classList.toggle('open');
+  btn.classList.toggle('active', open);
+  btn.textContent = open ? '✕ Close' : '⚙ Filters & Sort';
+});
+
+// ── Content type chips ─────────────────────────────────────────────────────
+function buildChips() {
+  const container = document.getElementById('ct-chips');
+  container.innerHTML = '';
+  CONTENT_TYPES.forEach(ct => {
+    const btn = document.createElement('button');
+    btn.className = 'chip' + (ct === 'Adult' ? ' adult-chip' : '');
+    btn.textContent = ct;
+    btn.dataset.ct = ct;
+    btn.addEventListener('click', () => {
+      if (selectedTypes.has(ct)) {
+        selectedTypes.delete(ct);
+        btn.classList.remove('selected');
+      } else {
+        selectedTypes.add(ct);
+        btn.classList.add('selected');
+      }
+      updateActiveTags();
+      triggerSearch();
+    });
+    container.appendChild(btn);
+  });
 }
 
+// ── Sort ───────────────────────────────────────────────────────────────────
+document.getElementById('sort-by').addEventListener('change', e => {
+  sortBy = e.target.value;
+  triggerSearch();
+});
+
+document.getElementById('sort-dir').addEventListener('click', () => {
+  sortDir = sortDir === 'ASC' ? 'DESC' : 'ASC';
+  const btn = document.getElementById('sort-dir');
+  btn.textContent = sortDir === 'ASC' ? '↑ ASC' : '↓ DESC';
+  btn.classList.toggle('asc', sortDir === 'ASC');
+  triggerSearch();
+});
+
+// ── Country / Publisher dropdowns ──────────────────────────────────────────
+async function loadFilterOptions() {
+  try {
+    const cSql = `SELECT DISTINCT country FROM releases WHERE country != '' ORDER BY country`;
+    const pSql = `SELECT name FROM publishers ORDER BY name`;
+    const [cRes, pRes] = await Promise.all([
+      fetch(`${DATASETTE}/video8.json?sql=${encodeURIComponent(cSql)}&_shape=array`).then(r=>r.json()),
+      fetch(`${DATASETTE}/video8.json?sql=${encodeURIComponent(pSql)}&_shape=array`).then(r=>r.json()),
+    ]);
+    const cSel = document.getElementById('filter-country');
+    cRes.forEach(r => {
+      const o = document.createElement('option');
+      o.value = o.textContent = r.country;
+      cSel.appendChild(o);
+    });
+    const pSel = document.getElementById('filter-publisher');
+    pRes.forEach(r => {
+      const o = document.createElement('option');
+      o.value = o.textContent = r.name;
+      pSel.appendChild(o);
+    });
+  } catch(e) {}
+}
+
+document.getElementById('filter-country').addEventListener('change', e => {
+  filterCountry = e.target.value;
+  updateActiveTags();
+  triggerSearch();
+});
+
+document.getElementById('filter-publisher').addEventListener('change', e => {
+  filterPublisher = e.target.value;
+  updateActiveTags();
+  triggerSearch();
+});
+
+// ── Active tags ────────────────────────────────────────────────────────────
+function updateActiveTags() {
+  const container = document.getElementById('active-tags');
+  container.innerHTML = '';
+
+  const addTag = (label, clearFn) => {
+    const tag = document.createElement('div');
+    tag.className = 'active-tag';
+    tag.innerHTML = `${esc(label)} <button title="Remove">✕</button>`;
+    tag.querySelector('button').addEventListener('click', clearFn);
+    container.appendChild(tag);
+  };
+
+  selectedTypes.forEach(ct => {
+    addTag(ct, () => {
+      selectedTypes.delete(ct);
+      document.querySelector(`.chip[data-ct="${ct}"]`)?.classList.remove('selected');
+      updateActiveTags();
+      triggerSearch();
+    });
+  });
+
+  if (filterCountry) addTag(`Country: ${filterCountry}`, () => {
+    filterCountry = '';
+    document.getElementById('filter-country').value = '';
+    updateActiveTags();
+    triggerSearch();
+  });
+
+  if (filterPublisher) addTag(`Publisher: ${filterPublisher}`, () => {
+    filterPublisher = '';
+    document.getElementById('filter-publisher').value = '';
+    updateActiveTags();
+    triggerSearch();
+  });
+}
+
+// ── SQL builder ────────────────────────────────────────────────────────────
 function buildSQL(q, offset, countOnly, adultOnly = false) {
   const select = countOnly
     ? `SELECT COUNT(*) as count`
@@ -516,37 +795,62 @@ function buildSQL(q, offset, countOnly, adultOnly = false) {
 
   if (q) {
     const safe = q.replace(/'/g, "''");
-    conditions.push(`(
-      t.title LIKE '%${safe}%' OR
-      t.title_ja LIKE '%${safe}%' OR
-      p.name LIKE '%${safe}%' OR
-      r.catalog_number LIKE '%${safe}%' OR
-      r.upc LIKE '%${safe}%' OR
-      r.notes LIKE '%${safe}%'
-    )`);
+    conditions.push(`(t.title LIKE '%${safe}%' OR t.title_ja LIKE '%${safe}%' OR p.name LIKE '%${safe}%' OR r.catalog_number LIKE '%${safe}%' OR r.upc LIKE '%${safe}%' OR r.notes LIKE '%${safe}%')`);
   }
 
   if (adultOnly) {
     conditions.push(`t.content_type = 'Adult'`);
-  } else if (!showAdult) {
+  } else if (selectedTypes.size > 0) {
+    const types = [...selectedTypes].map(t => `'${t.replace(/'/g,"''")}'`).join(',');
+    conditions.push(`t.content_type IN (${types})`);
+  } else {
     conditions.push(`t.content_type != 'Adult'`);
   }
 
+  if (filterCountry) {
+    const sc = filterCountry.replace(/'/g,"''");
+    conditions.push(`r.country = '${sc}'`);
+  }
+
+  if (filterPublisher) {
+    const sp = filterPublisher.replace(/'/g,"''");
+    conditions.push(`p.name = '${sp}'`);
+  }
+
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+  const order = `ORDER BY ${sortBy} ${sortDir}`;
   const limit = countOnly ? '' : `LIMIT ${PAGE_SIZE} OFFSET ${offset}`;
 
   return `${select}
     FROM releases r
     JOIN titles t ON r.title_id = t.id
     LEFT JOIN publishers p ON r.publisher_id = p.id
-    ${where}
-    ORDER BY t.title, r.release_date
-    ${limit}`;
+    ${where} ${order} ${limit}`;
 }
 
-function val(v) {
-  return v !== null && v !== undefined && v !== '' ? String(v) : '';
+// ── Fetch helpers ──────────────────────────────────────────────────────────
+async function fetchCount(q) {
+  const r = await fetch(`${DATASETTE}/video8.json?sql=${encodeURIComponent(buildSQL(q,0,true))}&_shape=array`);
+  const d = await r.json();
+  return d[0]?.count || 0;
 }
+
+async function fetchReleases(q, offset) {
+  const r = await fetch(`${DATASETTE}/video8.json?sql=${encodeURIComponent(buildSQL(q,offset,false))}&_shape=array`);
+  return r.json();
+}
+
+async function fetchSources(releaseId) {
+  if (sourcesCache[releaseId]) return sourcesCache[releaseId];
+  const sql = `SELECT source_type, url, catalog_locator, notes FROM sources WHERE release_id = ${releaseId}`;
+  const r = await fetch(`${DATASETTE}/video8.json?sql=${encodeURIComponent(sql)}&_shape=array`);
+  const d = await r.json();
+  sourcesCache[releaseId] = d;
+  return d;
+}
+
+// ── Render card ────────────────────────────────────────────────────────────
+function val(v) { return v !== null && v !== undefined && v !== '' ? String(v) : ''; }
 
 function renderCard(row) {
   const div = document.createElement('div');
@@ -558,45 +862,37 @@ function renderCard(row) {
   hdr.innerHTML = `
     <span class="result-title">${esc(row.title)}</span>
     ${row.title_ja ? `<span class="result-title-ja">${esc(row.title_ja)}</span>` : ''}
-    <span class="result-id">ID: ${row.release_id}</span>
-  `;
+    <span class="result-id">ID: ${row.release_id}</span>`;
   div.appendChild(hdr);
 
   // Tags
   const tags = document.createElement('div');
   tags.className = 'tags';
   if (row.content_type) tags.innerHTML += `<span class="tag accent">${esc(row.content_type)}</span>`;
-  if (row.year) tags.innerHTML += `<span class="tag">${esc(row.year)}</span>`;
+  if (row.year)         tags.innerHTML += `<span class="tag">${esc(row.year)}</span>`;
   if (row.country_origin) tags.innerHTML += `<span class="tag">Origin: ${esc(row.country_origin)}</span>`;
-  if (row.promo === 'Y') tags.innerHTML += `<span class="tag promo">PROMO</span>`;
+  if (row.promo === 'Y')  tags.innerHTML += `<span class="tag promo">PROMO</span>`;
   div.appendChild(tags);
 
   // Fields grid
   const grid = document.createElement('div');
   grid.className = 'fields-grid';
-
   for (const [label, key, showBlank] of FIELDS) {
-    if (key === 'release_id') continue; // shown in header
     const v = val(row[key]);
     const isBlank = !v;
     if (isBlank && !showBlank && !IMPORTANT_BLANK.has(key)) continue;
-
     const field = document.createElement('div');
-    field.className = 'field' + (isBlank ? ' blank' : '');
-    field.innerHTML = `
-      <div class="field-label">${label}</div>
-      <div class="field-value">${isBlank ? '—' : esc(v)}</div>
-    `;
+    field.className = 'field' + (isBlank ? ' blank' + (!highlightBlanks ? ' hidden-blank' : '') : '');
+    field.innerHTML = `<div class="field-label">${label}</div><div class="field-value">${isBlank ? '—' : esc(v)}</div>`;
     grid.appendChild(field);
   }
   div.appendChild(grid);
 
-  // Sources toggle
+  // Sources
+  const srcCount = row.source_count || 0;
   const srcBtn = document.createElement('button');
   srcBtn.className = 'sources-toggle';
-  const srcCount = row.source_count || 0;
   srcBtn.innerHTML = `<span>▶</span> Sources (${srcCount})`;
-  srcBtn.dataset.id = row.release_id;
   srcBtn.dataset.open = 'false';
   if (srcCount === 0) srcBtn.style.opacity = '0.4';
 
@@ -619,20 +915,15 @@ function renderCard(row) {
         const sources = await fetchSources(row.release_id);
         srcList.dataset.loaded = '1';
         if (!sources.length) {
-          srcList.innerHTML = '<div class="source-row"><span class="source-value" style="font-style:italic;color:var(--text-dimmer)">No sources recorded</span></div>';
+          srcList.innerHTML = `<div class="source-row"><span class="source-value" style="font-style:italic;color:var(--text-dimmer)">No sources recorded</span></div>`;
         } else {
           srcList.innerHTML = sources.map(s => {
-            let v = '';
-            if (s.url) v = `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a>`;
-            else if (s.catalog_locator) v = esc(s.catalog_locator);
-            else if (s.notes) v = esc(s.notes);
-            return `<div class="source-row">
-              <span class="source-type">${esc(s.source_type || '—')}</span>
-              <span class="source-value">${v}</span>
-            </div>`;
+            let v = s.url
+              ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a>`
+              : s.catalog_locator ? esc(s.catalog_locator) : esc(s.notes || '');
+            return `<div class="source-row"><span class="source-type">${esc(s.source_type||'—')}</span><span class="source-value">${v}</span></div>`;
           }).join('');
         }
-
       }
     }
   });
@@ -643,18 +934,16 @@ function renderCard(row) {
 }
 
 function esc(s) {
-  return String(s)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// ── Search ─────────────────────────────────────────────────────────────────
 async function search(q, append = false) {
-  const resultsEl = document.getElementById('results');
-  const metaEl = document.getElementById('results-meta');
-  const stateEl = document.getElementById('state');
+  const resultsEl  = document.getElementById('results');
+  const metaEl     = document.getElementById('results-meta');
+  const stateEl    = document.getElementById('state');
   const loadMoreEl = document.getElementById('load-more');
+  const noticeEl   = document.getElementById('adult-notice');
 
   if (!append) {
     currentOffset = 0;
@@ -663,6 +952,7 @@ async function search(q, append = false) {
     stateEl.style.display = 'block';
     metaEl.style.display = 'none';
     loadMoreEl.style.display = 'none';
+    noticeEl.style.display = 'none';
   } else {
     loadMoreEl.innerHTML = '<span class="spinner"></span> Loading…';
   }
@@ -679,25 +969,17 @@ async function search(q, append = false) {
     metaEl.style.display = 'block';
     metaEl.textContent = `${totalCount.toLocaleString()} result${totalCount !== 1 ? 's' : ''}${q ? ` for "${q}"` : ''}`;
 
-    // Check if there are hidden adult results
-    if (!append && !showAdult && q) {
+    // Check for hidden adult results
+    if (!append && !showAdult()) {
       const adultSql = buildSQL(q, 0, true, true);
-      const adultUrl = `${DATASETTE}/video8.json?sql=${encodeURIComponent(adultSql)}&_shape=array`;
-      fetch(adultUrl).then(r => r.json()).then(d => {
-        const adultCount = d[0]?.count || 0;
-        const noticeEl = document.getElementById('adult-notice');
-        const labelEl = document.getElementById('adult-label');
-        if (adultCount > 0) {
-          noticeEl.style.display = 'block';
-          noticeEl.textContent = `⚠ ${adultCount} Adult title${adultCount !== 1 ? 's' : ''} hidden — check "Include Adult" to show ${adultCount !== 1 ? 'them' : 'it'}`;
-          labelEl.classList.add('has-adult');
-        } else {
-          noticeEl.style.display = 'none';
-          labelEl.classList.remove('has-adult');
-        }
-      });
-    } else if (!append) {
-      document.getElementById('adult-notice').style.display = 'none';
+      fetch(`${DATASETTE}/video8.json?sql=${encodeURIComponent(adultSql)}&_shape=array`)
+        .then(r => r.json()).then(d => {
+          const n = d[0]?.count || 0;
+          if (n > 0) {
+            noticeEl.style.display = 'block';
+            noticeEl.textContent = `⚠ ${n} Adult title${n !== 1 ? 's' : ''} hidden — select "Adult" in Filters to include ${n !== 1 ? 'them' : 'it'}`;
+          }
+        });
     }
 
     if (!append && rows.length === 0) {
@@ -716,52 +998,52 @@ async function search(q, append = false) {
     } else {
       loadMoreEl.style.display = 'none';
     }
-  } catch (e) {
+  } catch(e) {
     stateEl.innerHTML = '<span class="state-large">✕</span>Error connecting to database';
     stateEl.style.display = 'block';
     console.error(e);
   }
 }
 
-// Load DB stats on startup
+function triggerSearch() {
+  sourcesCache = {};
+  if (currentQuery || selectedTypes.size || filterCountry || filterPublisher) {
+    search(currentQuery);
+  }
+}
+
+// ── DB stats ───────────────────────────────────────────────────────────────
 async function loadMeta() {
   try {
-    const sql = `SELECT
-      (SELECT COUNT(*) FROM releases) as releases,
-      (SELECT COUNT(*) FROM titles) as titles`;
-    const url = `${DATASETTE}/video8.json?sql=${encodeURIComponent(sql)}&_shape=array`;
-    const r = await fetch(url);
+    const sql = `SELECT (SELECT COUNT(*) FROM releases) as releases, (SELECT COUNT(*) FROM titles) as titles`;
+    const r = await fetch(`${DATASETTE}/video8.json?sql=${encodeURIComponent(sql)}&_shape=array`);
     const d = await r.json();
     document.getElementById('db-meta').textContent =
       `${d[0].releases.toLocaleString()} releases · ${d[0].titles.toLocaleString()} titles`;
   } catch(e) {}
 }
 
+// ── Events ─────────────────────────────────────────────────────────────────
 document.getElementById('search').addEventListener('input', e => {
   clearTimeout(searchTimer);
-  const q = e.target.value.trim();
-  currentQuery = q;
-  if (!q) {
+  currentQuery = e.target.value.trim();
+  if (!currentQuery && !selectedTypes.size && !filterCountry && !filterPublisher) {
     document.getElementById('state').innerHTML = '<span class="state-large">⏚</span>Enter a search term to find releases';
     document.getElementById('state').style.display = 'block';
     document.getElementById('results').innerHTML = '';
     document.getElementById('results-meta').style.display = 'none';
     document.getElementById('load-more').style.display = 'none';
+    document.getElementById('adult-notice').style.display = 'none';
     return;
   }
-  searchTimer = setTimeout(() => search(q), 350);
+  searchTimer = setTimeout(() => search(currentQuery), 350);
 });
 
-document.getElementById('show-adult').addEventListener('change', e => {
-  showAdult = e.target.checked;
-  document.getElementById('adult-notice').style.display = 'none';
-  if (currentQuery) search(currentQuery);
-});
+document.getElementById('load-more').addEventListener('click', () => search(currentQuery, true));
 
-document.getElementById('load-more').addEventListener('click', () => {
-  search(currentQuery, true);
-});
-
+// ── Init ───────────────────────────────────────────────────────────────────
+buildChips();
+loadFilterOptions();
 loadMeta();
 </script>
 </body>
