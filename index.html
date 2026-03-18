@@ -569,6 +569,8 @@
   <div id="state">
     <span class="state-large">⏚</span>
     Enter a search term to find releases
+    <br><br>
+    <button id="browse-all" style="font-family:var(--mono,monospace);font-size:11px;background:none;border:1px solid var(--border);color:var(--text-dim);padding:8px 20px;cursor:pointer;letter-spacing:0.08em;margin-top:8px;" onclick="browseAll()">Browse all releases</button>
   </div>
   <div id="results-meta" style="display:none"></div>
   <div id="adult-notice"></div>
@@ -821,6 +823,18 @@ function buildSQL(q, offset, countOnly, adultOnly = false) {
   const order = `ORDER BY ${sortBy} ${sortDir}`;
   const limit = countOnly ? '' : `LIMIT ${PAGE_SIZE} OFFSET ${offset}`;
 
+  if (countOnly) {
+    return `SELECT COUNT(*) as count FROM (
+      SELECT r.id
+      FROM releases r
+      JOIN titles t ON r.title_id = t.id
+      LEFT JOIN release_publishers rp ON rp.release_id = r.id
+      LEFT JOIN publishers p ON p.id = rp.publisher_id
+      ${where}
+      GROUP BY r.id
+    )`;
+  }
+
   return `${select}
     FROM releases r
     JOIN titles t ON r.title_id = t.id
@@ -1010,9 +1024,7 @@ async function search(q, append = false) {
 
 function triggerSearch() {
   sourcesCache = {};
-  if (currentQuery || selectedTypes.size || filterCountry || filterPublisher) {
-    search(currentQuery);
-  }
+  search(currentQuery);
 }
 
 // ── DB stats ───────────────────────────────────────────────────────────────
@@ -1027,11 +1039,17 @@ async function loadMeta() {
 }
 
 // ── Events ─────────────────────────────────────────────────────────────────
+function browseAll() {
+  currentQuery = '';
+  document.getElementById('search').value = '';
+  search('');
+}
+
 document.getElementById('search').addEventListener('input', e => {
   clearTimeout(searchTimer);
   currentQuery = e.target.value.trim();
   if (!currentQuery && !selectedTypes.size && !filterCountry && !filterPublisher) {
-    document.getElementById('state').innerHTML = '<span class="state-large">⏚</span>Enter a search term to find releases';
+    document.getElementById('state').innerHTML = '<span class="state-large">⏚</span>Enter a search term to find releases<br><br><button id="browse-all" style="font-family:var(--mono,monospace);font-size:11px;background:none;border:1px solid var(--border);color:var(--text-dim);padding:8px 20px;cursor:pointer;letter-spacing:0.08em;margin-top:8px;" onclick="browseAll()">Browse all releases</button>';
     document.getElementById('state').style.display = 'block';
     document.getElementById('results').innerHTML = '';
     document.getElementById('results-meta').style.display = 'none';
