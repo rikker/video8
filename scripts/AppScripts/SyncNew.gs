@@ -27,7 +27,7 @@ function syncToGitHub() {
   const releaseById = {};
   releases.rows.forEach(r => { releaseById[r.id] = r; });
 
-  const titleKey = r => `${(r.title||'').toLowerCase().trim()}||${(r.title_ja||'').toLowerCase().trim()}||${(r.year||'').trim()}||${(r.content_type||'').trim()}`;
+  const titleKey = r => `${(r.title_original||'').toLowerCase().trim()}||${(r.title_ja||'').toLowerCase().trim()}||${(r.year||'').trim()}||${(r.content_type||'').trim()}`;
   const titleByKey = {};
   titles.rows.forEach(t => { titleByKey[titleKey(t)] = t; });
 
@@ -67,7 +67,7 @@ function syncToGitHub() {
       return;
     }
     const existingTitle = titles.rows.find(t => t.id === existing.title_id);
-    if (existingTitle && titleVal && existingTitle.title.toLowerCase().trim() !== titleVal.toLowerCase().trim()) {
+    if (existingTitle && titleVal && (existingTitle.title_original||'').toLowerCase().trim() !== titleVal.toLowerCase().trim()) {
       corrFlagged.push({ rowNum, row, headers: corrHeaders, reason: `Title mismatch: sheet says "${titleVal}", database has "${existingTitle.title}"` });
       return;
     }
@@ -97,7 +97,7 @@ function syncToGitHub() {
       newFlagged.push({ rowNum, row, headers: newHeaders, reason: 'Missing title' });
       return;
     }
-    const existingTitle = titles.rows.find(t => t.title.toLowerCase().trim() === titleVal.toLowerCase().trim());
+    const existingTitle = titles.rows.find(t => (t.title_original||'').toLowerCase().trim() === titleVal.toLowerCase().trim());
     if (existingTitle && catNum) {
       const dupKey = `${existingTitle.id}||${catNum.toLowerCase().trim()}`;
       if (releaseByKey[dupKey]) {
@@ -201,7 +201,7 @@ function syncToGitHub() {
       titleId = titleByKey[tKey].id;
     } else {
       titleId = String(Math.max(...titles.rows.map(t => parseInt(t.id) || 0)) + 1);
-      const newTitle = { id: titleId, title: titleVal, title_ja: titleJaVal, year: yearVal, content_type: ctVal, country_origin: coVal };
+      const newTitle = { id: titleId, title_original: titleVal, title_original_lang: 'en', title_en: '', title_ja: titleJaVal, year: yearVal, content_type: ctVal, country_origin: coVal };
       titles.rows.push(newTitle);
       titleByKey[tKey] = newTitle;
     }

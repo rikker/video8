@@ -51,12 +51,16 @@ for r in publishers:
     if r.get('parent_id') and r['parent_id'] not in pub_ids:
         errors.append(f"publishers id={r['id']}: parent_id={r['parent_id']} not found")
 
+VALID_LANGS = {'en', 'ja', 'zh', 'de', 'fr', 'es', 'no', 'it', 'nl', 'fi', 'pl', 'pt', ''}
+
 print("Validating titles...")
 for r in titles:
-    if not r.get('title', '').strip():
-        errors.append(f"titles id={r['id']}: missing title")
+    if not r.get('title_original', '').strip():
+        errors.append(f"titles id={r['id']}: missing title_original")
     if r.get('content_type') and r['content_type'] not in VALID_CONTENT_TYPES:
-        warnings.append(f"titles id={r['id']} ({r.get('title','')}): unexpected content_type '{r['content_type']}'")
+        warnings.append(f"titles id={r['id']} ({r.get('title_original','')}): unexpected content_type '{r['content_type']}'")
+    if r.get('title_original_lang') and r['title_original_lang'] not in VALID_LANGS:
+        warnings.append(f"titles id={r['id']}: unexpected title_original_lang '{r['title_original_lang']}'")
 
 print("Validating releases...")
 for r in releases:
@@ -70,6 +74,8 @@ for r in releases:
         warnings.append(f"releases id={r['id']}: unexpected promo value '{r['promo']}' (expected Y or blank)")
     if r.get('audio_dubbed') and r['audio_dubbed'] not in VALID_DUBBED:
         warnings.append(f"releases id={r['id']}: unexpected audio_dubbed value '{r['audio_dubbed']}' (expected Y or blank)")
+    if r.get('title_release_lang') and r['title_release_lang'] not in VALID_LANGS:
+        warnings.append(f"releases id={r['id']}: unexpected title_release_lang '{r['title_release_lang']}'")
 
 print("Validating release_publishers...")
 for r in release_publishers:

@@ -18,6 +18,7 @@ databases:
           id: ID
           title_id: Title
           title_release: Release Title
+          title_release_lang: Release Title Language
           catalog_number: Catalog No.
           release_date: Release Date
           country: Country
@@ -49,11 +50,13 @@ databases:
           publisher_id: Publisher
 
       titles:
-        label_column: title
+        label_column: title_original
         searchmode: fulltext
         columns:
           id: ID
-          title: Title
+          title_original: Original Title
+          title_original_lang: Original Language
+          title_en: English Title
           title_ja: Japanese Title
           year: Year
           content_type: Content Type
@@ -61,6 +64,7 @@ databases:
         facets:
           - content_type
           - country_origin
+          - title_original_lang
           - year
 
       publishers:

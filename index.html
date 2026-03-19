@@ -511,6 +511,13 @@
     flex-wrap: wrap;
   }
   .result-title { font-size: var(--fs-title); font-weight: 500; color: var(--text); }
+  .result-title-release {
+    font-size: calc(var(--fs-title) * 0.75);
+    font-weight: 300;
+    color: var(--text-dim);
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.02em;
+  }
   .result-title-ja { font-size: 14px; color: var(--text-dim); }
   .result-id {
     font-family: 'IBM Plex Mono', monospace;
@@ -808,22 +815,25 @@ function showAdult() { return selectedTypes.has('Adult'); }
 
 // ── Fields ─────────────────────────────────────────────────────────────────
 const FIELDS = [
-  ['Publisher',       'publisher',         true],
-  ['Catalog No.',     'catalog_number',    true],
-  ['Release Date',    'release_date',      true],
-  ['Country',         'country',           true],
-  ['Encoding',        'encoding',          false],
-  ['Runtime (mins)',  'runtime_mins',      true],
-  ['List Price',      'list_price',        true],
-  ['UPC',             'upc',               true],
-  ['ISBN',            'isbn',              true],
-  ['Audio Format',    'audio_format',      true],
-  ['Audio Language',  'audio_language',    true],
-  ['Dubbed',          'audio_dubbed',      false],
-  ['Subtitles / CC',  'subtitle_language', true],
-  ['Release Title',   'title_release',     false],
-  ['Country Origin',  'country_origin',    false],
-  ['Notes',           'notes',             false],
+  ['Publisher',       'publisher',          true],
+  ['Catalog No.',     'catalog_number',     true],
+  ['Release Date',    'release_date',       true],
+  ['Country',         'country',            true],
+  ['Encoding',        'encoding',           false],
+  ['Runtime (mins)',  'runtime_mins',       true],
+  ['List Price',      'list_price',         true],
+  ['UPC',             'upc',                true],
+  ['ISBN',            'isbn',               true],
+  ['Audio Format',    'audio_format',       true],
+  ['Audio Language',  'audio_language',     true],
+  ['Dubbed',          'audio_dubbed',       false],
+  ['Subtitles / CC',  'subtitle_language',  true],
+  ['Release Title',   'title_release',      false],
+  ['Original Title',  'title_original',     false],
+  ['English Title',   'title_en',           false],
+  ['Japanese Title',  'title_ja',           false],
+  ['Country Origin',  'country_origin',     false],
+  ['Notes',           'notes',              false],
 ];
 
 const IMPORTANT_BLANK = new Set([
@@ -1152,9 +1162,17 @@ function buildSQL(q, offset, countOnly, adultOnly = false) {
     ? `SELECT COUNT(DISTINCT r.id) as count`
     : `SELECT
         r.id as release_id,
-        t.title, t.title_ja, t.year, t.content_type, t.country_origin,
+        t.title_original, t.title_original_lang, t.title_en, t.title_ja,
+        t.year, t.content_type, t.country_origin,
+        COALESCE(
+          t.title_en,
+          CASE WHEN t.title_original_lang = 'en' THEN t.title_original END,
+          t.title_ja,
+          t.title_original
+        ) as title_display,
         GROUP_CONCAT(p.name, ' / ') as publisher,
-        r.title_release, r.catalog_number, r.release_date, r.country,
+        r.title_release, r.title_release_lang,
+        r.catalog_number, r.release_date, r.country,
         r.encoding, r.runtime_mins, r.list_price, r.upc, r.isbn,
         r.audio_format, r.audio_language, r.audio_dubbed, r.subtitle_language,
         r.promo, r.notes,
@@ -1164,7 +1182,7 @@ function buildSQL(q, offset, countOnly, adultOnly = false) {
 
   if (q) {
     const safe = q.replace(/'/g, "''");
-    conditions.push(`(t.title LIKE '%${safe}%' OR t.title_ja LIKE '%${safe}%' OR p.name LIKE '%${safe}%' OR r.catalog_number LIKE '%${safe}%' OR r.upc LIKE '%${safe}%' OR r.notes LIKE '%${safe}%')`);
+    conditions.push(`(t.title_original LIKE '%${safe}%' OR t.title_en LIKE '%${safe}%' OR t.title_ja LIKE '%${safe}%' OR p.name LIKE '%${safe}%' OR r.catalog_number LIKE '%${safe}%' OR r.upc LIKE '%${safe}%' OR r.notes LIKE '%${safe}%')`);
   }
 
   if (adultOnly) {
@@ -1187,7 +1205,7 @@ function buildSQL(q, offset, countOnly, adultOnly = false) {
   }
 
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
-  const order = `ORDER BY ${sortBy} ${sortDir}`;
+  const order = `ORDER BY CASE WHEN ${sortBy} = 't.title' THEN title_display ELSE ${sortBy} END ${sortDir}`;
   const limit = countOnly ? '' : `LIMIT ${PAGE_SIZE} OFFSET ${offset}`;
 
   if (countOnly) {
@@ -1243,9 +1261,15 @@ function renderCard(row) {
   // Header
   const hdr = document.createElement('div');
   hdr.className = 'result-header';
+  const dispTitle = row.title_display || row.title_original;
+  let secondaryTitle = '';
+  if (row.title_ja && row.title_ja !== dispTitle) secondaryTitle = row.title_ja;
+  else if (row.title_original && row.title_original !== dispTitle) secondaryTitle = row.title_original;
+  const relTitle = row.title_release
+    ? ` <span class="result-title-release">[${esc(row.title_release)}]</span>` : '';
   hdr.innerHTML = `
-    <span class="result-title">${esc(row.title)}</span>
-    ${row.title_ja ? `<span class="result-title-ja">${esc(row.title_ja)}</span>` : ''}
+    <span class="result-title">${esc(dispTitle)}${relTitle}</span>
+    ${secondaryTitle ? `<span class="result-title-ja">${esc(secondaryTitle)}</span>` : ''}
     <span class="result-id">ID: ${row.release_id}</span>`;
   div.appendChild(hdr);
 
@@ -1255,6 +1279,8 @@ function renderCard(row) {
   if (row.content_type) tags.innerHTML += `<span class="tag accent">${esc(row.content_type)}</span>`;
   if (row.year)         tags.innerHTML += `<span class="tag">${esc(row.year)}</span>`;
   if (row.country_origin) tags.innerHTML += `<span class="tag">Origin: ${esc(row.country_origin)}</span>`;
+  if (row.title_original_lang && row.title_original_lang !== 'en')
+    tags.innerHTML += `<span class="tag">Lang: ${esc(row.title_original_lang.toUpperCase())}</span>`;
   if (row.promo === 'Y')  tags.innerHTML += `<span class="tag promo">PROMO</span>`;
   div.appendChild(tags);
 

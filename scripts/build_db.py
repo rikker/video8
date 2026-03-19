@@ -26,7 +26,9 @@ TABLES = {
     'titles': '''
         CREATE TABLE titles (
             id INTEGER PRIMARY KEY,
-            title TEXT NOT NULL,
+            title_original TEXT NOT NULL,
+            title_original_lang TEXT,
+            title_en TEXT,
             title_ja TEXT,
             year INTEGER,
             content_type TEXT,
@@ -38,6 +40,7 @@ TABLES = {
             id INTEGER PRIMARY KEY,
             title_id INTEGER REFERENCES titles(id),
             title_release TEXT,
+            title_release_lang TEXT,
             catalog_number TEXT,
             release_date TEXT,
             country TEXT,
