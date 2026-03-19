@@ -1164,12 +1164,7 @@ function buildSQL(q, offset, countOnly, adultOnly = false) {
         r.id as release_id,
         t.title_original, t.title_original_lang, t.title_en, t.title_ja,
         t.year, t.content_type, t.country_origin,
-        COALESCE(
-          t.title_en,
-          CASE WHEN t.title_original_lang = 'en' THEN t.title_original END,
-          t.title_ja,
-          t.title_original
-        ) as title_display,
+        COALESCE(t.title_en, t.title_original, t.title_ja) as title_display,
         GROUP_CONCAT(p.name, ' / ') as publisher,
         r.title_release, r.title_release_lang,
         r.catalog_number, r.release_date, r.country,
@@ -1205,7 +1200,7 @@ function buildSQL(q, offset, countOnly, adultOnly = false) {
   }
 
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
-  const order = `ORDER BY CASE WHEN ${sortBy} = 't.title' THEN title_display ELSE ${sortBy} END ${sortDir}`;
+  const order = `ORDER BY ${sortBy} ${sortDir}`;
   const limit = countOnly ? '' : `LIMIT ${PAGE_SIZE} OFFSET ${offset}`;
 
   if (countOnly) {

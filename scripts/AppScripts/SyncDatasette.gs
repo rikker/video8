@@ -2,10 +2,8 @@ const DATASETTE = 'https://video8.fly.dev';
 const SHEET_ID = '1vnKsTamAUo6x9F3PxMBZFwKJvnt-0DOHNGhlW-LoVA0';
 
 const BROWSE_COLS = [
-  'release_id','title_display','title_original','title_original_lang','title_en','title_ja',
-  'year','content_type','country_origin',
-  'publisher','title_release','title_release_lang',
-  'catalog_number','release_date','country',
+  'release_id','title','title_ja','year','content_type','country_origin',
+  'publishers','title_release','catalog_number','release_date','country',
   'encoding','runtime_mins','list_price','upc','isbn',
   'audio_format','audio_language','audio_dubbed','subtitle_language','promo','notes'
 ];
@@ -29,12 +27,9 @@ function syncBrowse() {
   while (true) {
     const sql = `SELECT
       r.id as release_id,
-      COALESCE(t.title_en, CASE WHEN t.title_original_lang = 'en' THEN t.title_original END, t.title_ja, t.title_original) as title_display,
-      t.title_original, t.title_original_lang, t.title_en, t.title_ja,
-      t.year, t.content_type, t.country_origin,
-      GROUP_CONCAT(p.name, ' / ') as publisher,
-      r.title_release, r.title_release_lang,
-      r.catalog_number, r.release_date, r.country,
+      t.title, t.title_ja, t.year, t.content_type, t.country_origin,
+      GROUP_CONCAT(p.name, ' / ') as publishers,
+      r.title_release, r.catalog_number, r.release_date, r.country,
       r.encoding, r.runtime_mins, r.list_price, r.upc, r.isbn,
       r.audio_format, r.audio_language, r.audio_dubbed, r.subtitle_language,
       r.promo, r.notes
@@ -43,7 +38,7 @@ function syncBrowse() {
     LEFT JOIN release_publishers rp ON rp.release_id = r.id
     LEFT JOIN publishers p ON p.id = rp.publisher_id
     GROUP BY r.id
-    ORDER BY title_display, r.release_date
+    ORDER BY t.title, r.release_date
     LIMIT ${PAGE} OFFSET ${offset}`;
 
     const url = `${DATASETTE}/video8.json?sql=${encodeURIComponent(sql)}&_shape=array`;
@@ -76,6 +71,10 @@ function syncBrowse() {
     offset += PAGE;
   }
 
+  // Always rewrite header row to canonical BROWSE_COLS order
+  sheet.getRange(1, 1, 1, BROWSE_COLS.length).setValues([BROWSE_COLS]);
+
+  // Clear existing data and rewrite
   const lastRow = sheet.getLastRow();
   if (lastRow > 1) sheet.getRange(2, 1, lastRow - 1, BROWSE_COLS.length).clearContent();
 
