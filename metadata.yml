@@ -21,7 +21,7 @@ databases:
           title_release_lang: Release Title Language
           catalog_number: Catalog No.
           release_date: Release Date
-          country: Country
+          country_release: Country of Release
           encoding: Encoding
           runtime_mins: Runtime (mins)
           list_price: List Price
@@ -34,7 +34,7 @@ databases:
           promo: Promo
           notes: Notes
         facets:
-          - country
+          - country_release
           - encoding
           - audio_format
           - audio_language
@@ -58,14 +58,14 @@ databases:
           title_original_lang: Original Language
           title_en: English Title
           title_ja: Japanese Title
-          year: Year
+          year_made: Year Made
           content_type: Content Type
           country_origin: Country of Origin
         facets:
           - content_type
           - country_origin
           - title_original_lang
-          - year
+          - year_made
 
       publishers:
         label_column: name

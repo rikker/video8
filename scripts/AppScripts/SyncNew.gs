@@ -157,7 +157,7 @@ function syncToGitHub() {
     const { row, headers, releaseId } = item;
     const existing = releaseById[releaseId];
     const RELEASE_FIELDS = [
-      'title_release','title_release_lang','catalog_number','release_date','country','encoding',
+      'title_release','title_release_lang','catalog_number','release_date','country_release','encoding',
       'runtime_mins','list_price','upc','isbn','audio_format','audio_language',
       'audio_dubbed','subtitle_language','promo','notes'
     ];
@@ -201,7 +201,7 @@ function syncToGitHub() {
     const titleEnVal   = String(row[headers.indexOf('title_en')] || '').trim();
     const titleJaVal   = String(row[headers.indexOf('title_ja')] || '').trim();
     const titleLangVal = String(row[headers.indexOf('title_original_lang')] || 'en').trim();
-    const yearVal      = String(row[headers.indexOf('year')] || '').trim();
+    const yearVal      = String(row[headers.indexOf('year_made')] || '').trim();
     const ctVal        = String(row[headers.indexOf('content_type')] || '').trim();
     const coVal        = String(row[headers.indexOf('country_origin')] || '').trim();
     const pubName      = String(row[headers.indexOf('publisher')] || '').trim();
@@ -222,7 +222,7 @@ function syncToGitHub() {
         title_original_lang: titleLangVal || 'en',
         title_en: titleEnVal,
         title_ja: titleJaVal,
-        year: yearVal,
+        year_made: yearVal,
         content_type: ctVal,
         country_origin: coVal
       };
@@ -233,7 +233,7 @@ function syncToGitHub() {
     // Create release
     const releaseId = String(Math.max(...releases.rows.map(r => parseInt(r.id) || 0)) + 1);
     const RELEASE_FIELDS = [
-      'title_release','title_release_lang','catalog_number','release_date','country','encoding',
+      'title_release','title_release_lang','catalog_number','release_date','country_release','encoding',
       'runtime_mins','list_price','upc','isbn','audio_format','audio_language',
       'audio_dubbed','subtitle_language','promo','notes'
     ];

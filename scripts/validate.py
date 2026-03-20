@@ -66,6 +66,8 @@ print("Validating releases...")
 for r in releases:
     if r.get('title_id') and r['title_id'] not in title_ids:
         errors.append(f"releases id={r['id']}: title_id={r['title_id']} not found in titles")
+    if r.get('country_release') and r['country_release'].endswith('?'):
+        pass  # uncertain country_release is valid
     if r.get('encoding') and r['encoding'] not in VALID_ENCODINGS:
         warnings.append(f"releases id={r['id']}: unexpected encoding '{r['encoding']}'")
     if r.get('release_date') and not DATE_PATTERN.match(r['release_date']):

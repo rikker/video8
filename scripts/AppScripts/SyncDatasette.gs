@@ -3,11 +3,12 @@ const SHEET_ID = '1vnKsTamAUo6x9F3PxMBZFwKJvnt-0DOHNGhlW-LoVA0';
 
 const BROWSE_COLS = [
   'release_id','title_display','title_original','title_original_lang','title_en','title_ja',
-  'year','content_type','country_origin',
-  'publisher','title_release','title_release_lang',
-  'catalog_number','release_date','country',
-  'encoding','runtime_mins','list_price','upc','isbn',
-  'audio_format','audio_language','audio_dubbed','subtitle_language','promo','notes'
+  'year_made','release_date','content_type','country_release','country_origin',
+  'publisher','catalog_number','encoding',
+  'runtime_mins','list_price','upc','isbn',
+  'audio_format','audio_language','audio_dubbed','subtitle_language',
+  'title_release','title_release_lang',
+  'promo','notes'
 ];
 
 const DROPDOWNS = {
@@ -31,12 +32,12 @@ function syncBrowse() {
       r.id as release_id,
       COALESCE(t.title_en, t.title_original, t.title_ja) as title_display,
       t.title_original, t.title_original_lang, t.title_en, t.title_ja,
-      t.year, t.content_type, t.country_origin,
+      t.year_made, t.content_type, t.country_origin,
       GROUP_CONCAT(p.name, ' / ') as publisher,
-      r.title_release, r.title_release_lang,
-      r.catalog_number, r.release_date, r.country,
+      r.catalog_number, r.release_date, r.country_release,
       r.encoding, r.runtime_mins, r.list_price, r.upc, r.isbn,
       r.audio_format, r.audio_language, r.audio_dubbed, r.subtitle_language,
+      r.title_release, r.title_release_lang,
       r.promo, r.notes
     FROM releases r
     JOIN titles t ON r.title_id = t.id
@@ -154,10 +155,43 @@ function onOpen() {
     .addItem('Sync to GitHub', 'syncToGitHub')
     .addItem('Sync Browse tab', 'syncBrowse')
     .addItem('Refresh Dropdowns', 'refreshDropdowns')
+    .addItem('Update Submission Headers', 'updateSubmissionHeaders')
     .addToUi();
 }
 
 function refreshDropdowns() {
   setupDropdowns();
   SpreadsheetApp.getUi().alert('Dropdowns refreshed', 'Publisher and audio format lists updated from live database.', SpreadsheetApp.getUi().ButtonSet.OK);
+}
+
+function updateSubmissionHeaders() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  const NEW_ENTRIES_HEADERS = [
+    'title_original', 'title_original_lang', 'title_en', 'title_ja',
+    'year_made', 'release_date', 'content_type', 'country_release', 'country_origin',
+    'publisher', 'catalog_number', 'encoding',
+    'runtime_mins', 'list_price', 'upc', 'isbn',
+    'audio_format', 'audio_language', 'audio_dubbed', 'subtitle_language',
+    'title_release', 'title_release_lang',
+    'promo', 'notes', 'source_type', 'source_url', 'source_notes'
+  ];
+
+  const CORRECTIONS_HEADERS = [
+    'release_id', 'title_original',
+    'year_made', 'release_date', 'content_type', 'country_release', 'country_origin',
+    'publisher', 'catalog_number', 'encoding',
+    'runtime_mins', 'list_price', 'upc', 'isbn',
+    'audio_format', 'audio_language', 'audio_dubbed', 'subtitle_language',
+    'title_release', 'title_release_lang',
+    'promo', 'notes', 'source_type', 'source_url', 'source_notes'
+  ];
+
+  const newSheet  = ss.getSheetByName('New Entries');
+  const corrSheet = ss.getSheetByName('Corrections');
+
+  newSheet.getRange(1, 1, 1, NEW_ENTRIES_HEADERS.length).setValues([NEW_ENTRIES_HEADERS]);
+  corrSheet.getRange(1, 1, 1, CORRECTIONS_HEADERS.length).setValues([CORRECTIONS_HEADERS]);
+
+  SpreadsheetApp.getUi().alert('Headers updated', 'New Entries and Corrections tabs updated to current schema.', SpreadsheetApp.getUi().ButtonSet.OK);
 }

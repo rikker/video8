@@ -30,7 +30,7 @@ TABLES = {
             title_original_lang TEXT,
             title_en TEXT,
             title_ja TEXT,
-            year INTEGER,
+            year_made INTEGER,
             content_type TEXT,
             country_origin TEXT
         )
@@ -43,7 +43,7 @@ TABLES = {
             title_release_lang TEXT,
             catalog_number TEXT,
             release_date TEXT,
-            country TEXT,
+            country_release TEXT,
             encoding TEXT,
             runtime_mins REAL,
             list_price TEXT,

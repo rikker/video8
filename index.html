@@ -752,8 +752,8 @@
         <option value="r.release_date">Release Date</option>
         <option value="r.catalog_number">Catalog No.</option>
         <option value="p.name">Publisher</option>
-        <option value="t.year">Year</option>
-        <option value="r.country">Country</option>
+        <option value="t.year_made">Year</option>
+        <option value="r.country_release">Country</option>
       </select>
       <button class="sort-dir" id="sort-dir" title="Toggle sort direction">↑ ASC</button>
     </div>
@@ -811,7 +811,7 @@ const FIELDS = [
   ['Publisher',       'publisher',          true],
   ['Catalog No.',     'catalog_number',     true],
   ['Release Date',    'release_date',       true],
-  ['Country',         'country',            true],
+  ['Country (Release)','country_release',    true],
   ['Encoding',        'encoding',           false],
   ['Runtime (mins)',  'runtime_mins',       true],
   ['List Price',      'list_price',         true],
@@ -1088,7 +1088,7 @@ async function loadFilterOptions() {
     const cSel = document.getElementById('filter-country');
     cRes.forEach(r => {
       const o = document.createElement('option');
-      o.value = o.textContent = r.country;
+      o.value = o.textContent = r.country_release;
       cSel.appendChild(o);
     });
     const pSel = document.getElementById('filter-publisher');
@@ -1156,11 +1156,11 @@ function buildSQL(q, offset, countOnly, adultOnly = false) {
     : `SELECT
         r.id as release_id,
         t.title_original, t.title_original_lang, t.title_en, t.title_ja,
-        t.year, t.content_type, t.country_origin,
+        t.year_made, t.content_type, t.country_origin,
         COALESCE(t.title_en, t.title_original, t.title_ja) as title_display,
         GROUP_CONCAT(p.name, ' / ') as publisher,
         r.title_release, r.title_release_lang,
-        r.catalog_number, r.release_date, r.country,
+        r.catalog_number, r.release_date, r.country_release,
         r.encoding, r.runtime_mins, r.list_price, r.upc, r.isbn,
         r.audio_format, r.audio_language, r.audio_dubbed, r.subtitle_language,
         r.promo, r.notes,
@@ -1184,7 +1184,7 @@ function buildSQL(q, offset, countOnly, adultOnly = false) {
 
   if (filterCountry) {
     const sc = filterCountry.replace(/'/g,"''");
-    conditions.push(`r.country = '${sc}'`);
+    conditions.push(`r.country_release = '${sc}'`);
   }
 
   if (filterPublisher) {
@@ -1270,8 +1270,8 @@ function renderCard(row) {
   const tags = document.createElement('div');
   tags.className = 'tags';
   if (row.content_type) tags.innerHTML += `<span class="tag accent">${esc(row.content_type)}</span>`;
-  if (row.year)         tags.innerHTML += `<span class="tag">${esc(row.year)}</span>`;
-  if (row.country_origin) tags.innerHTML += `<span class="tag">Origin: ${esc(row.country_origin)}</span>`;
+  if (row.year_made)         tags.innerHTML += `<span class="tag">${esc(row.year_made)}</span>`;
+  if (row.country_release_origin) tags.innerHTML += `<span class="tag">Origin: ${esc(row.country_release_origin)}</span>`;
   if (row.title_original_lang && row.title_original_lang !== 'en')
     tags.innerHTML += `<span class="tag">Lang: ${esc(row.title_original_lang.toUpperCase())}</span>`;
   if (row.promo === 'Y')  tags.innerHTML += `<span class="tag promo">PROMO</span>`;
