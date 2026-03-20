@@ -190,8 +190,18 @@ function updateSubmissionHeaders() {
   const newSheet  = ss.getSheetByName('New Entries');
   const corrSheet = ss.getSheetByName('Corrections');
 
+  // Clear all existing validation first to avoid misaligned dropdowns
+  const maxCols = Math.max(NEW_ENTRIES_HEADERS.length, CORRECTIONS_HEADERS.length) + 5;
+  newSheet.getRange(2, 1, 1000, maxCols).clearDataValidations();
+  corrSheet.getRange(2, 1, 1000, maxCols).clearDataValidations();
+
+  // Rewrite headers
   newSheet.getRange(1, 1, 1, NEW_ENTRIES_HEADERS.length).setValues([NEW_ENTRIES_HEADERS]);
   corrSheet.getRange(1, 1, 1, CORRECTIONS_HEADERS.length).setValues([CORRECTIONS_HEADERS]);
 
-  SpreadsheetApp.getUi().alert('Headers updated', 'New Entries and Corrections tabs updated to current schema.', SpreadsheetApp.getUi().ButtonSet.OK);
+  // Freeze header rows
+  newSheet.setFrozenRows(1);
+  corrSheet.setFrozenRows(1);
+
+  SpreadsheetApp.getUi().alert('Headers updated', 'New Entries and Corrections tabs updated. Run Refresh Dropdowns next.', SpreadsheetApp.getUi().ButtonSet.OK);
 }
