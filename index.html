@@ -511,13 +511,6 @@
     flex-wrap: wrap;
   }
   .result-title { font-size: var(--fs-title); font-weight: 500; color: var(--text); }
-  .result-title-release {
-    font-size: calc(var(--fs-title) * 0.75);
-    font-weight: 300;
-    color: var(--text-dim);
-    font-family: 'IBM Plex Mono', monospace;
-    letter-spacing: 0.02em;
-  }
   .result-title-ja { font-size: 14px; color: var(--text-dim); }
   .result-id {
     font-family: 'IBM Plex Mono', monospace;
@@ -755,7 +748,7 @@
     <label>Sort By</label>
     <div class="sort-row">
       <select class="filter-select" id="sort-by" style="max-width:160px">
-        <option value="t.title">Title</option>
+        <option value="title_display">Title</option>
         <option value="r.release_date">Release Date</option>
         <option value="r.catalog_number">Catalog No.</option>
         <option value="p.name">Publisher</option>
@@ -806,7 +799,7 @@ let sourcesCache  = {};
 let selectedTypes   = new Set(); // empty = all (except adult)
 let filterCountry   = '';
 let filterPublisher = '';
-let sortBy          = 't.title';
+let sortBy          = 'title_display';
 let sortDir         = 'ASC';
 let highlightBlanks = false;
 
@@ -1234,7 +1227,12 @@ async function fetchCount(q) {
 
 async function fetchReleases(q, offset) {
   const r = await fetch(`${DATASETTE}/video8.json?sql=${encodeURIComponent(buildSQL(q,offset,false))}&_shape=array`);
-  return r.json();
+  const d = await r.json();
+  if (!Array.isArray(d)) {
+    console.error('Datasette error:', d.error || JSON.stringify(d));
+    throw new Error(d.error || 'Query failed');
+  }
+  return d;
 }
 
 async function fetchSources(releaseId) {
