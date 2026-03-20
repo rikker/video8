@@ -2,8 +2,10 @@ const DATASETTE = 'https://video8.fly.dev';
 const SHEET_ID = '1vnKsTamAUo6x9F3PxMBZFwKJvnt-0DOHNGhlW-LoVA0';
 
 const BROWSE_COLS = [
-  'release_id','title','title_ja','year','content_type','country_origin',
-  'publishers','title_release','catalog_number','release_date','country',
+  'release_id','title_display','title_original','title_original_lang','title_en','title_ja',
+  'year','content_type','country_origin',
+  'publisher','title_release','title_release_lang',
+  'catalog_number','release_date','country',
   'encoding','runtime_mins','list_price','upc','isbn',
   'audio_format','audio_language','audio_dubbed','subtitle_language','promo','notes'
 ];
@@ -75,6 +77,10 @@ function syncBrowse() {
     offset += PAGE;
   }
 
+  // Always rewrite header row to match canonical BROWSE_COLS order
+  sheet.getRange(1, 1, 1, BROWSE_COLS.length).setValues([BROWSE_COLS]);
+
+  // Clear existing data below header and rewrite
   const lastRow = sheet.getLastRow();
   if (lastRow > 1) sheet.getRange(2, 1, lastRow - 1, BROWSE_COLS.length).clearContent();
 

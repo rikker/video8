@@ -17,11 +17,11 @@ function syncToGitHub() {
   const ui = SpreadsheetApp.getUi();
   ui.alert('Sync started', 'Loading current data from GitHub…', ui.ButtonSet.OK);
 
-  const releases          = loadCSVFromGitHub(token, 'data/releases.csv');
-  const titles            = loadCSVFromGitHub(token, 'data/titles.csv');
-  const publishers        = loadCSVFromGitHub(token, 'data/publishers.csv');
-  const sources           = loadCSVFromGitHub(token, 'data/sources.csv');
-  const releasePubs       = loadCSVFromGitHub(token, 'data/release_publishers.csv');
+  const releases    = loadCSVFromGitHub(token, 'data/releases.csv');
+  const titles      = loadCSVFromGitHub(token, 'data/titles.csv');
+  const publishers  = loadCSVFromGitHub(token, 'data/publishers.csv');
+  const sources     = loadCSVFromGitHub(token, 'data/sources.csv');
+  const releasePubs = loadCSVFromGitHub(token, 'data/release_publishers.csv');
 
   // Build lookup maps
   const releaseById = {};
@@ -50,12 +50,13 @@ function syncToGitHub() {
 
   corrRows.forEach((row, i) => {
     if (!row[0] && !row[1]) return;
-    const rowNum     = i + 2;
-    const syncedVal  = row[corrSyncedCol - 1];
+    const rowNum    = i + 2;
+    const syncedVal = row[corrSyncedCol - 1];
     if (syncedVal && syncedVal !== '') return;
 
     const releaseId = String(row[corrHeaders.indexOf('release_id')] || '').trim();
-    const titleVal  = String(row[corrHeaders.indexOf('title')] || '').trim();
+    // title check — contributors enter title_display (English) or title_original
+    const titleVal  = String(row[corrHeaders.indexOf('title_display')] || row[corrHeaders.indexOf('title_original')] || '').trim();
 
     if (!releaseId) {
       corrFlagged.push({ rowNum, row, headers: corrHeaders, reason: 'Missing release_id' });
@@ -67,21 +68,24 @@ function syncToGitHub() {
       return;
     }
     const existingTitle = titles.rows.find(t => t.id === existing.title_id);
-    if (existingTitle && titleVal && (existingTitle.title_original||'').toLowerCase().trim() !== titleVal.toLowerCase().trim()) {
-      corrFlagged.push({ rowNum, row, headers: corrHeaders, reason: `Title mismatch: sheet says "${titleVal}", database has "${existingTitle.title}"` });
-      return;
+    if (existingTitle && titleVal) {
+      const dbTitle = (existingTitle.title_en || existingTitle.title_original || '').toLowerCase().trim();
+      if (dbTitle && dbTitle !== titleVal.toLowerCase().trim()) {
+        corrFlagged.push({ rowNum, row, headers: corrHeaders, reason: `Title mismatch: sheet says "${titleVal}", database has "${existingTitle.title_original}"` });
+        return;
+      }
     }
     corrClean.push({ rowNum, row, headers: corrHeaders, releaseId, sheet: corrSheet });
   });
 
   // ── Process New Entries ────────────────────────────────────────────────────
-  const newSheet    = ss.getSheetByName('New Entries');
-  const newData     = newSheet.getDataRange().getValues();
-  const newHeaders  = newData[0].map(h => h.toString().trim());
-  const newRows     = newData.slice(1);
+  const newSheet   = ss.getSheetByName('New Entries');
+  const newData    = newSheet.getDataRange().getValues();
+  const newHeaders = newData[0].map(h => h.toString().trim());
+  const newRows    = newData.slice(1);
 
-  const newClean    = [];
-  const newFlagged  = [];
+  const newClean   = [];
+  const newFlagged = [];
   const newSyncedCol = getOrCreateColumn(newSheet, newHeaders, 'synced');
 
   newRows.forEach((row, i) => {
@@ -90,7 +94,8 @@ function syncToGitHub() {
     const syncedVal = row[newSyncedCol - 1];
     if (syncedVal && syncedVal !== '') return;
 
-    const titleVal = String(row[newHeaders.indexOf('title')] || '').trim();
+    // Contributors enter the title in title_original (or title_en if English)
+    const titleVal = String(row[newHeaders.indexOf('title_original')] || row[newHeaders.indexOf('title_en')] || '').trim();
     const catNum   = String(row[newHeaders.indexOf('catalog_number')] || '').trim();
 
     if (!titleVal) {
@@ -125,7 +130,12 @@ function syncToGitHub() {
   }
   summary += `✅ READY TO SYNC (${totalClean}):\n`;
   [...corrClean, ...newClean].forEach(f => {
-    const t  = String(f.row[f.headers.indexOf('title')] || '').trim();
+    // Show whichever title field is available
+    const t = String(
+      f.row[f.headers.indexOf('title_display')] ||
+      f.row[f.headers.indexOf('title_original')] ||
+      f.row[f.headers.indexOf('title_en')] || ''
+    ).trim();
     const id = f.releaseId ? ` [ID: ${f.releaseId}]` : '';
     summary += `  Row ${f.rowNum}: ${t}${id}\n`;
   });
@@ -147,7 +157,7 @@ function syncToGitHub() {
     const { row, headers, releaseId } = item;
     const existing = releaseById[releaseId];
     const RELEASE_FIELDS = [
-      'title_release','catalog_number','release_date','country','encoding',
+      'title_release','title_release_lang','catalog_number','release_date','country','encoding',
       'runtime_mins','list_price','upc','isbn','audio_format','audio_language',
       'audio_dubbed','subtitle_language','promo','notes'
     ];
@@ -158,7 +168,7 @@ function syncToGitHub() {
       if (val !== '') existing[field] = val;
     });
 
-    // Handle publisher correction — adds new release_publisher link if not already present
+    // Handle publisher correction
     const pubName = String(row[headers.indexOf('publisher')] || '').trim();
     if (pubName) {
       const pub = pubByName[pubName.toLowerCase()];
@@ -187,12 +197,17 @@ function syncToGitHub() {
   newClean.forEach(item => {
     const { row, headers } = item;
 
-    const titleVal   = String(row[headers.indexOf('title')] || '').trim();
-    const titleJaVal = String(row[headers.indexOf('title_ja')] || '').trim();
-    const yearVal    = String(row[headers.indexOf('year')] || '').trim();
-    const ctVal      = String(row[headers.indexOf('content_type')] || '').trim();
-    const coVal      = String(row[headers.indexOf('country_origin')] || '').trim();
-    const pubName    = String(row[headers.indexOf('publisher')] || '').trim();
+    const titleOrigVal = String(row[headers.indexOf('title_original')] || '').trim();
+    const titleEnVal   = String(row[headers.indexOf('title_en')] || '').trim();
+    const titleJaVal   = String(row[headers.indexOf('title_ja')] || '').trim();
+    const titleLangVal = String(row[headers.indexOf('title_original_lang')] || 'en').trim();
+    const yearVal      = String(row[headers.indexOf('year')] || '').trim();
+    const ctVal        = String(row[headers.indexOf('content_type')] || '').trim();
+    const coVal        = String(row[headers.indexOf('country_origin')] || '').trim();
+    const pubName      = String(row[headers.indexOf('publisher')] || '').trim();
+
+    // Use title_original if provided, fall back to title_en
+    const titleVal = titleOrigVal || titleEnVal;
 
     // Find or create title
     const tKey = `${titleVal.toLowerCase()}||${titleJaVal.toLowerCase()}||${yearVal}||${ctVal}`;
@@ -201,15 +216,24 @@ function syncToGitHub() {
       titleId = titleByKey[tKey].id;
     } else {
       titleId = String(Math.max(...titles.rows.map(t => parseInt(t.id) || 0)) + 1);
-      const newTitle = { id: titleId, title_original: titleVal, title_original_lang: 'en', title_en: '', title_ja: titleJaVal, year: yearVal, content_type: ctVal, country_origin: coVal };
+      const newTitle = {
+        id: titleId,
+        title_original: titleVal,
+        title_original_lang: titleLangVal || 'en',
+        title_en: titleEnVal,
+        title_ja: titleJaVal,
+        year: yearVal,
+        content_type: ctVal,
+        country_origin: coVal
+      };
       titles.rows.push(newTitle);
       titleByKey[tKey] = newTitle;
     }
 
-    // Create release (no publisher_id)
+    // Create release
     const releaseId = String(Math.max(...releases.rows.map(r => parseInt(r.id) || 0)) + 1);
     const RELEASE_FIELDS = [
-      'title_release','catalog_number','release_date','country','encoding',
+      'title_release','title_release_lang','catalog_number','release_date','country','encoding',
       'runtime_mins','list_price','upc','isbn','audio_format','audio_language',
       'audio_dubbed','subtitle_language','promo','notes'
     ];
@@ -271,11 +295,11 @@ function pushAllCSVsToGitHub(token, files) {
   const apiBase = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}`;
   const headers = { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' };
 
-  const refRes        = UrlFetchApp.fetch(`${apiBase}/git/ref/heads/${GITHUB_BRANCH}`, { headers });
+  const refRes          = UrlFetchApp.fetch(`${apiBase}/git/ref/heads/${GITHUB_BRANCH}`, { headers });
   const latestCommitSha = JSON.parse(refRes.getContentText()).object.sha;
 
-  const commitRes     = UrlFetchApp.fetch(`${apiBase}/git/commits/${latestCommitSha}`, { headers });
-  const baseTreeSha   = JSON.parse(commitRes.getContentText()).tree.sha;
+  const commitRes   = UrlFetchApp.fetch(`${apiBase}/git/commits/${latestCommitSha}`, { headers });
+  const baseTreeSha = JSON.parse(commitRes.getContentText()).tree.sha;
 
   const treeItems = files.map(fileData => {
     const csv     = serializeCSV(fileData.headers, fileData.rows);
@@ -286,13 +310,13 @@ function pushAllCSVsToGitHub(token, files) {
     return { path: fileData.path, mode: '100644', type: 'blob', sha: JSON.parse(blobRes.getContentText()).sha };
   });
 
-  const treeRes     = UrlFetchApp.fetch(`${apiBase}/git/trees`, {
+  const treeRes    = UrlFetchApp.fetch(`${apiBase}/git/trees`, {
     method: 'post', headers,
     payload: JSON.stringify({ base_tree: baseTreeSha, tree: treeItems })
   });
-  const newTreeSha  = JSON.parse(treeRes.getContentText()).sha;
+  const newTreeSha = JSON.parse(treeRes.getContentText()).sha;
 
-  const commitRes2  = UrlFetchApp.fetch(`${apiBase}/git/commits`, {
+  const commitRes2   = UrlFetchApp.fetch(`${apiBase}/git/commits`, {
     method: 'post', headers,
     payload: JSON.stringify({ message: 'Sync from contributor sheet', tree: newTreeSha, parents: [latestCommitSha] })
   });
