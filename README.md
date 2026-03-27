@@ -12,7 +12,7 @@ The data here was originally compiled from an older version of a list created by
 
 ## How the data is organized
 
-The database is normalized across six tables stored as CSV files in the `/data` directory.
+The database is normalized across seven tables stored as CSV files in the `/data` directory.
 
 ### `titles.csv`
 
@@ -21,15 +21,17 @@ One row per title: the film, TV program, music video, or other content itself, i
 | Column | Description |
 |---|---|
 | `id` | Unique integer ID |
-| `title` | The canonical English title |
-| `title_ja` | The canonical Japanese title of the content (not necessarily what is printed on any specific tape; see `releases.title_release`) |
-| `year` | Year of original production |
+| `title_original` | The title in the original language of production |
+| `title_original_lang` | Language code of the original title: `en`, `ja`, `zh`, `de`, `fr`, etc. |
+| `title_en` | Canonical English title, if different from `title_original` |
+| `title_ja` | Canonical Japanese title, if applicable |
+| `year_made` | Year of original production |
 | `content_type` | One of: `Film`, `TV`, `Music`, `Video Magazine`, `Adult`, `Other` |
 | `country_origin` | Country where the content originated (e.g. `US`, `Japan`, `UK`) |
 
 ### `publishers.csv`
 
-One row per publishing entity. Publishers are kept distinct per country even when they share a corporate parent. For example, *RCA/Columbia Pictures Home Video* (US) and *RCA/Columbia Pictures International Video* (Japan) are separate rows, linked via `parent_id`.
+One row per publishing entity. Publishers are kept distinct per country even when they share a corporate parent. For example, *RCA/Columbia Pictures Home Video* (US) and *RCA/Columbia Pictures International Video* (Japan) are separate rows, linked via `parent_id`. Publishers are grouped into corporate families (Sony, Columbia, Warner, Paramount, Fox, Pony Canyon) using `parent_id`, which allows querying all releases from a corporate family even across differently named subsidiaries.
 
 | Column | Description |
 |---|---|
@@ -41,19 +43,19 @@ One row per publishing entity. Publishers are kept distinct per country even whe
 
 ### `releases.csv`
 
-This is the core table. One row per individual tape release: one catalog number, one tape. A single title may have many releases (different countries, publishers, or years).
+This is the core table. One row per individual tape release: one catalog number, one tape. A single title may have many releases (different countries, publishers, or years). Publishers are stored separately in `release_publishers.csv`.
 
 | Column | Description |
 |---|---|
 | `id` | Unique integer ID |
 | `title_id` | FK → `titles.id` |
-| `publisher_id` | FK → `publishers.id` |
-| `title_release` | Title as printed on this specific release — fill only when it differs from `titles.title` or `titles.title_ja` |
-| `catalog_number` | The release's catalog number — important for identification and approximate dating |
+| `title_release` | Title as printed on this specific release, fill only when it differs from the canonical title |
+| `title_release_lang` | Language code of `title_release` |
+| `catalog_number` | The release's catalog number, important for identification and approximate dating |
 | `release_date` | Date of release. Flexible format: `1987`, `1987.10`, or `1987.10.15` |
-| `country` | Country where this release was sold. Append `?` for uncertain values (e.g. `Japan?`) |
+| `country_release` | Country where this release was sold. Append `?` for uncertain values (e.g. `Japan?`) |
 | `encoding` | `NTSC` or `PAL`. Japan and U.S. releases are NTSC; almost all others are PAL |
-| `runtime_mins` | Runtime as printed on the object itself — may differ from IMDb or other sources |
+| `runtime_mins` | Runtime as printed on the object itself, may differ from IMDb or other sources |
 | `list_price` | Price printed on the product (most relevant for Japanese releases, which almost always include spine pricing) |
 | `upc` | Barcode number. Can sometimes be extrapolated from `catalog_number` depending on the publisher's scheme, and vice versa |
 | `isbn` | ISBN number (present on many U.S. releases) |
@@ -64,11 +66,21 @@ This is the core table. One row per individual tape release: one catalog number,
 | `promo` | `Y` if this was a promotional release not sold commercially (dealer demos, promo copies, in-store tapes, etc.); blank otherwise |
 | `notes` | Freeform notes about this release |
 
-> **Note on `country`:** Use the `?` suffix convention for uncertain values — e.g. `Japan?`, `US?`. These can be found later with a simple `LIKE '%?'` query.
+> **Note on `country_release`:** Use the `?` suffix convention for uncertain values, e.g. `Japan?`, `US?`. These can be found later with a simple `LIKE '%?'` query.
 
-> **Note on UPC / Catalog No.:** These fields are complementary. Some publishers use predictable schemes where one can be derived (or partially derived) from the other. Partial information is still worth recording — we may have a spine photo (catalog number only) or a back photo (barcode only).
+> **Note on UPC / Catalog No.:** These fields are complementary. Some publishers use predictable schemes where one can be derived (or partially derived) from the other. Partial information is still worth recording, we may have a spine photo (catalog number only) or a back photo (barcode only).
 
-> **Note on audio:** `audio_format` describes the tape's technical audio capability. `audio_language` and `subtitle_language` describe what languages are accessible to the viewer. Use `English (CC)` in `subtitle_language` for English closed-caption tracks — this allows querying for all releases accessible to English-language viewers regardless of whether access is via audio, hardcoded subtitle, or CC.
+> **Note on audio:** `audio_format` describes the tape's technical audio capability. `audio_language` and `subtitle_language` describe what languages are accessible to the viewer. Use `English (CC)` in `subtitle_language` for English closed-caption tracks, this allows querying for all releases accessible to English-language viewers regardless of whether access is via audio, hardcoded subtitle, or CC.
+
+### `release_publishers.csv`
+
+Join table linking releases to publishers. A release can have more than one publisher, for example in the case of joint releases.
+
+| Column | Description |
+|---|---|
+| `id` | Unique integer ID |
+| `release_id` | FK → `releases.id` |
+| `publisher_id` | FK → `publishers.id` |
 
 ### `catalogs.csv`
 
@@ -85,21 +97,21 @@ Many releases are documented through printed books and publisher catalogs. This 
 
 ### `sources.csv`
 
-Provenance for individual release records — how do we know this release exists? Every release should ideally have at least one source row. Note: as of February 2026, archive.today links are no longer used to create new archives, and old archive links should eventually be migrated to other archives.
+Provenance for individual release records, how do we know this release exists? Every release should ideally have at least one source row. Note: as of February 2026, archive.today links are no longer used to create new archives, and old archive links should eventually be migrated to other archives.
 
 | Column | Description |
 |---|---|
 | `id` | Unique integer ID |
 | `release_id` | FK → `releases.id` |
 | `source_type` | One of: `url`, `catalog`, `auction`, `photo`, `other` |
-| `url` | A URL, if applicable. Prefer archived URLs (archive.org, Ghostarchive, archive.today) over live links, which rot |
+| `url` | A URL, if applicable. Prefer archived URLs (archive.org, Ghostarchive) over live links, which rot |
 | `catalog_id` | FK → `catalogs.id`, if this source is a printed catalog |
 | `catalog_locator` | Page number, volume, or other locator within the catalog |
 | `notes` | Any additional context about this source |
 
 ### `images.csv`
 
-Placeholder table for images. Not yet actively populated.
+Table for cover and packaging images. Not yet actively populated.
 
 | Column | Description |
 |---|---|
@@ -111,15 +123,16 @@ Placeholder table for images. Not yet actively populated.
 
 ---
 
-## Content types / countries
+## Content types and countries
 
-There are three fields that help us organize types of releases, as well as releases of the same film in multiple countries:
+There are several fields that help organize types of releases and releases of the same title across multiple countries:
 
-- `titles.content_type` — what kind of content it is
-- `titles.country_origin` — where the content was originally produced
-- `releases.country` — where this specific tape release was sold
+- `titles.content_type`: what kind of content it is
+- `titles.country_origin`: where the content was originally produced
+- `titles.year_made`: year of original production
+- `releases.country_release`: where this specific tape release was sold
 
-This lets you query the database precisely. So for instance, a Japanese film released in Japan has `content_type=Film`, `country_origin=Japan`, `country=Japan`, and a U.S. film released in Japan has `content_type=Film`, `country_origin=US`, `country=Japan`.
+This lets you query the database precisely. A Japanese film released in Japan has `content_type=Film`, `country_origin=Japan`, `country_release=Japan`. A U.S. film released in Japan has `content_type=Film`, `country_origin=US`, `country_release=Japan`.
 
 ---
 
@@ -134,7 +147,7 @@ This lets you query the database precisely. So for instance, a Japanese film rel
 | Validation | `scripts/validate.py` checks referential integrity and data conventions |
 | Automation | GitHub Actions validates and builds on every push to `main` |
 | Public database | [video8.fly.dev](https://video8.fly.dev) Datasette, browsable and queryable |
-| Contributor interface | [rikker.github.io/video8](https://rikker.github.io/video8) is the user friendly search and browse |
+| Contributor interface | [rikker.github.io/video8](https://rikker.github.io/video8) search and browse interface |
 
 ---
 
