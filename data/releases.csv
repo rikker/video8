@@ -3222,7 +3222,7 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 3221,2907,,,CSWW-8255,1989.10.21,Japan,NTSC,30,"¥2,200",,,Hi-Fi/Digital Mono,,,,,
 3222,2908,,,CSWW-8256,1989.08.01,Japan,NTSC,30,"¥2,200",,,Hi-Fi Mono/Digital Stereo,,,,,
 3223,2909,,,CSWW-8257,1989.06.01,Japan,NTSC,30,"¥2,200",,,Hi-Fi Mono/Digital Stereo,,,,,
-3224,2910,,,CSWW-8234,1990.05.21,Japan,NTSC,40,"¥4,500",4-988156-778799,,Hi-Fi/Digital Mono,,,,,
+3224,2910,,,"CSWW-8234 (on sticker on top edge of case), PSY-46 (on spine)",1990.05.21,Japan,NTSC,40,"¥4,500","4-988009-823478 (on sticker), 4-988156-778799 (on insert)",,Hi-Fi/Digital Mono,,,,,
 3225,2911,,,CSWW-8238,1990.05.21,Japan,NTSC,40,"¥4,500",,,Hi-Fi/Digital Mono,,,,,
 3226,2912,,,CSWW-8258,1989.10.21,Japan,NTSC,30,"¥2,200",,,Hi-Fi/Digital Mono,,,,,
 3227,2913,,,CSWW-8259,1989.05.01,Japan,NTSC,30,"¥2,200",,,Hi-Fi Mono/Digital Stereo,,,,,
@@ -3353,3 +3353,4 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 3352,3038,,,CSWW-8437,1990.07.01,Japan,NTSC,60,"¥12,200",,,Hi-Fi/Digital Mono,,,,,
 3353,3039,,,,,,,,,,,,,,,,
 3354,3040,,,88C61-8004,1985,Japan,NTSC,53,"¥8,800",n/a,,Digital Stereo,Japanese,,,,
+3355,3041,,,CSWW-8631,,Japan,NTSC,45,"¥2,900",4-988009-863177,,Hi-Fi/Digital Stereo,Japanese,,,,
