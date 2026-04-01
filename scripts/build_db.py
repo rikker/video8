@@ -89,8 +89,10 @@ TABLES = {
         CREATE TABLE images (
             id INTEGER PRIMARY KEY,
             release_id INTEGER REFERENCES releases(id),
-            side TEXT,
+            image_type TEXT,
             filename TEXT,
+            url TEXT,
+            source_slug TEXT,
             notes TEXT
         )
     ''',

@@ -656,7 +656,144 @@
     main { padding: 0 16px 48px; }
     .fields-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
     .header-meta { display: none; }
+    .card-image-panel { width: 80px; }
   }
+
+  /* ── Image panel ──────────────────────────────────────────────── */
+  .result-card.has-image {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .result-card.has-image.img-right { flex-direction: row-reverse; }
+
+  .card-image-panel {
+    flex-shrink: 0;
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding-top: 2px;
+  }
+
+  .card-image-panel img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: border-color 0.15s, opacity 0.15s;
+    display: block;
+    background: var(--surface2);
+  }
+  .card-image-panel img:hover { border-color: var(--accent); opacity: 0.9; }
+
+  .img-placeholder {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dimmer);
+    font-size: 20px;
+    opacity: 0.4;
+  }
+
+  .img-arrows {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .img-arrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    width: 24px; height: 24px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s;
+    flex-shrink: 0;
+  }
+  .img-arrow:hover { border-color: var(--accent); color: var(--accent); }
+
+  .img-counter {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dimmer);
+    letter-spacing: 0.05em;
+  }
+
+  .card-body { flex: 1; min-width: 0; }
+
+  /* ── Lightbox ─────────────────────────────────────────────────── */
+  #lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.88);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+  }
+  #lightbox.open { display: flex; }
+
+  #lightbox img {
+    max-width: min(90vw, 800px);
+    max-height: 80vh;
+    object-fit: contain;
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  }
+
+  #lightbox-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.08em;
+    text-align: center;
+  }
+
+  #lightbox-arrows {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .lb-arrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 20px;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.7);
+    width: 40px; height: 40px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s;
+  }
+  .lb-arrow:hover { border-color: rgba(255,255,255,0.6); color: #fff; }
+  .lb-arrow:disabled { opacity: 0.2; cursor: default; }
+
+  #lightbox-close {
+    position: absolute;
+    top: 16px; right: 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 18px;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.6);
+    width: 36px; height: 36px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s;
+  }
+  #lightbox-close:hover { border-color: rgba(255,255,255,0.6); color: #fff; }
 </style>
 </head>
 <body>
@@ -695,6 +832,19 @@
           <button class="tp-fs-btn" data-fs="s">S</button>
           <button class="tp-fs-btn" data-fs="m">M</button>
           <button class="tp-fs-btn" data-fs="l">L</button>
+        </div>
+      </div>
+      <div class="tp-section">
+        <div class="tp-label">Images</div>
+        <label class="tp-switch" id="tp-img-show-switch">
+          <div class="tp-switch-track" id="tp-img-track">
+            <div class="tp-switch-knob"></div>
+          </div>
+          <span id="tp-img-label">Show images</span>
+        </label>
+        <div class="tp-fs-row" id="tp-img-side-row" style="margin-top:6px">
+          <button class="tp-fs-btn" data-side="left"  id="tp-side-left"  title="Image on left">◧</button>
+          <button class="tp-fs-btn" data-side="right" id="tp-side-right" title="Image on right">◨</button>
         </div>
       </div>
     </div>
@@ -802,6 +952,23 @@ let filterPublisher = '';
 let sortBy          = 'title_display';
 let sortDir         = 'ASC';
 let highlightBlanks = false;
+
+let imgShow = localStorage.getItem('v8imgshow') !== '0';  // default on
+let imgSide = localStorage.getItem('v8imgside') || 'left';
+
+// Canonical image type order for display
+const IMG_TYPE_ORDER = ['cover','reverse','spine','tape','insert'];
+function imgSortKey(type) {
+  const i = IMG_TYPE_ORDER.indexOf((type||'').toLowerCase());
+  return i === -1 ? IMG_TYPE_ORDER.length : i;
+}
+
+const IMAGE_BASE = 'data/images';
+function imageUrl(img) {
+  return img.url || `${IMAGE_BASE}/${img.release_id}/${img.filename}`;
+}
+
+const imagesCache = {};
 
 // Adult is excluded unless explicitly in selectedTypes
 function showAdult() { return selectedTypes.has('Adult'); }
@@ -1012,6 +1179,38 @@ const savedAccent = localStorage.getItem('v8accent') || 'gold';
 const savedHC     = localStorage.getItem('v8hc') === '1';
 const savedFS     = localStorage.getItem('v8fs') || 'm';
 applyTheme(savedTheme, savedAccent, savedHC, savedFS);
+
+// ── Image settings ─────────────────────────────────────────────────────────
+function applyImgSettings() {
+  const track = document.getElementById('tp-img-track');
+  const label = document.getElementById('tp-img-label');
+  if (track) {
+    track.classList.toggle('on', imgShow);
+    label.textContent = imgShow ? 'Show images' : 'Hide images';
+  }
+  document.querySelectorAll('#tp-img-side-row .tp-fs-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.side === imgSide);
+  });
+}
+
+document.getElementById('tp-img-show-switch').addEventListener('click', () => {
+  imgShow = !imgShow;
+  localStorage.setItem('v8imgshow', imgShow ? '1' : '0');
+  applyImgSettings();
+  triggerSearch();   // re-render cards
+});
+
+document.querySelectorAll('#tp-img-side-row .tp-fs-btn').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    imgSide = btn.dataset.side;
+    localStorage.setItem('v8imgside', imgSide);
+    applyImgSettings();
+    triggerSearch();   // re-render cards
+  });
+});
+
+applyImgSettings();
 
 // ── Highlight blanks toggle ────────────────────────────────────────────────
 document.getElementById('highlight-blanks').addEventListener('change', e => {
@@ -1334,12 +1533,176 @@ function renderCard(row) {
 
   div.appendChild(srcBtn);
   div.appendChild(srcList);
+
+  // ── Image panel (lazy-loaded via IntersectionObserver) ─────────
+  if (imgShow) {
+    const releaseId = row.release_id;
+    const title     = row.title_display || row.title_original;
+
+    // Wrap existing card content in .card-body
+    const body = document.createElement('div');
+    body.className = 'card-body';
+    while (div.firstChild) body.appendChild(div.firstChild);
+    div.appendChild(body);
+
+    // Placeholder panel while loading
+    const placeholder = document.createElement('div');
+    placeholder.className = 'img-placeholder';
+    placeholder.textContent = '▣';
+
+    if (imgSide === 'right') {
+      div.appendChild(placeholder);
+    } else {
+      div.insertBefore(placeholder, body);
+    }
+
+    // Lazy fetch when card enters viewport
+    const observer = new IntersectionObserver(async (entries, obs) => {
+      if (!entries[0].isIntersecting) return;
+      obs.disconnect();
+      const images = await fetchImages(releaseId);
+      placeholder.remove();
+      if (images.length) {
+        div.classList.add('has-image');
+        if (imgSide === 'right') div.classList.add('img-right');
+        const panel = buildImagePanel(images, title);
+        if (imgSide === 'right') {
+          div.appendChild(panel);
+        } else {
+          div.insertBefore(panel, body);
+        }
+      } else {
+        // No images -- restore plain layout
+        while (body.firstChild) div.insertBefore(body.firstChild, body);
+        body.remove();
+      }
+    }, { rootMargin: '200px' });
+
+    observer.observe(div);
+  }
+
   return div;
 }
 
 function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+
+// ── Images ─────────────────────────────────────────────────────────────────
+async function fetchImages(releaseId) {
+  if (imagesCache[releaseId]) return imagesCache[releaseId];
+  const sql = `SELECT id, release_id, image_type, filename, url FROM images WHERE release_id = ${releaseId}`;
+  try {
+    const r = await fetch(`${DATASETTE}/video8.json?sql=${encodeURIComponent(sql)}&_shape=array`);
+    const d = await r.json();
+    const sorted = (Array.isArray(d) ? d : []).sort((a, b) => imgSortKey(a.image_type) - imgSortKey(b.image_type));
+    imagesCache[releaseId] = sorted;
+    return sorted;
+  } catch(e) {
+    imagesCache[releaseId] = [];
+    return [];
+  }
+}
+
+function buildImagePanel(images, releaseTitle) {
+  if (!images.length) return null;
+
+  const panel = document.createElement('div');
+  panel.className = 'card-image-panel';
+
+  let currentIdx = 0;
+
+  const imgEl = document.createElement('img');
+  imgEl.src = imageUrl(images[0]);
+  imgEl.alt = `${releaseTitle} — ${images[0].image_type || 'image'}`;
+  imgEl.title = images[0].image_type || '';
+  imgEl.loading = 'lazy';
+  imgEl.addEventListener('click', () => openLightbox(images, currentIdx, releaseTitle));
+  panel.appendChild(imgEl);
+
+  if (images.length > 1) {
+    const arrowRow = document.createElement('div');
+    arrowRow.className = 'img-arrows';
+
+    const prev = document.createElement('button');
+    prev.className = 'img-arrow';
+    prev.textContent = '‹';
+    prev.title = 'Previous image';
+
+    const counter = document.createElement('span');
+    counter.className = 'img-counter';
+    counter.textContent = `1/${images.length}`;
+
+    const next = document.createElement('button');
+    next.className = 'img-arrow';
+    next.textContent = '›';
+    next.title = 'Next image';
+
+    function setImage(idx) {
+      currentIdx = (idx + images.length) % images.length;
+      imgEl.src   = imageUrl(images[currentIdx]);
+      imgEl.alt   = `${releaseTitle} — ${images[currentIdx].image_type || 'image'}`;
+      imgEl.title = images[currentIdx].image_type || '';
+      counter.textContent = `${currentIdx + 1}/${images.length}`;
+    }
+
+    prev.addEventListener('click', () => setImage(currentIdx - 1));
+    next.addEventListener('click', () => setImage(currentIdx + 1));
+
+    arrowRow.appendChild(prev);
+    arrowRow.appendChild(counter);
+    arrowRow.appendChild(next);
+    panel.appendChild(arrowRow);
+  }
+
+  return panel;
+}
+
+// ── Lightbox ────────────────────────────────────────────────────────────────
+let lbImages = [], lbIdx = 0, lbTitle = '';
+
+function openLightbox(images, startIdx, title) {
+  lbImages = images;
+  lbIdx    = startIdx;
+  lbTitle  = title;
+  updateLightbox();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function updateLightbox() {
+  const img  = lbImages[lbIdx];
+  const lbEl = document.getElementById('lightbox-img');
+  lbEl.src   = imageUrl(img);
+  lbEl.alt   = `${lbTitle} — ${img.image_type || 'image'}`;
+  document.getElementById('lightbox-meta').textContent =
+    `${img.image_type || 'image'}  ·  ${lbIdx + 1} / ${lbImages.length}  ·  ${lbTitle}`;
+  document.getElementById('lb-prev').disabled = lbIdx === 0;
+  document.getElementById('lb-next').disabled = lbIdx === lbImages.length - 1;
+}
+
+document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+document.getElementById('lightbox').addEventListener('click', e => {
+  if (e.target === document.getElementById('lightbox')) closeLightbox();
+});
+document.getElementById('lb-prev').addEventListener('click', () => {
+  if (lbIdx > 0) { lbIdx--; updateLightbox(); }
+});
+document.getElementById('lb-next').addEventListener('click', () => {
+  if (lbIdx < lbImages.length - 1) { lbIdx++; updateLightbox(); }
+});
+document.addEventListener('keydown', e => {
+  const lb = document.getElementById('lightbox');
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'Escape')     closeLightbox();
+  if (e.key === 'ArrowLeft'  && lbIdx > 0)                   { lbIdx--; updateLightbox(); }
+  if (e.key === 'ArrowRight' && lbIdx < lbImages.length - 1) { lbIdx++; updateLightbox(); }
+});
 
 // ── Search ─────────────────────────────────────────────────────────────────
 async function search(q, append = false) {
@@ -1454,5 +1817,16 @@ buildChips();
 loadFilterOptions();
 loadMeta();
 </script>
+<!-- ── Lightbox ──────────────────────────────────────────────────── -->
+<div id="lightbox">
+  <button id="lightbox-close" title="Close (Esc)">✕</button>
+  <img id="lightbox-img" src="" alt="">
+  <div id="lightbox-arrows">
+    <button class="lb-arrow" id="lb-prev" title="Previous (←)">‹</button>
+    <div id="lightbox-meta"></div>
+    <button class="lb-arrow" id="lb-next" title="Next (→)">›</button>
+  </div>
+</div>
+
 </body>
 </html>
