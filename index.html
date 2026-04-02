@@ -660,12 +660,15 @@
   }
 
   /* ── Image panel ──────────────────────────────────────────────── */
-  .result-card.has-image {
+  .result-card.has-image { display: block; }
+
+  .card-below {
     display: flex;
     gap: 16px;
     align-items: flex-start;
+    margin-top: 0;
   }
-  .result-card.has-image.img-right { flex-direction: row-reverse; }
+  .card-below.img-right { flex-direction: row-reverse; }
 
   .card-image-panel {
     flex-shrink: 0;
@@ -674,7 +677,6 @@
     flex-direction: column;
     align-items: center;
     gap: 6px;
-    padding-top: 2px;
   }
 
   .card-image-panel img {
@@ -934,17 +936,6 @@
   <div id="results"></div>
   <button id="load-more" style="display:none">Load more</button>
 </main>
-
-<!-- ── Lightbox ──────────────────────────────────────────────────── -->
-<div id="lightbox">
-  <button id="lightbox-close" title="Close (Esc)">✕</button>
-  <img id="lightbox-img" src="" alt="">
-  <div id="lightbox-arrows">
-    <button class="lb-arrow" id="lb-prev" title="Previous (←)">‹</button>
-    <div id="lightbox-meta"></div>
-    <button class="lb-arrow" id="lb-next" title="Next (→)">›</button>
-  </div>
-</div>
 
 <script>
 const DATASETTE = 'https://video8.fly.dev';
@@ -1208,7 +1199,8 @@ document.getElementById('tp-img-show-switch').addEventListener('click', () => {
   imgShow = !imgShow;
   localStorage.setItem('v8imgshow', imgShow ? '1' : '0');
   applyImgSettings();
-  triggerSearch();   // re-render cards
+  Object.keys(imagesCache).forEach(k => delete imagesCache[k]);
+  triggerSearch();
 });
 
 document.querySelectorAll('#tp-img-side-row .tp-fs-btn').forEach(btn => {
@@ -1217,7 +1209,8 @@ document.querySelectorAll('#tp-img-side-row .tp-fs-btn').forEach(btn => {
     imgSide = btn.dataset.side;
     localStorage.setItem('v8imgside', imgSide);
     applyImgSettings();
-    triggerSearch();   // re-render cards
+    Object.keys(imagesCache).forEach(k => delete imagesCache[k]);
+    triggerSearch();
   });
 });
 
@@ -1550,21 +1543,29 @@ function renderCard(row) {
     const releaseId = row.release_id;
     const title     = row.title_display || row.title_original;
 
-    // Wrap existing card content in .card-body
+    // Leave the header (first child, result-header div) attached to div directly
+    // so it spans full width. Wrap everything else in .card-body.
+    const header = div.firstChild;
     const body = document.createElement('div');
     body.className = 'card-body';
-    while (div.firstChild) body.appendChild(div.firstChild);
+    // Move all children except the header into body
+    while (div.childNodes.length > 1) body.appendChild(div.childNodes[1]);
     div.appendChild(body);
 
-    // Placeholder panel while loading
+    // .card-below wraps image panel + body side by side, below the title
+    const below = document.createElement('div');
+    below.className = 'card-below';
+    below.appendChild(body);
+    div.appendChild(below);
+
+    // Placeholder while image loads
     const placeholder = document.createElement('div');
     placeholder.className = 'img-placeholder';
     placeholder.textContent = '▣';
-
     if (imgSide === 'right') {
-      div.appendChild(placeholder);
+      below.appendChild(placeholder);
     } else {
-      div.insertBefore(placeholder, body);
+      below.insertBefore(placeholder, body);
     }
 
     // Lazy fetch when card enters viewport
@@ -1575,16 +1576,17 @@ function renderCard(row) {
       placeholder.remove();
       if (images.length) {
         div.classList.add('has-image');
-        if (imgSide === 'right') div.classList.add('img-right');
+        below.classList.toggle('img-right', imgSide === 'right');
         const panel = buildImagePanel(images, title);
         if (imgSide === 'right') {
-          div.appendChild(panel);
+          below.appendChild(panel);
         } else {
-          div.insertBefore(panel, body);
+          below.insertBefore(panel, body);
         }
       } else {
-        // No images -- restore plain layout
-        while (body.firstChild) div.insertBefore(body.firstChild, body);
+        // No images -- dismantle the below wrapper
+        while (body.firstChild) div.insertBefore(body.firstChild, below);
+        below.remove();
         body.remove();
       }
     }, { rootMargin: '200px' });
@@ -1828,5 +1830,16 @@ buildChips();
 loadFilterOptions();
 loadMeta();
 </script>
+<!-- ── Lightbox ──────────────────────────────────────────────────── -->
+<div id="lightbox">
+  <button id="lightbox-close" title="Close (Esc)">✕</button>
+  <img id="lightbox-img" src="" alt="">
+  <div id="lightbox-arrows">
+    <button class="lb-arrow" id="lb-prev" title="Previous (←)">‹</button>
+    <div id="lightbox-meta"></div>
+    <button class="lb-arrow" id="lb-next" title="Next (→)">›</button>
+  </div>
+</div>
+
 </body>
 </html>
