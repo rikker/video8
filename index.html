@@ -844,7 +844,7 @@
           </div>
           <span id="tp-img-label">Show images</span>
         </label>
-        <div class="tp-fs-row" id="tp-img-side-row" style="margin-top:6px">
+        <div class="tp-fs-row" id="tp-img-side-row" style="margin-top:6px" onclick="event.stopPropagation()">
           <button class="tp-fs-btn" data-side="left"  id="tp-side-left"  title="Image on left">◧</button>
           <button class="tp-fs-btn" data-side="right" id="tp-side-right" title="Image on right">◨</button>
         </div>
@@ -973,8 +973,15 @@ let filterHasImages = localStorage.getItem('v8hasimages') === '1';
 let imgShow = localStorage.getItem('v8imgshow') !== '0';  // default on
 let imgSide = localStorage.getItem('v8imgside') || 'left';
 
-// Canonical image type order for display
-const IMG_TYPE_ORDER = ['cover','reverse','spine','tape','insert'];
+// Canonical image type order: individual before group of same type,
+// cover first, then reverse, spine, tape, insert, then anything else.
+const IMG_TYPE_ORDER = [
+  'cover', 'cover_group',
+  'reverse', 'reverse_group',
+  'spine', 'spine_group',
+  'tape', 'tape_group',
+  'insert', 'insert_group',
+];
 function imgSortKey(type) {
   const i = IMG_TYPE_ORDER.indexOf((type||'').toLowerCase());
   return i === -1 ? IMG_TYPE_ORDER.length : i;
@@ -1578,7 +1585,7 @@ function renderCard(row) {
   div.appendChild(srcList);
 
   // ── Image panel (lazy-loaded via IntersectionObserver) ─────────
-  if (imgShow) {
+  if (imgShow && row.content_type !== 'Adult') {
     const releaseId = row.release_id;
     const title     = row.title_display || row.title_original;
 
