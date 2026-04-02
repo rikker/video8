@@ -935,6 +935,17 @@
   <button id="load-more" style="display:none">Load more</button>
 </main>
 
+<!-- ── Lightbox ──────────────────────────────────────────────────── -->
+<div id="lightbox">
+  <button id="lightbox-close" title="Close (Esc)">✕</button>
+  <img id="lightbox-img" src="" alt="">
+  <div id="lightbox-arrows">
+    <button class="lb-arrow" id="lb-prev" title="Previous (←)">‹</button>
+    <div id="lightbox-meta"></div>
+    <button class="lb-arrow" id="lb-next" title="Next (→)">›</button>
+  </div>
+</div>
+
 <script>
 const DATASETTE = 'https://video8.fly.dev';
 const PAGE_SIZE = 25;
@@ -1817,16 +1828,5 @@ buildChips();
 loadFilterOptions();
 loadMeta();
 </script>
-<!-- ── Lightbox ──────────────────────────────────────────────────── -->
-<div id="lightbox">
-  <button id="lightbox-close" title="Close (Esc)">✕</button>
-  <img id="lightbox-img" src="" alt="">
-  <div id="lightbox-arrows">
-    <button class="lb-arrow" id="lb-prev" title="Previous (←)">‹</button>
-    <div id="lightbox-meta"></div>
-    <button class="lb-arrow" id="lb-next" title="Next (→)">›</button>
-  </div>
-</div>
-
 </body>
 </html>
