@@ -920,6 +920,9 @@
       <label class="option-item">
         <input type="checkbox" id="highlight-blanks"> Highlight empty fields
       </label>
+      <label class="option-item">
+        <input type="checkbox" id="filter-has-images"> Has images
+      </label>
     </div>
   </div>
 </div>
@@ -965,6 +968,7 @@ let filterPublisher = '';
 let sortBy          = 'title_display';
 let sortDir         = 'ASC';
 let highlightBlanks = false;
+let filterHasImages = localStorage.getItem('v8hasimages') === '1';
 
 let imgShow = localStorage.getItem('v8imgshow') !== '0';  // default on
 let imgSide = localStorage.getItem('v8imgside') || 'left';
@@ -1105,8 +1109,9 @@ function applyTheme(mode, accent, hc, fs) {
   const hcCheck = document.getElementById('tp-hc-check');
   if (hcCheck) hcCheck.checked = hc;
 
-  // Update font size buttons
-  document.querySelectorAll('.tp-fs-btn').forEach(b => {
+  // Update font size buttons (scope to buttons with data-fs to avoid
+  // clobbering the image side buttons which share the tp-fs-btn class)
+  document.querySelectorAll('.tp-fs-btn[data-fs]').forEach(b => {
     b.classList.toggle('selected', b.dataset.fs === fs);
   });
 
@@ -1243,6 +1248,17 @@ if (savedHL === '1') {
   document.getElementById('highlight-blanks').checked = true;
 }
 
+document.getElementById('filter-has-images').addEventListener('change', e => {
+  filterHasImages = e.target.checked;
+  localStorage.setItem('v8hasimages', filterHasImages ? '1' : '0');
+  updateActiveTags();
+  triggerSearch();
+});
+
+if (filterHasImages) {
+  document.getElementById('filter-has-images').checked = true;
+}
+
 // ── Filter panel toggle ────────────────────────────────────────────────────
 document.getElementById('filter-toggle').addEventListener('click', () => {
   const panel = document.getElementById('filter-panel');
@@ -1361,6 +1377,14 @@ function updateActiveTags() {
     updateActiveTags();
     triggerSearch();
   });
+
+  if (filterHasImages) addTag(`Has images`, () => {
+    filterHasImages = false;
+    document.getElementById('filter-has-images').checked = false;
+    localStorage.setItem('v8hasimages', '0');
+    updateActiveTags();
+    triggerSearch();
+  });
 }
 
 // ── SQL builder ────────────────────────────────────────────────────────────
@@ -1404,6 +1428,10 @@ function buildSQL(q, offset, countOnly, adultOnly = false) {
   if (filterPublisher) {
     const sp = filterPublisher.replace(/'/g,"''");
     conditions.push(`r.id IN (SELECT rp2.release_id FROM release_publishers rp2 JOIN publishers p2 ON p2.id = rp2.publisher_id WHERE p2.name = '${sp}')`);
+  }
+
+  if (filterHasImages) {
+    conditions.push(`EXISTS (SELECT 1 FROM images i WHERE i.release_id = r.id)`);
   }
 
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
