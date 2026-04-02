@@ -640,7 +640,7 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 639,610,,,SRWF-9801,1994,Japan,NTSC,137,"¥3,800",4-988009-980171,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,
 640,611,,,SRWF-9591,1993,Japan,NTSC,127,,4-988009-959177,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,Red banner with actor names at top of front cover
 641,611,,,SRWF-9779 (extrapolated from barcode),1994,Japan,NTSC,127,,4-988009-977973,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,No red banner with actor names at top of front cover
-642,612,,,A-?????,1987,Japan,NTSC,120,"¥13,800",n/a,,Hi-Fi/Digital Mono,,,Japanese,,
+642,612,,,A-10013,1987,Japan,NTSC,120,"¥13,800",n/a,,Hi-Fi/Digital Mono,,,Japanese,,
 643,612,,,00HS-80418 (sticker on spine),1988.03.21,Japan,NTSC,120,"¥12,950",,,Hi-Fi/Digital Mono,,,Japanese,,
 644,612,,,CSWF-8752,1990.11.21,Japan,NTSC,120,"¥3,800",4-988009-875279,,Hi-Fi/Digital Mono,,,Japanese,,RCA blue border release
 645,613,,,00HS-80615,1989.04.21,Japan,NTSC,97,"¥14,000",4-988009-058078,,Hi-Fi Mono/Digital Stereo,,,Japanese,,RD collection
@@ -870,7 +870,7 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 869,785,,,SRWF-9685,1993,Japan,NTSC,102,"¥4,700",4-988009-968575,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,
 870,786,,,DV-0067,1989.10.21,Japan,NTSC,120,"¥3,800",,,Mono,,,Japanese,,
 871,787,,,SRWD-289,1995,Japan,NTSC,99,,4-988009-028958,,Hi-Fi Stereo Dolby Surround,,,Japanese,,
-872,788,,,SRWF-???? (fuzzy in pic),,Japan,NTSC,,"¥4,700",,,,,,,,
+872,788,,,SRWF-9944,,Japan,NTSC,118,"¥4,700",4-988009-994475,,Hi-Fi/Digital Stereo,,,,,
 873,789,,,00HS-80603,1989.03.21,Japan,NTSC,120,"¥14,800",4-988009-056173,,Hi-Fi Stereo Dolby Surround,,,Japanese,,Warner blue spine release
 874,789,,,SRWF-9717,1993,Japan,NTSC,120,"¥3,800",4-988009-971773,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,Warner white spine release
 875,790,,,SRWF-9830,1994,Japan,NTSC,113,"¥4,700",4-988009-983073,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,
