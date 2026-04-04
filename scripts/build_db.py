@@ -93,6 +93,7 @@ TABLES = {
             filename TEXT,
             url TEXT,
             source_slug TEXT,
+            source_type TEXT,
             notes TEXT
         )
     ''',

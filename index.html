@@ -982,9 +982,25 @@ const IMG_TYPE_ORDER = [
   'tape', 'tape_group',
   'insert', 'insert_group',
 ];
-function imgSortKey(type) {
-  const i = IMG_TYPE_ORDER.indexOf((type||'').toLowerCase());
-  return i === -1 ? IMG_TYPE_ORDER.length : i;
+
+// Source tier order: scans first, then personal collection, then archive
+// individual images, then archive group images.
+const SOURCE_TIER = { 'scan': 0, 'collection': 1 };
+function sourceTier(img) {
+  const st = (img.source_type || '').toLowerCase();
+  if (st in SOURCE_TIER) return SOURCE_TIER[st];
+  // archive: group types rank lower than individual types
+  return (img.image_type || '').toLowerCase().endsWith('_group') ? 3 : 2;
+}
+
+function imgSortKey(a, b) {
+  const tierDiff = sourceTier(a) - sourceTier(b);
+  if (tierDiff !== 0) return tierDiff;
+  const ai = IMG_TYPE_ORDER.indexOf((a.image_type || '').toLowerCase());
+  const bi = IMG_TYPE_ORDER.indexOf((b.image_type || '').toLowerCase());
+  const an = ai === -1 ? IMG_TYPE_ORDER.length : ai;
+  const bn = bi === -1 ? IMG_TYPE_ORDER.length : bi;
+  return an - bn;
 }
 
 const IMAGE_BASE = 'data/images';
@@ -1650,11 +1666,11 @@ function esc(s) {
 // ── Images ─────────────────────────────────────────────────────────────────
 async function fetchImages(releaseId) {
   if (imagesCache[releaseId]) return imagesCache[releaseId];
-  const sql = `SELECT id, release_id, image_type, filename, url FROM images WHERE release_id = ${releaseId}`;
+  const sql = `SELECT id, release_id, image_type, filename, url, source_slug, source_type FROM images WHERE release_id = ${releaseId}`;
   try {
     const r = await fetch(`${DATASETTE}/video8.json?sql=${encodeURIComponent(sql)}&_shape=array`);
     const d = await r.json();
-    const sorted = (Array.isArray(d) ? d : []).sort((a, b) => imgSortKey(a.image_type) - imgSortKey(b.image_type));
+    const sorted = (Array.isArray(d) ? d : []).sort(imgSortKey);
     imagesCache[releaseId] = sorted;
     return sorted;
   } catch(e) {
