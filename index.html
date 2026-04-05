@@ -1004,8 +1004,13 @@ function imgSortKey(a, b) {
 }
 
 const IMAGE_BASE = 'data/images';
+function imageBucket(releaseId) {
+  return Math.floor(parseInt(releaseId) / 1000) * 1000;
+}
 function imageUrl(img) {
-  return img.url || `${IMAGE_BASE}/${img.release_id}/${img.filename}`;
+  if (img.url) return img.url;
+  const bucket = imageBucket(img.release_id);
+  return `${IMAGE_BASE}/${bucket}/${img.release_id}/${img.filename}`;
 }
 
 const imagesCache = {};
