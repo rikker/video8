@@ -94,6 +94,8 @@ TABLES = {
             url TEXT,
             source_slug TEXT,
             source_type TEXT,
+            width INTEGER,
+            height INTEGER,
             notes TEXT
         )
     ''',
