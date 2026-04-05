@@ -846,14 +846,14 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 845,766,,,DV-0129,1990.07.06,Japan,NTSC,171,"¥5,200",4-988013-817876,,Hi-Fi/Digital Stereo,,,Japanese,,2 tapes
 846,767,,,00HS-80001,1986.09.21,Japan,NTSC,99,"¥11,800 (printed on spine); ¥11,080 (discounted in databook)",n/a,,Hi-Fi/Digital Mono,,,Japanese,,
 847,768,,,00HS-80019,1986.09.21,Japan,NTSC,95,"¥11,800 (printed on spine); ¥11,080 (discounted in databook)",n/a,,Hi-Fi/Digital Mono,,,Japanese,,
-848,769,,,"00HS-80601, 00HS-80602",1989.03.21,Japan,NTSC,154,"¥15,800",,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,2 tapes
-849,769,,,"SRWF-9422, SRWF-9423",1992,Japan,NTSC,152,"¥4,800",4-988009-942278,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,2 tapes
+848,769,,,"00HS-80601, 00HS-80602",1989.03.21,Japan,NTSC,154,"¥15,800",,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,2 tapes; blue and white WB shield on top left of cover; need pics of spine/reverse
+849,769,,,"SRWF-9422, SRWF-9423",1992,Japan,NTSC,152,"¥4,800",4-988009-942278,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,2 tapes; gold WB shield on top left of cover and on spine
 850,770,,,SRWF-8930,1991.06.21,Japan,NTSC,116,"¥3,800",,,Hi-Fi/Digital Mono,,,Japanese,,
 851,771,,,A-10016,1984,Japan,NTSC,103,"¥13,800",n/a,,Mono,,,Japanese,,
 852,771,,,00HS-80142 (sticker on spine),1987.09.21,Japan,NTSC,103,"¥12,950",n/a,,Hi-Fi/Digital Mono,,,Japanese,,
 853,772,,,A-10938,,Japan,NTSC,108,"¥13,800",n/a,,Hi-Fi Stereo,,,Japanese,,
 854,772,,,00HS-80093,1987.06.21,Japan,NTSC,108,"¥12,950",,,Hi-Fi Mono/Digital Stereo,,,Japanese,,
-855,772,,,SRWF-9358,1991.11.01,Japan,NTSC,108,"¥2,800",4-988009-934877,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,"RCA blue border release; 1 of 10 titles in the Nov 1991-Mar 1992 promotion for ¥2,800 each (Robocop 2, Blade Runner International Cut, NeverEnding Story, Look Who's Talking, Casualties of War, Karate Kid 3, Little Nikita, Wait Until Dark, F/X); price was not printed on spine of these promotional copies, but rather on hype stickers on the outer shrink"
+855,772,,,SRWF-9348,1991.11.01,Japan,NTSC,108,"¥2,800",4-988009-934877,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,"RCA blue border release; 1 of 10 titles in the Nov 1991-Mar 1992 promotion for ¥2,800 each (Robocop 2, Blade Runner International Cut, NeverEnding Story, Look Who's Talking, Casualties of War, Karate Kid 3, Little Nikita, Wait Until Dark, F/X); price was not printed on spine of these promotional copies, but rather on hype stickers on the outer shrink"
 856,773,,,SRWF-9400,1992.04.22,Japan,NTSC,107,"¥4,700",4-988009-940076,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,
 857,774,,,SRWF-9773,1993,Japan,NTSC,113,"¥4,700",4-988009-977379,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,
 858,775,,,A-?????,,Japan,NTSC,110,"¥13,800",,,Hi-Fi Mono/Digital Stereo,,,Japanese,,
@@ -2652,7 +2652,7 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 2651,2359,,,,,Japan,NTSC,,,,,,,,,,orange label
 2652,2359,,,,,Japan,NTSC,,,,,,,,,,blue label
 2653,2360,,,,1989,Japan,NTSC,,,,,,,,,,
-2654,2361,,,,1990,Japan,NTSC,,,,,,,,,,
+2654,2361,,,,1990,Japan,NTSC,,,,,,,,,,Summer 1990
 2655,2362,,,,1990,Japan,NTSC,,,,,,,,,,
 2656,2363,,,,1991,Japan,NTSC,60,,n/a,,,,,,,
 2657,2364,,,JAM-0021,,Japan,NTSC,,"¥7,000","4-993534-10021?? (extrapolated, incomplete)",,,,,,,
@@ -3172,7 +3172,7 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 3171,2857,,,SRWW-9409,,Japan,NTSC,60,"¥3,980",4-988009-940977,,,,,,,
 3172,2858,,,,,Japan,NTSC,,,,,,,,,,
 3173,2859,,,SRWW-8968,,Japan,NTSC,,"¥2,980",,,,,,,,
-3174,2860,,,PVE-0002,,Japan,NTSC,,"¥11,800",,,,,,,,
+3174,2860,,,PVE-0002,,Japan,NTSC,,"¥11,800",,,,,,,,Girls of Rock & Roll / ガールズオフロックンロール
 3175,2861,,,CSWW-8628,,Japan,NTSC,40,"¥4,500",4-988009-862873,,Hi-Fi/Digital Mono,,,,,
 3176,2862,,,,,Japan,NTSC,,,,,,,,,,
 3177,2863,,,SRWW-9377,,Japan,NTSC,,"¥3,800",,,,,,,,
