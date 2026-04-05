@@ -978,6 +978,7 @@ let filterHasImages = localStorage.getItem('v8hasimages') === '1';
 
 let imgShow = localStorage.getItem('v8imgshow') !== '0';  // default on
 let imgSide = localStorage.getItem('v8imgside') || 'left';
+let showSupersededGroups = localStorage.getItem('v8superseded') === '1';
 
 // Canonical image type order: individual before group of same type,
 // cover first, then reverse, spine, tape, insert, then anything else.
@@ -1704,7 +1705,6 @@ function esc(s) {
 }
 
 // ── Images ─────────────────────────────────────────────────────────────────
-let showSupersededGroups = localStorage.getItem('v8superseded') === '1';
 
 async function fetchImages(releaseId) {
   const cacheKey = `${releaseId}_${showSupersededGroups ? 'all' : 'sup'}`;
