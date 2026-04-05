@@ -1004,13 +1004,8 @@ function imgSortKey(a, b) {
 }
 
 const IMAGE_BASE = 'data/images';
-function imageBucket(releaseId) {
-  return Math.floor(parseInt(releaseId) / 1000) * 1000;
-}
 function imageUrl(img) {
-  if (img.url) return img.url;
-  const bucket = imageBucket(img.release_id);
-  return `${IMAGE_BASE}/${bucket}/${img.release_id}/${img.filename}`;
+  return img.url || `${IMAGE_BASE}/${img.release_id}/${img.filename}`;
 }
 
 const imagesCache = {};
@@ -1337,7 +1332,7 @@ document.getElementById('sort-dir').addEventListener('click', () => {
 // ── Country / Publisher dropdowns ──────────────────────────────────────────
 async function loadFilterOptions() {
   try {
-    const cSql = `SELECT DISTINCT country FROM releases WHERE country != '' ORDER BY country`;
+    const cSql = `SELECT DISTINCT country_release FROM releases WHERE country_release != '' ORDER BY country_release`;
     const pSql = `SELECT name FROM publishers ORDER BY name`;
     const [cRes, pRes] = await Promise.all([
       fetch(`${DATASETTE}/video8.json?sql=${encodeURIComponent(cSql)}&_shape=array`).then(r=>r.json()),
@@ -1355,7 +1350,7 @@ async function loadFilterOptions() {
       o.value = o.textContent = r.name;
       pSel.appendChild(o);
     });
-  } catch(e) {}
+  } catch(e) { console.error('loadFilterOptions error:', e); }
 }
 
 document.getElementById('filter-country').addEventListener('change', e => {

@@ -54,9 +54,8 @@ function syncToGitHub() {
     const syncedVal = row[corrSyncedCol - 1];
     if (syncedVal && syncedVal !== '') return;
 
-    const releaseId = String(row[corrHeaders.indexOf('release_id')] || '').trim();
-    // title check — contributors enter title_display (English) or title_original
-    const titleVal  = String(row[corrHeaders.indexOf('title_display')] || row[corrHeaders.indexOf('title_original')] || '').trim();
+    const releaseId    = String(row[corrHeaders.indexOf('release_id')] || '').trim();
+    const titleDisplay = String(row[corrHeaders.indexOf('title_display')] || '').trim();
 
     if (!releaseId) {
       corrFlagged.push({ rowNum, row, headers: corrHeaders, reason: 'Missing release_id' });
@@ -67,12 +66,16 @@ function syncToGitHub() {
       corrFlagged.push({ rowNum, row, headers: corrHeaders, reason: `release_id ${releaseId} not found in database` });
       return;
     }
-    const existingTitle = titles.rows.find(t => t.id === existing.title_id);
-    if (existingTitle && titleVal) {
-      const dbTitle = (existingTitle.title_en || existingTitle.title_original || '').toLowerCase().trim();
-      if (dbTitle && dbTitle !== titleVal.toLowerCase().trim()) {
-        corrFlagged.push({ rowNum, row, headers: corrHeaders, reason: `Title mismatch: sheet says "${titleVal}", database has "${existingTitle.title_original}"` });
-        return;
+    // Validate title_display against DB if provided -- mismatch is a warning flag
+    // but doesn't block the correction (titles may themselves need fixing)
+    if (titleDisplay) {
+      const existingTitle = titles.rows.find(t => t.id === existing.title_id);
+      if (existingTitle) {
+        const dbDisplay = (existingTitle.title_en || existingTitle.title_original || existingTitle.title_ja || '').toLowerCase().trim();
+        if (dbDisplay && dbDisplay !== titleDisplay.toLowerCase().trim()) {
+          corrFlagged.push({ rowNum, row, headers: corrHeaders, reason: `Title mismatch: sheet says "${titleDisplay}", database has "${dbDisplay}". If correcting the title, update title fields and leave title_display as the current DB value.` });
+          return;
+        }
       }
     }
     corrClean.push({ rowNum, row, headers: corrHeaders, releaseId, sheet: corrSheet });
@@ -156,6 +159,8 @@ function syncToGitHub() {
   corrClean.forEach(item => {
     const { row, headers, releaseId } = item;
     const existing = releaseById[releaseId];
+
+    // Apply release field corrections (only non-empty cells)
     const RELEASE_FIELDS = [
       'title_release','title_release_lang','catalog_number','release_date','country_release','encoding',
       'runtime_mins','list_price','upc','isbn','audio_format','audio_language',
@@ -167,6 +172,25 @@ function syncToGitHub() {
       const val = String(row[col] || '').trim();
       if (val !== '') existing[field] = val;
     });
+
+    // Apply title field corrections (only non-empty cells)
+    const TITLE_FIELDS = ['title_original', 'title_original_lang', 'title_en', 'title_ja'];
+    const existingTitle = titles.rows.find(t => t.id === existing.title_id);
+    if (existingTitle) {
+      TITLE_FIELDS.forEach(field => {
+        const col = headers.indexOf(field);
+        if (col === -1) return;
+        const val = String(row[col] || '').trim();
+        if (val !== '') existingTitle[field] = val;
+      });
+      // Also apply year_made, content_type, country_origin which live on titles
+      ['year_made', 'content_type', 'country_origin'].forEach(field => {
+        const col = headers.indexOf(field);
+        if (col === -1) return;
+        const val = String(row[col] || '').trim();
+        if (val !== '') existingTitle[field] = val;
+      });
+    }
 
     // Handle publisher correction
     const pubName = String(row[headers.indexOf('publisher')] || '').trim();
