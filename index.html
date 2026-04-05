@@ -6,6 +6,7 @@
 <title>Video8 Database</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
 <style>
   /* ── Themes ───────────────────────────────────────────────────── */
   /* Accent colors: gold, blue, green, rust, violet */
@@ -97,6 +98,33 @@
   [data-fs="s"] { --fs-title: 14px; --fs-body: 11px; --fs-label: 8px;  --fs-meta: 10px; --fs-tag: 9px; }
   [data-fs="m"] { --fs-title: 16px; --fs-body: 12px; --fs-label: 9px;  --fs-meta: 11px; --fs-tag: 10px; }
   [data-fs="l"] { --fs-title: 19px; --fs-body: 14px; --fs-label: 10px; --fs-meta: 13px; --fs-tag: 11px; }
+
+  /* DB loading overlay */
+  #db-loading {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 16px;
+    z-index: 9999;
+    font-family: var(--mono, monospace);
+    font-size: 13px;
+    color: var(--text-dim);
+    transition: opacity 0.3s;
+  }
+  #db-loading.hidden { opacity: 0; pointer-events: none; }
+  #db-loading-bar {
+    width: 200px; height: 2px;
+    background: var(--border);
+    position: relative; overflow: hidden;
+  }
+  #db-loading-bar::after {
+    content: '';
+    position: absolute; left: -50%; width: 50%; height: 100%;
+    background: var(--accent);
+    animation: dbload 1s infinite linear;
+  }
+  @keyframes dbload { to { left: 150%; } }
 
   /* ── Header ───────────────────────────────────────────────────── */
   header {
@@ -859,7 +887,7 @@
     <a href="https://github.com/rikker/video8#readme" target="_blank" rel="noopener">README</a>
     <a href="https://github.com/rikker/video8/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">How to Contribute</a>
     <a href="https://github.com/rikker/video8" target="_blank" rel="noopener">GitHub</a>
-    <a href="https://video8.fly.dev" target="_blank" rel="noopener">Full Database ↗</a>
+    <a href="https://github.com/rikker/video8" target="_blank" rel="noopener">GitHub ↗</a>
   </div>
 </div>
 
@@ -930,6 +958,11 @@
   </div>
 </div>
 
+<div id="db-loading">
+  <div>Loading database…</div>
+  <div id="db-loading-bar"></div>
+</div>
+
 <main>
   <div id="state">
     <span class="state-large">⏚</span>
@@ -955,8 +988,43 @@
 </div>
 
 <script>
-const DATASETTE = 'https://video8.fly.dev';
 const PAGE_SIZE = 25;
+
+// ── sql.js database ─────────────────────────────────────────────────────────
+let db = null;
+let dbReady = false;
+
+async function initDb() {
+  try {
+    const SQL = await initSqlJs({
+      locateFile: f => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/${f}`
+    });
+    const buf = await fetch('video8.sqlite').then(r => r.arrayBuffer());
+    db = new SQL.Database(new Uint8Array(buf));
+    dbReady = true;
+    const overlay = document.getElementById('db-loading');
+    overlay.classList.add('hidden');
+    setTimeout(() => overlay.remove(), 400);
+    buildChips();
+    loadFilterOptions();
+    loadMeta();
+  } catch(e) {
+    document.getElementById('db-loading').textContent = 'Failed to load database. Please refresh.';
+    console.error('DB init error:', e);
+  }
+}
+
+function queryDb(sql, params = []) {
+  if (!dbReady) throw new Error('Database not ready');
+  const results = db.exec(sql, params);
+  if (!results.length) return [];
+  const { columns, values } = results[0];
+  return values.map(row => {
+    const obj = {};
+    columns.forEach((col, i) => { obj[col] = row[i]; });
+    return obj;
+  });
+}
 
 // ── State ──────────────────────────────────────────────────────────────────
 let currentQuery  = '';
@@ -1368,10 +1436,8 @@ async function loadFilterOptions() {
   try {
     const cSql = `SELECT DISTINCT country_release FROM releases WHERE country_release != '' ORDER BY country_release`;
     const pSql = `SELECT name FROM publishers ORDER BY name`;
-    const [cRes, pRes] = await Promise.all([
-      fetch(`${DATASETTE}/video8.json?sql=${encodeURIComponent(cSql)}&_shape=array`).then(r=>r.json()),
-      fetch(`${DATASETTE}/video8.json?sql=${encodeURIComponent(pSql)}&_shape=array`).then(r=>r.json()),
-    ]);
+    const cRes = queryDb(cSql);
+    const pRes = queryDb(pSql);
     const cSel = document.getElementById('filter-country');
     cRes.forEach(r => {
       const o = document.createElement('option');
@@ -1519,17 +1585,15 @@ function buildSQL(q, offset, countOnly, adultOnly = false) {
 
 // ── Fetch helpers ──────────────────────────────────────────────────────────
 async function fetchCount(q) {
-  const r = await fetch(`${DATASETTE}/video8.json?sql=${encodeURIComponent(buildSQL(q,0,true))}&_shape=array`);
-  const d = await r.json();
+  const d = queryDb(buildSQL(q, 0, true));
   return d[0]?.count || 0;
 }
 
 async function fetchReleases(q, offset) {
-  const r = await fetch(`${DATASETTE}/video8.json?sql=${encodeURIComponent(buildSQL(q,offset,false))}&_shape=array`);
-  const d = await r.json();
+  const d = queryDb(buildSQL(q, offset, false));
   if (!Array.isArray(d)) {
-    console.error('Datasette error:', d.error || JSON.stringify(d));
-    throw new Error(d.error || 'Query failed');
+    console.error('Query error:', d);
+    throw new Error('Query failed');
   }
   return d;
 }
@@ -1537,8 +1601,7 @@ async function fetchReleases(q, offset) {
 async function fetchSources(releaseId) {
   if (sourcesCache[releaseId]) return sourcesCache[releaseId];
   const sql = `SELECT source_type, url, catalog_locator, notes FROM sources WHERE release_id = ${releaseId}`;
-  const r = await fetch(`${DATASETTE}/video8.json?sql=${encodeURIComponent(sql)}&_shape=array`);
-  const d = await r.json();
+  const d = queryDb(sql);
   sourcesCache[releaseId] = d;
   return d;
 }
@@ -1707,11 +1770,7 @@ async function fetchImages(releaseId) {
     (SELECT COUNT(*) FROM images i2 WHERE i2.filename = i.filename) as link_count
     FROM images i WHERE i.release_id = ${releaseId}`;
   try {
-    const r = await fetch(`${DATASETTE}/video8.json?sql=${encodeURIComponent(sql)}&_shape=array`);
-    const d = await r.json();
-    let imgs = Array.isArray(d) ? d : [];
-    // If showSupersededGroups is off (default), suppress group images where
-    // an individual of the same base type exists for this release.
+    let imgs = queryDb(sql);
     if (!showSupersededGroups) {
       const individualTypes = new Set(
         imgs.filter(i => !(i.image_type || '').toLowerCase().endsWith('_group'))
@@ -1873,14 +1932,14 @@ async function search(q, append = false) {
     // Check for hidden adult results
     if (!append && !showAdult()) {
       const adultSql = buildSQL(q, 0, true, true);
-      fetch(`${DATASETTE}/video8.json?sql=${encodeURIComponent(adultSql)}&_shape=array`)
-        .then(r => r.json()).then(d => {
-          const n = d[0]?.count || 0;
-          if (n > 0) {
-            noticeEl.style.display = 'block';
-            noticeEl.textContent = `⚠ ${n} Adult title${n !== 1 ? 's' : ''} hidden — select "Adult" in Filters to include ${n !== 1 ? 'them' : 'it'}`;
-          }
-        });
+      try {
+        const d = queryDb(adultSql);
+        const n = d[0]?.count || 0;
+        if (n > 0) {
+          noticeEl.style.display = 'block';
+          noticeEl.textContent = `⚠ ${n} Adult title${n !== 1 ? 's' : ''} hidden — select "Adult" in Filters to include ${n !== 1 ? 'them' : 'it'}`;
+        }
+      } catch(e) {}
     }
 
     if (!append && rows.length === 0) {
@@ -1900,7 +1959,7 @@ async function search(q, append = false) {
       loadMoreEl.style.display = 'none';
     }
   } catch(e) {
-    stateEl.innerHTML = '<span class="state-large">✕</span>Error connecting to database';
+    stateEl.innerHTML = '<span class="state-large">✕</span>Error querying database';
     stateEl.style.display = 'block';
     console.error(e);
   }
@@ -1915,8 +1974,7 @@ function triggerSearch() {
 async function loadMeta() {
   try {
     const sql = `SELECT (SELECT COUNT(*) FROM releases) as releases, (SELECT COUNT(*) FROM titles) as titles`;
-    const r = await fetch(`${DATASETTE}/video8.json?sql=${encodeURIComponent(sql)}&_shape=array`);
-    const d = await r.json();
+    const d = queryDb(sql);
     document.getElementById('db-meta').textContent =
       `${d[0].releases.toLocaleString()} releases · ${d[0].titles.toLocaleString()} titles`;
   } catch(e) {}
@@ -1947,9 +2005,7 @@ document.getElementById('search').addEventListener('input', e => {
 document.getElementById('load-more').addEventListener('click', () => search(currentQuery, true));
 
 // ── Init ───────────────────────────────────────────────────────────────────
-buildChips();
-loadFilterOptions();
-loadMeta();
+initDb();
 </script>
 </body>
 </html>

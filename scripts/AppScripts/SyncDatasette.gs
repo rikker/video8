@@ -1,4 +1,3 @@
-const DATASETTE = 'https://video8.fly.dev';
 const SHEET_ID = '1vnKsTamAUo6x9F3PxMBZFwKJvnt-0DOHNGhlW-LoVA0';
 
 const BROWSE_COLS = [
@@ -22,61 +21,65 @@ const DROPDOWNS = {
 function syncBrowse() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName('Browse');
+  const token = PropertiesService.getScriptProperties().getProperty('GITHUB_TOKEN');
 
-  const PAGE = 1000;
-  let offset = 0;
-  let allRows = [];
-
-  while (true) {
-    const sql = `SELECT
-      r.id as release_id,
-      COALESCE(t.title_en, t.title_original, t.title_ja) as title_display,
-      t.title_original, t.title_original_lang, t.title_en, t.title_ja,
-      t.year_made, t.content_type, t.country_origin,
-      GROUP_CONCAT(p.name, ' / ') as publisher,
-      r.catalog_number, r.release_date, r.country_release,
-      r.encoding, r.runtime_mins, r.list_price, r.upc, r.isbn,
-      r.audio_format, r.audio_language, r.audio_dubbed, r.subtitle_language,
-      r.title_release, r.title_release_lang,
-      r.promo, r.notes
-    FROM releases r
-    JOIN titles t ON r.title_id = t.id
-    LEFT JOIN release_publishers rp ON rp.release_id = r.id
-    LEFT JOIN publishers p ON p.id = rp.publisher_id
-    GROUP BY r.id
-    ORDER BY title_display, r.release_date
-    LIMIT ${PAGE} OFFSET ${offset}`;
-
-    const url = `${DATASETTE}/video8.json?sql=${encodeURIComponent(sql)}&_shape=array`;
-
-    let response;
-    for (let attempt = 1; attempt <= 3; attempt++) {
-      try {
-        response = UrlFetchApp.fetch(url, {muteHttpExceptions: true});
-        if (response.getResponseCode() === 200) break;
-        Logger.log('HTTP ' + response.getResponseCode() + ': ' + response.getContentText().substring(0, 2000));
-        if (attempt < 3) Utilities.sleep(5000);
-      } catch(e) {
-        if (attempt === 3) throw e;
-        Utilities.sleep(5000);
-      }
-    }
-
-    if (response.getResponseCode() !== 200) {
-      SpreadsheetApp.getUi().alert(
-        'Sync failed',
-        `Could not reach video8.fly.dev (code ${response.getResponseCode()}). The server may be waking up — try again in 30 seconds.`,
-        SpreadsheetApp.getUi().ButtonSet.OK
-      );
-      return;
-    }
-
-    const rows = JSON.parse(response.getContentText());
-    if (!rows.length) break;
-    allRows = allRows.concat(rows);
-    if (rows.length < PAGE) break;
-    offset += PAGE;
+  if (!token) {
+    SpreadsheetApp.getUi().alert('GITHUB_TOKEN not set in Script Properties.');
+    return;
   }
+
+  // Load CSVs from GitHub (same approach as SyncNew.gs)
+  const releases    = loadCSVFromGitHub(token, 'data/releases.csv');
+  const titles      = loadCSVFromGitHub(token, 'data/titles.csv');
+  const publishers  = loadCSVFromGitHub(token, 'data/publishers.csv');
+  const releasePubs = loadCSVFromGitHub(token, 'data/release_publishers.csv');
+
+  // Build lookup maps
+  const titleById = {};
+  titles.rows.forEach(t => { titleById[t.id] = t; });
+
+  const pubById = {};
+  publishers.rows.forEach(p => { pubById[p.id] = p; });
+
+  // Build release_id -> publisher names map
+  const pubsByRelease = {};
+  releasePubs.rows.forEach(rp => {
+    const pub = pubById[rp.publisher_id];
+    if (!pub) return;
+    if (!pubsByRelease[rp.release_id]) pubsByRelease[rp.release_id] = [];
+    pubsByRelease[rp.release_id].push(pub.name);
+  });
+
+  // Build rows matching BROWSE_COLS
+  const allRows = releases.rows.map(r => {
+    const t = titleById[r.title_id] || {};
+    const titleDisplay = t.title_en || t.title_original || t.title_ja || '';
+    const publisher = (pubsByRelease[r.id] || []).join(' / ');
+    return BROWSE_COLS.map(col => {
+      switch(col) {
+        case 'release_id':          return r.id || '';
+        case 'title_display':       return titleDisplay;
+        case 'title_original':      return t.title_original || '';
+        case 'title_original_lang': return t.title_original_lang || '';
+        case 'title_en':            return t.title_en || '';
+        case 'title_ja':            return t.title_ja || '';
+        case 'year_made':           return t.year_made || '';
+        case 'content_type':        return t.content_type || '';
+        case 'country_origin':      return t.country_origin || '';
+        case 'publisher':           return publisher;
+        default:                    return r[col] || '';
+      }
+    });
+  });
+
+  // Sort by title_display then release_date
+  const titleIdx = BROWSE_COLS.indexOf('title_display');
+  const dateIdx  = BROWSE_COLS.indexOf('release_date');
+  allRows.sort((a, b) => {
+    const t = (a[titleIdx] || '').localeCompare(b[titleIdx] || '');
+    if (t !== 0) return t;
+    return (a[dateIdx] || '').localeCompare(b[dateIdx] || '');
+  });
 
   // Always rewrite header row to match canonical BROWSE_COLS order
   sheet.getRange(1, 1, 1, BROWSE_COLS.length).setValues([BROWSE_COLS]);
@@ -85,30 +88,39 @@ function syncBrowse() {
   const lastRow = sheet.getLastRow();
   if (lastRow > 1) sheet.getRange(2, 1, lastRow - 1, BROWSE_COLS.length).clearContent();
 
-  const data = allRows.map(row => BROWSE_COLS.map(col => row[col] ?? ''));
-  if (data.length > 0) {
-    sheet.getRange(2, 1, data.length, BROWSE_COLS.length).setValues(data);
+  if (allRows.length > 0) {
+    sheet.getRange(2, 1, allRows.length, BROWSE_COLS.length).setValues(allRows);
   }
 
   sheet.setFrozenRows(1);
-  Logger.log(`Browse synced: ${data.length} rows`);
-  SpreadsheetApp.getUi().alert('Browse synced', `${data.length} rows loaded.`, SpreadsheetApp.getUi().ButtonSet.OK);
+  Logger.log(`Browse synced: ${allRows.length} rows`);
+  SpreadsheetApp.getUi().alert('Browse synced', `${allRows.length} rows loaded.`, SpreadsheetApp.getUi().ButtonSet.OK);
 }
 
 function setupDropdowns() {
   const ss = SpreadsheetApp.openById(SHEET_ID);
+  const token = PropertiesService.getScriptProperties().getProperty('GITHUB_TOKEN');
 
-  const pubUrl = `${DATASETTE}/video8.json?sql=${encodeURIComponent('SELECT name FROM publishers WHERE parent_id != "" OR id NOT IN (SELECT DISTINCT parent_id FROM publishers WHERE parent_id != "") ORDER BY name')}&_shape=array`;
-  const pubResponse = UrlFetchApp.fetch(pubUrl);
-  const publishers = JSON.parse(pubResponse.getContentText()).map(r => r.name);
+  if (!token) {
+    SpreadsheetApp.getUi().alert('GITHUB_TOKEN not set in Script Properties.');
+    return;
+  }
 
-  const afUrl = `${DATASETTE}/video8.json?sql=${encodeURIComponent('SELECT DISTINCT audio_format FROM releases WHERE audio_format != "" ORDER BY audio_format')}&_shape=array`;
-  const afResponse = UrlFetchApp.fetch(afUrl);
-  const audioFormats = JSON.parse(afResponse.getContentText()).map(r => r.audio_format);
+  const publishers  = loadCSVFromGitHub(token, 'data/publishers.csv');
+  const releases    = loadCSVFromGitHub(token, 'data/releases.csv');
+
+  const pubNames = publishers.rows
+    .filter(p => p.parent_id || !publishers.rows.some(p2 => p2.parent_id === p.id))
+    .map(p => p.name)
+    .sort();
+
+  const audioFormats = [...new Set(
+    releases.rows.map(r => r.audio_format).filter(Boolean)
+  )].sort();
 
   const allDropdowns = {
     ...DROPDOWNS,
-    publisher: publishers,
+    publisher: pubNames,
     audio_format: audioFormats,
   };
 
@@ -178,8 +190,7 @@ function updateSubmissionHeaders() {
   ];
 
   const CORRECTIONS_HEADERS = [
-    'release_id', 'title_display',
-    'title_original', 'title_original_lang', 'title_en', 'title_ja',
+    'release_id', 'title_original',
     'year_made', 'release_date', 'content_type', 'country_release', 'country_origin',
     'publisher', 'catalog_number', 'encoding',
     'runtime_mins', 'list_price', 'upc', 'isbn',
