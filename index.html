@@ -155,6 +155,7 @@
   .search-wrap {
     flex: 1;
     min-width: 180px;
+    max-width: 480px;
     position: relative;
   }
 
@@ -904,7 +905,7 @@
 <div id="tab-bar">
   <button class="tab-btn" id="tab-filters">⚙ Filters &amp; Sort</button>
   <button class="tab-btn" id="tab-images">▣ Image Options</button>
-  <button class="tab-btn" id="tab-appearance">☀</button>
+  <button class="tab-btn" id="tab-appearance">☀ Theme</button>
   <div id="tab-active-tags"></div>
 </div>
 
@@ -1403,14 +1404,14 @@ document.getElementById('tp-img-show-switch').addEventListener('click', () => {
 });
 
 document.getElementById('tp-side-left').addEventListener('click', () => {
-  imgSide = 'left';
-  localStorage.setItem('v8imgside', 'left');
+  imgSide = 'right';
+  localStorage.setItem('v8imgside', 'right');
   applyImgSettings();
 });
 
 document.getElementById('tp-side-right').addEventListener('click', () => {
-  imgSide = 'right';
-  localStorage.setItem('v8imgside', 'right');
+  imgSide = 'left';
+  localStorage.setItem('v8imgside', 'left');
   applyImgSettings();
 });
 
@@ -1730,8 +1731,6 @@ function renderCard(row) {
   tags.className = 'tags';
   if (row.content_type) tags.innerHTML += `<span class="tag">${esc(row.content_type)}</span>`;
   if (row.year_made) tags.innerHTML += `<span class="tag">${esc(row.year_made)}</span>`;
-  if (row.title_original_lang && row.title_original_lang !== 'en')
-    tags.innerHTML += `<span class="tag">${esc(row.title_original_lang.toUpperCase())}</span>`;
   if (row.promo === 'Y') tags.innerHTML += `<span class="tag promo">PROMO</span>`;
   if (tags.children.length) hdr.appendChild(tags);
 
