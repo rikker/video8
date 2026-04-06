@@ -311,8 +311,8 @@
   /* ── Sticky tab bar ───────────────────────────────────────────────── */
   #tab-bar {
     position: sticky;
-    top: 57px; /* matches header min-height */
-    z-index: 99; /* just below header z-index:100 so header border shows above */
+    top: var(--header-h, 71px);
+    z-index: 99;
     background: var(--bg);
     border-bottom: 1px solid var(--border);
     padding: 8px 24px;
@@ -2082,6 +2082,13 @@ document.getElementById('search').addEventListener('input', e => {
 document.getElementById('load-more').addEventListener('click', () => search(currentQuery, true));
 
 // ── Init ───────────────────────────────────────────────────────────────────
+function setHeaderHeight() {
+  const h = document.querySelector('header').getBoundingClientRect().height;
+  document.documentElement.style.setProperty('--header-h', h + 'px');
+}
+setHeaderHeight();
+window.addEventListener('resize', setHeaderHeight);
+
 initDb();
 </script>
 </body>
