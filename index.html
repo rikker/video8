@@ -308,6 +308,7 @@
   }
   #about-links a:hover { opacity: 1; }
 
+  /* ── Filter panel ─────────────────────────────────────────────── */
   /* ── Sticky tab bar ───────────────────────────────────────────────── */
   #tab-bar {
     position: sticky;
@@ -350,6 +351,18 @@
     flex: 1;
   }
 
+  /* ── Tab panels ───────────────────────────────────────────────────── */
+  .tab-panel {
+    display: none;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .tab-panel.open { display: flex; }
+
 
   .active-tag {
     font-family: 'IBM Plex Mono', monospace;
@@ -375,39 +388,39 @@
   }
   .active-tag button:hover { opacity: 1; }
 
-  /* ── Sticky tab bar ───────────────────────────────────────────────── */
-  #tab-bar {
-    position: sticky;
-    top: var(--header-h, 71px);
-    z-index: 99;
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-    padding: 8px 24px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  /* ── Tab panels — float over content below tab-bar ───────────────── */
-  #filter-panel,
-  #image-panel,
-  #appearance-panel {
+  #filter-panel {
     display: none;
-    position: sticky;
-    top: calc(var(--header-h, 71px) + var(--tabbar-h, 45px));
-    z-index: 98;
-    left: 0; right: 0;
     padding: 16px 24px;
     border-bottom: 1px solid var(--border);
     background: var(--surface);
     gap: 20px;
     flex-wrap: wrap;
     align-items: flex-start;
-    box-shadow: 0 4px 16px var(--shadow);
   }
-  #filter-panel.open,
-  #image-panel.open,
+  #filter-panel.open { display: flex; }
+
+  /* Image options panel */
+  #image-panel {
+    display: none;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  #image-panel.open { display: flex; }
+
+  /* Appearance panel (replaces theme popup) */
+  #appearance-panel {
+    display: none;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
   #appearance-panel.open { display: flex; }
 
   /* Image toggle row */
@@ -727,7 +740,9 @@
     header { padding: 12px 16px; gap: 10px; }
     #about { padding: 10px 16px; }
     #tab-bar { padding: 8px 16px; }
-    #filter-panel, #image-panel, #appearance-panel { padding: 14px 16px; }
+    #filter-panel { padding: 14px 16px; }
+    #image-panel { padding: 14px 16px; }
+    #appearance-panel { padding: 14px 16px; }
     main { padding: 0 16px 48px; }
     .fields-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
     .header-meta { display: none; }
@@ -1482,6 +1497,8 @@ TABS.forEach(({ btn, panel }) => {
     if (!isOpen) {
       document.getElementById(panel).classList.add('open');
       document.getElementById(btn).classList.add('active');
+      // If tab-bar is sticky (scrolled past original position), scroll so panel is visible
+      document.getElementById(panel).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   });
 });
@@ -2161,9 +2178,7 @@ document.getElementById('load-more').addEventListener('click', () => search(curr
 // ── Init ───────────────────────────────────────────────────────────────────
 function setHeaderHeight() {
   const h = document.querySelector('header').getBoundingClientRect().height;
-  const t = document.getElementById('tab-bar').getBoundingClientRect().height;
   document.documentElement.style.setProperty('--header-h', h + 'px');
-  document.documentElement.style.setProperty('--tabbar-h', t + 'px');
 }
 setHeaderHeight();
 window.addEventListener('resize', setHeaderHeight);
