@@ -153,7 +153,7 @@
   .logo span { color: var(--text-dimmer); font-weight: 400; }
 
   .search-wrap {
-    flex: 1;
+    flex: 1 1 180px;
     min-width: 180px;
     max-width: 480px;
     position: relative;
@@ -167,12 +167,34 @@
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 14px;
     font-weight: 300;
-    padding: 9px 16px 9px 36px;
+    padding: 9px 30px 9px 36px;
     outline: none;
     transition: border-color 0.2s;
   }
   #search:focus { border-color: var(--accent); }
   #search::placeholder { color: var(--text-dimmer); }
+  #search.searching { animation: searchpulse 0.8s ease-in-out infinite; }
+  @keyframes searchpulse {
+    0%, 100% { border-color: var(--border); }
+    50% { border-color: var(--accent); }
+  }
+
+  #search-clear {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-dimmer);
+    font-size: 11px;
+    cursor: pointer;
+    padding: 2px 4px;
+    display: none;
+    line-height: 1;
+  }
+  #search-clear:hover { color: var(--text); }
+  #search-wrap.has-value #search-clear { display: block; }
 
   .search-icon {
     position: absolute;
@@ -189,6 +211,8 @@
     font-size: 11px;
     color: var(--text-dimmer);
     white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: auto;
   }
 
   .tp-label {
@@ -388,13 +412,15 @@
   }
   .active-tag button:hover { opacity: 1; }
 
-  /* ── Tab panels — sticky overlay below tab-bar ───────────────────── */
+  /* ── Tab panels — fixed overlay below tab-bar ────────────────────── */
   #filter-panel,
   #image-panel,
   #appearance-panel {
     display: none;
-    position: sticky;
+    position: fixed;
     top: calc(var(--header-h, 71px) + var(--tabbar-h, 45px));
+    left: 0;
+    right: 0;
     z-index: 98;
     padding: 16px 24px;
     border-bottom: 1px solid var(--border);
@@ -403,6 +429,8 @@
     flex-wrap: wrap;
     align-items: flex-start;
     box-shadow: 0 4px 16px var(--shadow);
+    max-height: 60vh;
+    overflow-y: auto;
   }
   #filter-panel.open,
   #image-panel.open,
@@ -876,6 +904,7 @@
   <div class="search-wrap">
     <span class="search-icon">⌕</span>
     <input type="text" id="search" placeholder="Search title, catalog number, publisher…" autocomplete="off" spellcheck="false">
+    <button id="search-clear" title="Clear search">✕</button>
   </div>
   <div class="header-meta" id="db-meta">—</div>
 </header>
@@ -2028,12 +2057,15 @@ document.addEventListener('keydown', e => {
 
 // ── Search ─────────────────────────────────────────────────────────────────
 async function search(q, append = false) {
+  const searchEl     = document.getElementById('search');
   const resultsEl    = document.getElementById('results');
   const metaEl       = document.getElementById('results-meta');
   const stateEl      = document.getElementById('state');
   const loadMoreEl   = document.getElementById('load-more');
   const noticeEl     = document.getElementById('adult-notice');
   const noImagesEl   = document.getElementById('no-images-notice');
+
+  searchEl.classList.add('searching');
 
   if (!append) {
     currentOffset = 0;
@@ -2105,6 +2137,8 @@ async function search(q, append = false) {
     stateEl.innerHTML = '<span class="state-large">✕</span>Error querying database';
     stateEl.style.display = 'block';
     console.error(e);
+  } finally {
+    document.getElementById('search').classList.remove('searching');
   }
 }
 
@@ -2133,6 +2167,8 @@ function browseAll() {
 document.getElementById('search').addEventListener('input', e => {
   clearTimeout(searchTimer);
   currentQuery = e.target.value.trim();
+  // Show/hide clear button
+  document.querySelector('.search-wrap').classList.toggle('has-value', !!e.target.value);
   if (!currentQuery && !selectedTypes.size && !filterCountry && !filterPublisher) {
     document.getElementById('state').innerHTML = '<span class="state-large">⏚</span>Enter a search term to find releases<br><br><button id="browse-all" style="font-family:var(--mono,monospace);font-size:11px;background:none;border:1px solid var(--border);color:var(--text-dim);padding:8px 20px;cursor:pointer;letter-spacing:0.08em;margin-top:8px;" onclick="browseAll()">Browse all releases</button>';
     document.getElementById('state').style.display = 'block';
@@ -2146,7 +2182,23 @@ document.getElementById('search').addEventListener('input', e => {
   searchTimer = setTimeout(() => search(currentQuery), 350);
 });
 
+document.getElementById('search-clear').addEventListener('click', () => {
+  const searchEl = document.getElementById('search');
+  searchEl.value = '';
+  searchEl.dispatchEvent(new Event('input'));
+  searchEl.focus();
+});
+
 document.getElementById('load-more').addEventListener('click', () => search(currentQuery, true));
+
+// Close panels when clicking outside tab-bar or panels
+document.addEventListener('click', e => {
+  const bar = document.getElementById('tab-bar');
+  const panels = ['filter-panel', 'image-panel', 'appearance-panel'];
+  const inBar = bar.contains(e.target);
+  const inPanel = panels.some(id => document.getElementById(id).contains(e.target));
+  if (!inBar && !inPanel) closeAllTabs();
+});
 
 // ── Init ───────────────────────────────────────────────────────────────────
 function setHeaderHeight() {
