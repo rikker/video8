@@ -189,41 +189,6 @@
     white-space: nowrap;
   }
 
-  /* theme toggle */
-  #theme-toggle {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    font-size: 14px;
-    width: 32px;
-    height: 32px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: border-color 0.15s, color 0.15s;
-    position: relative;
-  }
-  #theme-toggle:hover, #theme-toggle.open { border-color: var(--accent); color: var(--accent); }
-
-  /* ── Theme popup ──────────────────────────────────────────────── */
-  #theme-popup {
-    display: none;
-    position: absolute;
-    top: calc(100% + 8px);
-    right: 0;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 14px 16px;
-    z-index: 999;
-    min-width: 200px;
-    box-shadow: 0 4px 20px var(--shadow);
-    flex-direction: column;
-    gap: 14px;
-  }
-  #theme-popup.open { display: flex; }
-
   .tp-label {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 9px;
@@ -312,18 +277,6 @@
   .tp-fs-btn:hover { border-color: var(--accent); color: var(--accent); }
   .tp-fs-btn.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
 
-  @media (max-width: 600px) {
-    #theme-popup {
-      position: fixed;
-      top: auto;
-      bottom: 0;
-      right: 0;
-      left: 0;
-      border-bottom: none;
-      min-width: unset;
-    }
-  }
-
   /* ── About banner ─────────────────────────────────────────────── */
   #about {
     border-bottom: 1px solid var(--border);
@@ -349,16 +302,21 @@
   #about-links a:hover { opacity: 1; }
 
   /* ── Filter panel ─────────────────────────────────────────────── */
-  #filter-bar {
-    padding: 10px 24px;
+  /* ── Sticky tab bar ───────────────────────────────────────────────── */
+  #tab-bar {
+    position: sticky;
+    top: 57px; /* just below header */
+    z-index: 90;
+    background: var(--bg);
     border-bottom: 1px solid var(--border);
+    padding: 8px 24px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
   }
 
-  #filter-toggle {
+  .tab-btn {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
     background: none;
@@ -372,11 +330,32 @@
     gap: 6px;
     transition: border-color 0.15s, color 0.15s;
     white-space: nowrap;
+    flex-shrink: 0;
   }
-  #filter-toggle:hover, #filter-toggle.active {
+  .tab-btn:hover, .tab-btn.active {
     border-color: var(--accent);
     color: var(--accent);
   }
+  #tab-active-tags {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+
+  /* ── Tab panels ───────────────────────────────────────────────────── */
+  .tab-panel {
+    display: none;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .tab-panel.open { display: flex; }
+
 
   .active-tag {
     font-family: 'IBM Plex Mono', monospace;
@@ -412,6 +391,52 @@
     align-items: flex-start;
   }
   #filter-panel.open { display: flex; }
+
+  /* Image options panel */
+  #image-panel {
+    display: none;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  #image-panel.open { display: flex; }
+
+  /* Appearance panel (replaces theme popup) */
+  #appearance-panel {
+    display: none;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  #appearance-panel.open { display: flex; }
+
+  /* Image toggle row */
+  .img-option-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .img-side-row {
+    display: flex;
+    gap: 6px;
+  }
+
+  /* No-images notice */
+  #no-images-notice {
+    display: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    padding: 8px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
 
   .filter-group { display: flex; flex-direction: column; gap: 6px; min-width: 160px; }
   .filter-group label {
@@ -679,8 +704,10 @@
   @media (max-width: 600px) {
     header { padding: 12px 16px; gap: 10px; }
     #about { padding: 10px 16px; }
-    #filter-bar { padding: 8px 16px; }
+    #tab-bar { padding: 8px 16px; }
     #filter-panel { padding: 14px 16px; }
+    #image-panel { padding: 14px 16px; }
+    #appearance-panel { padding: 14px 16px; }
     main { padding: 0 16px 48px; }
     .fields-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
     .header-meta { display: none; }
@@ -835,50 +862,6 @@
     <input type="text" id="search" placeholder="Search title, catalog number, publisher…" autocomplete="off" spellcheck="false">
   </div>
   <div class="header-meta" id="db-meta">—</div>
-  <div style="position:relative;flex-shrink:0;">
-    <button id="theme-toggle" title="Appearance settings">☀</button>
-    <div id="theme-popup">
-      <div class="tp-section">
-        <div class="tp-label">Mode</div>
-        <label class="tp-switch" id="tp-mode-switch">
-          <div class="tp-switch-track" id="tp-track">
-            <div class="tp-switch-knob"></div>
-          </div>
-          <span id="tp-mode-label">Dark</span>
-        </label>
-      </div>
-      <div class="tp-section">
-        <div class="tp-label">Accent</div>
-        <div class="tp-swatches" id="tp-swatches"></div>
-      </div>
-      <div class="tp-section">
-        <label class="tp-hc">
-          <input type="checkbox" id="tp-hc-check"> High contrast
-        </label>
-      </div>
-      <div class="tp-section">
-        <div class="tp-label">Font Size</div>
-        <div class="tp-fs-row" id="tp-fs-row">
-          <button class="tp-fs-btn" data-fs="s">S</button>
-          <button class="tp-fs-btn" data-fs="m">M</button>
-          <button class="tp-fs-btn" data-fs="l">L</button>
-        </div>
-      </div>
-      <div class="tp-section">
-        <div class="tp-label">Images</div>
-        <label class="tp-switch" id="tp-img-show-switch">
-          <div class="tp-switch-track" id="tp-img-track">
-            <div class="tp-switch-knob"></div>
-          </div>
-          <span id="tp-img-label">Show images</span>
-        </label>
-        <div class="tp-fs-row" id="tp-img-side-row" style="margin-top:6px" onclick="event.stopPropagation()">
-          <button class="tp-fs-btn" data-side="left"  id="tp-side-left"  title="Image on left">◧</button>
-          <button class="tp-fs-btn" data-side="right" id="tp-side-right" title="Image on right">◨</button>
-        </div>
-      </div>
-    </div>
-  </div>
 </header>
 
 <div id="about">
@@ -886,14 +869,15 @@
   <div id="about-links">
     <a href="https://github.com/rikker/video8#readme" target="_blank" rel="noopener">README</a>
     <a href="https://github.com/rikker/video8/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">How to Contribute</a>
-    <a href="https://github.com/rikker/video8" target="_blank" rel="noopener">GitHub</a>
     <a href="https://github.com/rikker/video8" target="_blank" rel="noopener">GitHub ↗</a>
   </div>
 </div>
 
-<div id="filter-bar">
-  <button id="filter-toggle">⚙ Filters &amp; Sort</button>
-  <div id="active-tags"></div>
+<div id="tab-bar">
+  <button class="tab-btn" id="tab-filters">⚙ Filters &amp; Sort</button>
+  <button class="tab-btn" id="tab-images">▣ Image Options</button>
+  <button class="tab-btn" id="tab-appearance">☀</button>
+  <div id="tab-active-tags"></div>
 </div>
 
 <div id="filter-panel">
@@ -948,6 +932,33 @@
       <label class="option-item">
         <input type="checkbox" id="highlight-blanks"> Highlight empty fields
       </label>
+    </div>
+  </div>
+</div>
+
+<!-- Image Options panel -->
+<div id="image-panel">
+  <div class="filter-group">
+    <label>Display</label>
+    <div class="img-option-row">
+      <label class="tp-switch" id="tp-img-show-switch">
+        <div class="tp-switch-track" id="tp-img-track">
+          <div class="tp-switch-knob"></div>
+        </div>
+        <span id="tp-img-label">Show images</span>
+      </label>
+      <div class="img-side-row">
+        <button class="tp-fs-btn" data-side="left"  id="tp-side-left"  title="Image on left">◧ Left</button>
+        <button class="tp-fs-btn" data-side="right" id="tp-side-right" title="Image on right">◨ Right</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="filter-divider"></div>
+
+  <div class="filter-group">
+    <label>Filter</label>
+    <div class="option-row">
       <label class="option-item">
         <input type="checkbox" id="filter-has-images"> Has images
       </label>
@@ -957,6 +968,49 @@
     </div>
   </div>
 </div>
+
+<!-- Appearance panel -->
+<div id="appearance-panel">
+  <div class="filter-group">
+    <label>Mode</label>
+    <label class="tp-switch" id="tp-mode-switch">
+      <div class="tp-switch-track" id="tp-track">
+        <div class="tp-switch-knob"></div>
+      </div>
+      <span id="tp-mode-label">Dark</span>
+    </label>
+  </div>
+
+  <div class="filter-divider"></div>
+
+  <div class="filter-group">
+    <label>Accent</label>
+    <div class="tp-swatches" id="tp-swatches"></div>
+  </div>
+
+  <div class="filter-divider"></div>
+
+  <div class="filter-group">
+    <label>Options</label>
+    <label class="tp-hc">
+      <input type="checkbox" id="tp-hc-check"> High contrast
+    </label>
+  </div>
+
+  <div class="filter-divider"></div>
+
+  <div class="filter-group">
+    <label>Font Size</label>
+    <div class="tp-fs-row" id="tp-fs-row">
+      <button class="tp-fs-btn" data-fs="s">S</button>
+      <button class="tp-fs-btn" data-fs="m">M</button>
+      <button class="tp-fs-btn" data-fs="l">L</button>
+    </div>
+  </div>
+</div>
+
+<!-- No-images notice -->
+<div id="no-images-notice"></div>
 
 <div id="db-loading">
   <div>Loading database…</div>
@@ -1204,9 +1258,6 @@ function applyTheme(mode, accent, hc, fs) {
   currentAccent = accent;
   currentHC     = hc;
 
-  // Update toggle icon
-  document.getElementById('theme-toggle').textContent = mode === 'dark' ? '☀' : '☾';
-
   // Update switch UI
   const track = document.getElementById('tp-track');
   const label = document.getElementById('tp-mode-label');
@@ -1258,22 +1309,6 @@ function buildSwatches() {
   });
 }
 
-// Popup toggle
-document.getElementById('theme-toggle').addEventListener('click', e => {
-  e.stopPropagation();
-  const popup  = document.getElementById('theme-popup');
-  const btn    = document.getElementById('theme-toggle');
-  const isOpen = popup.classList.toggle('open');
-  btn.classList.toggle('open', isOpen);
-});
-
-document.addEventListener('click', () => {
-  document.getElementById('theme-popup').classList.remove('open');
-  document.getElementById('theme-toggle').classList.remove('open');
-});
-
-document.getElementById('theme-popup').addEventListener('click', e => e.stopPropagation());
-
 // Swatch color updater
 function updateSwatchColors() {
   const m  = document.documentElement.getAttribute('data-theme');
@@ -1321,8 +1356,13 @@ function applyImgSettings() {
     track.classList.toggle('on', imgShow);
     label.textContent = imgShow ? 'Show images' : 'Hide images';
   }
-  document.querySelectorAll('#tp-img-side-row .tp-fs-btn').forEach(b => {
-    b.classList.toggle('selected', b.dataset.side === imgSide);
+  // Update left/right buttons
+  document.getElementById('tp-side-left').classList.toggle('selected', imgSide === 'left');
+  document.getElementById('tp-side-right').classList.toggle('selected', imgSide === 'right');
+
+  // Apply left/right to all currently rendered cards immediately
+  document.querySelectorAll('.card-below').forEach(el => {
+    el.classList.toggle('img-right', imgSide === 'right');
   });
 }
 
@@ -1334,26 +1374,25 @@ document.getElementById('tp-img-show-switch').addEventListener('click', () => {
   triggerSearch();
 });
 
+document.getElementById('tp-side-left').addEventListener('click', () => {
+  imgSide = 'left';
+  localStorage.setItem('v8imgside', 'left');
+  applyImgSettings();
+});
+
+document.getElementById('tp-side-right').addEventListener('click', () => {
+  imgSide = 'right';
+  localStorage.setItem('v8imgside', 'right');
+  applyImgSettings();
+});
+
 document.getElementById('filter-show-superseded').addEventListener('change', e => {
   showSupersededGroups = e.target.checked;
   localStorage.setItem('v8superseded', showSupersededGroups ? '1' : '0');
   Object.keys(imagesCache).forEach(k => delete imagesCache[k]);
   triggerSearch();
 });
-
-// Initialise superseded checkbox state
 document.getElementById('filter-show-superseded').checked = showSupersededGroups;
-
-document.querySelectorAll('#tp-img-side-row .tp-fs-btn').forEach(btn => {
-  btn.addEventListener('click', e => {
-    e.stopPropagation();
-    imgSide = btn.dataset.side;
-    localStorage.setItem('v8imgside', imgSide);
-    applyImgSettings();
-    Object.keys(imagesCache).forEach(k => delete imagesCache[k]);
-    triggerSearch();
-  });
-});
 
 applyImgSettings();
 
@@ -1385,12 +1424,29 @@ if (filterHasImages) {
 }
 
 // ── Filter panel toggle ────────────────────────────────────────────────────
-document.getElementById('filter-toggle').addEventListener('click', () => {
-  const panel = document.getElementById('filter-panel');
-  const btn   = document.getElementById('filter-toggle');
-  const open  = panel.classList.toggle('open');
-  btn.classList.toggle('active', open);
-  btn.textContent = open ? '✕ Close' : '⚙ Filters & Sort';
+// ── Three-tab bar ───────────────────────────────────────────────────────────
+const TABS = [
+  { btn: 'tab-filters',    panel: 'filter-panel' },
+  { btn: 'tab-images',     panel: 'image-panel'  },
+  { btn: 'tab-appearance', panel: 'appearance-panel' },
+];
+
+function closeAllTabs() {
+  TABS.forEach(({ btn, panel }) => {
+    document.getElementById(btn).classList.remove('active');
+    document.getElementById(panel).classList.remove('open');
+  });
+}
+
+TABS.forEach(({ btn, panel }) => {
+  document.getElementById(btn).addEventListener('click', () => {
+    const isOpen = document.getElementById(panel).classList.contains('open');
+    closeAllTabs();
+    if (!isOpen) {
+      document.getElementById(panel).classList.add('open');
+      document.getElementById(btn).classList.add('active');
+    }
+  });
 });
 
 // ── Content type chips ─────────────────────────────────────────────────────
@@ -1467,7 +1523,7 @@ document.getElementById('filter-publisher').addEventListener('change', e => {
 
 // ── Active tags ────────────────────────────────────────────────────────────
 function updateActiveTags() {
-  const container = document.getElementById('active-tags');
+  const container = document.getElementById('tab-active-tags');
   container.innerHTML = '';
 
   const addTag = (label, clearFn) => {
@@ -1511,7 +1567,7 @@ function updateActiveTags() {
 }
 
 // ── SQL builder ────────────────────────────────────────────────────────────
-function buildSQL(q, offset, countOnly, adultOnly = false) {
+function buildSQL(q, offset, countOnly, adultOnly = false, ignoreHasImages = false) {
   const select = countOnly
     ? `SELECT COUNT(DISTINCT r.id) as count`
     : `SELECT
@@ -1553,7 +1609,7 @@ function buildSQL(q, offset, countOnly, adultOnly = false) {
     conditions.push(`r.id IN (SELECT rp2.release_id FROM release_publishers rp2 JOIN publishers p2 ON p2.id = rp2.publisher_id WHERE p2.name = '${sp}')`);
   }
 
-  if (filterHasImages) {
+  if (filterHasImages && !ignoreHasImages) {
     conditions.push(`EXISTS (SELECT 1 FROM images i WHERE i.release_id = r.id)`);
   }
 
@@ -1899,11 +1955,12 @@ document.addEventListener('keydown', e => {
 
 // ── Search ─────────────────────────────────────────────────────────────────
 async function search(q, append = false) {
-  const resultsEl  = document.getElementById('results');
-  const metaEl     = document.getElementById('results-meta');
-  const stateEl    = document.getElementById('state');
-  const loadMoreEl = document.getElementById('load-more');
-  const noticeEl   = document.getElementById('adult-notice');
+  const resultsEl    = document.getElementById('results');
+  const metaEl       = document.getElementById('results-meta');
+  const stateEl      = document.getElementById('state');
+  const loadMoreEl   = document.getElementById('load-more');
+  const noticeEl     = document.getElementById('adult-notice');
+  const noImagesEl   = document.getElementById('no-images-notice');
 
   if (!append) {
     currentOffset = 0;
@@ -1913,6 +1970,8 @@ async function search(q, append = false) {
     metaEl.style.display = 'none';
     loadMoreEl.style.display = 'none';
     noticeEl.style.display = 'none';
+    noImagesEl.style.display = 'none';
+    noImagesEl.textContent = '';
   } else {
     loadMoreEl.innerHTML = '<span class="spinner"></span> Loading…';
   }
@@ -1943,6 +2002,17 @@ async function search(q, append = false) {
     }
 
     if (!append && rows.length === 0) {
+      // If filterHasImages is on, check if there are results without that filter
+      if (filterHasImages) {
+        try {
+          const d = queryDb(buildSQL(q, 0, true, false, true));
+          const n = d[0]?.count || 0;
+          if (n > 0) {
+            noImagesEl.style.display = 'block';
+            noImagesEl.textContent = `▭ ${n} result${n !== 1 ? 's' : ''} found but none have images — turn off Has Images filter to see ${n !== 1 ? 'them' : 'it'}`;
+          }
+        } catch(e) {}
+      }
       stateEl.innerHTML = '<span class="state-large">∅</span>No results found';
       stateEl.style.display = 'block';
       metaEl.style.display = 'none';
@@ -1997,6 +2067,7 @@ document.getElementById('search').addEventListener('input', e => {
     document.getElementById('results-meta').style.display = 'none';
     document.getElementById('load-more').style.display = 'none';
     document.getElementById('adult-notice').style.display = 'none';
+    document.getElementById('no-images-notice').style.display = 'none';
     return;
   }
   searchTimer = setTimeout(() => search(currentQuery), 350);
