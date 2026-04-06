@@ -190,7 +190,8 @@ function updateSubmissionHeaders() {
   ];
 
   const CORRECTIONS_HEADERS = [
-    'release_id', 'title_original',
+    'release_id', 'title_display',
+    'title_original', 'title_original_lang', 'title_en', 'title_ja',
     'year_made', 'release_date', 'content_type', 'country_release', 'country_origin',
     'publisher', 'catalog_number', 'encoding',
     'runtime_mins', 'list_price', 'upc', 'isbn',

@@ -138,6 +138,7 @@
     background: var(--bg);
     z-index: 100;
     flex-wrap: wrap;
+    min-height: 57px;
   }
 
   .logo {
@@ -274,6 +275,11 @@
     transition: all 0.12s;
     letter-spacing: 0.05em;
   }
+  /* Left/right image side buttons need more width for the symbol + label */
+  #tp-side-left, #tp-side-right {
+    width: auto;
+    padding: 0 10px;
+  }
   .tp-fs-btn:hover { border-color: var(--accent); color: var(--accent); }
   .tp-fs-btn.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
 
@@ -305,8 +311,8 @@
   /* ── Sticky tab bar ───────────────────────────────────────────────── */
   #tab-bar {
     position: sticky;
-    top: 57px; /* just below header */
-    z-index: 90;
+    top: 57px; /* matches header min-height */
+    z-index: 99; /* just below header z-index:100 so header border shows above */
     background: var(--bg);
     border-bottom: 1px solid var(--border);
     padding: 8px 24px;

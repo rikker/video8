@@ -4,11 +4,11 @@ A collaborative, open database of commercial releases on the Video8 format.
 
 ## About this project
 
-Video8 was a consumer magnetic tape format introduced by Sony in 1985. Despite being superseded in the camcorder market by Hi8, Digital8, and other subsequent formats, a substantial body of commercial software was released on Video8. Japan accounts for the majority of known releases, followed by the United States, but there were also releases in several countries in Europe. This database documents all of these releases as comprehensively as possible.
+Video8 was a consumer magnetic tape format introduced by Sony in 1984. Despite being superseded in the camcorder market by Hi8 and other subsequent formats, a substantial body of commercial home video titles were released on Video8. Japan accounts for the majority of known releases, followed by the United States, as well as releases in several European countries. This database documents all of these releases as comprehensively as possible. It is a work in progress.
 
-Besides home video sales, the other major adopter of the format was airlines, due to the small format factor of the tapes, and the availability of Video Walkman models. Carriers that adopted the format include United Airlines, American Airlines, British Airways, Qantas, and Air New Zealand, among others. The airline market actually kept the format alive more than a decade after the home video market had dried up, meaning that there were hundreds of titles that were only released through airlines. Documentation of airline releases is much less complete than home video releases, and some airline releases use copy protection that causes them not to play properly on all consumer devices. Nonetheless, this project also covers airline releases as much as is possible.
+Besides home video sales, the other major adopter of the format was airlines. This was due to the small format factor of the tapes, and the availability of Video Walkman models that could be loaned or rented to passengers. Carriers that adopted the format include United Airlines, American Airlines, British Airways, Qantas, and Air New Zealand, among others. The airline market actually kept the format alive for more than a decade after the home video market had dried up, meaning that there were hundreds of titles that were only released as airline in-flight films. Many of these survive in the hands of collectors. Documentation of airline releases is much less complete than home video releases, and some airline releases use copy protection that causes them not to play properly on all consumer devices. Nonetheless, this project also covers airline releases as much as is possible.
 
-The data here was originally compiled from an older version of a list created by [JDHancock](http://stuff.jdhancock.com/video8-movie-list/), substantially expanded since, and is now maintained collaboratively. The goal is a permanent, citable, open record of what was commercially released on this format. Future plans include high-resolution scans of tapes and packaging, and Domesday archival digitization.
+The data here was originally compiled from an older version of a list created by [JDHancock](http://stuff.jdhancock.com/video8-movie-list/), substantially expanded since, and is now updated collaboratively, including efforts to archive web evidence of each release. The goal is a permanent, citable, open record of what was commercially released on this format. Future plans include high-resolution scans of tapes and packaging, and Domesday archival digitization.
 
 ## How the data is organized
 
@@ -111,14 +111,19 @@ Provenance for individual release records, how do we know this release exists? E
 
 ### `images.csv`
 
-Table for cover and packaging images. Not yet actively populated.
+Cover and packaging images linked to releases.
 
 | Column | Description |
 |---|---|
 | `id` | Unique integer ID |
 | `release_id` | FK → `releases.id` |
-| `side` | `front` or `back` |
-| `filename` | Filename of the image |
+| `image_type` | `cover`, `reverse`, `spine`, `tape`, `tape_spine`, `insert`, or `_group` variants of the above |
+| `filename` | Bare filename; full path is `data/images/{bucket}/{release_id}/{filename}` for individual images, or `data/images/group/{filename}` for group images |
+| `url` | Explicit URL override; used for group images to point to the shared `group/` folder |
+| `source_slug` | Archive slug the image came from |
+| `source_type` | `scan`, `collection`, or `archive` — used for display priority ordering |
+| `width` | Image width in pixels |
+| `height` | Image height in pixels |
 | `notes` | Any notes |
 
 ---
@@ -143,11 +148,10 @@ This lets you query the database precisely. A Japanese film released in Japan ha
 | Editing interface | Google Sheets or direct CSV editing via GitHub |
 | Version control | GitHub [github.com/rikker/video8](https://github.com/rikker/video8) |
 | Source of truth | CSV files in `/data` |
-| Database build | `scripts/build_db.py` assembles CSVs into an SQLite database |
+| Database build | `scripts/build_db.py` assembles CSVs into an SQLite database on every push |
 | Validation | `scripts/validate.py` checks referential integrity and data conventions |
-| Automation | GitHub Actions validates and builds on every push to `main` |
-| Public database | [video8.fly.dev](https://video8.fly.dev) Datasette, browsable and queryable |
-| Contributor interface | [rikker.github.io/video8](https://rikker.github.io/video8) search and browse interface |
+| Automation | GitHub Actions validates, builds, and commits `video8.sqlite` on every push to `main` |
+| Browse interface | [rikker.github.io/video8](https://rikker.github.io/video8) — search and browse, queries run in-browser via sql.js against `video8.sqlite` served from GitHub Pages |
 
 ---
 
