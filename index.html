@@ -641,18 +641,11 @@
   .field.blank .field-value { color: var(--text-dimmer); font-style: italic; font-size: var(--fs-body); }
 
   .field-notes .field-value {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    max-height: 4.5em; /* ~3 lines */
     overflow: hidden;
+    position: relative;
   }
-  .field-notes.expanded .field-value,
-  .expand-all-notes .field-notes .field-value {
-    display: block;
-    -webkit-line-clamp: unset;
-    overflow: visible;
-  }
-  .expand-all-notes .notes-toggle { display: none; }
+  .field-notes.expanded .field-value { max-height: none; }
   .notes-toggle {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 10px;
@@ -968,9 +961,6 @@
       <label class="option-item">
         <input type="checkbox" id="highlight-blanks"> Highlight empty fields
       </label>
-      <label class="option-item">
-        <input type="checkbox" id="expand-all-notes"> Expand all notes
-      </label>
     </div>
   </div>
 </div>
@@ -1131,9 +1121,7 @@ let filterCountry   = '';
 let filterPublisher = '';
 let sortBy          = 'title_display';
 let sortDir         = 'ASC';
-let highlightBlanks  = false;
-let expandAllNotes   = localStorage.getItem('v8expandnotes') === '1';
-let expandAllNotes  = localStorage.getItem('v8expandnotes') === '1';
+let highlightBlanks = false;
 let filterHasImages = localStorage.getItem('v8hasimages') === '1';
 
 let imgShow = localStorage.getItem('v8imgshow') !== '0';  // default on
@@ -1398,8 +1386,8 @@ function applyImgSettings() {
     label.textContent = imgShow ? 'Show images' : 'Hide images';
   }
   // Update left/right buttons
-  document.getElementById('tp-side-left').classList.toggle('selected', imgSide === 'right');
-  document.getElementById('tp-side-right').classList.toggle('selected', imgSide === 'left');
+  document.getElementById('tp-side-left').classList.toggle('selected', imgSide === 'left');
+  document.getElementById('tp-side-right').classList.toggle('selected', imgSide === 'right');
 
   // Apply left/right to all currently rendered cards immediately
   document.querySelectorAll('.card-below').forEach(el => {
@@ -1451,17 +1439,6 @@ const savedHL = localStorage.getItem('v8highlights');
 if (savedHL === '1') {
   highlightBlanks = true;
   document.getElementById('highlight-blanks').checked = true;
-}
-
-document.getElementById('expand-all-notes').addEventListener('change', e => {
-  expandAllNotes = e.target.checked;
-  localStorage.setItem('v8expandnotes', expandAllNotes ? '1' : '0');
-  document.getElementById('results').classList.toggle('expand-all-notes', expandAllNotes);
-});
-
-if (expandAllNotes) {
-  document.getElementById('expand-all-notes').checked = true;
-  document.getElementById('results').classList.add('expand-all-notes');
 }
 
 document.getElementById('filter-has-images').addEventListener('change', e => {
@@ -1780,13 +1757,13 @@ function renderCard(row) {
       const valueEl = field.querySelector('.field-value');
       const toggle = document.createElement('button');
       toggle.className = 'notes-toggle';
-      toggle.textContent = '[more]';
+      toggle.textContent = '[…]';
       toggle.addEventListener('click', () => {
         const expanded = field.classList.toggle('expanded');
-        toggle.textContent = expanded ? '[less]' : '[more]';
+        toggle.textContent = expanded ? '[less]' : '[…]';
       });
       field.appendChild(toggle);
-      // Hide toggle if content doesn't actually overflow 2 lines
+      // Hide toggle if content doesn't overflow
       requestAnimationFrame(() => {
         if (valueEl.scrollHeight <= valueEl.clientHeight + 2) toggle.style.display = 'none';
       });
