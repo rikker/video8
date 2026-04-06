@@ -565,12 +565,12 @@
   .result-header {
     display: flex;
     align-items: baseline;
-    gap: 10px;
+    gap: 6px;
     margin-bottom: 12px;
     flex-wrap: wrap;
   }
   .result-title { font-size: var(--fs-title); font-weight: 500; color: var(--text); }
-  .result-title-ja { font-size: 14px; color: var(--text-dim); }
+  .result-title-ja { font-size: 14px; color: var(--text-dim); margin-right: 4px; }
   .result-id {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 10px;
@@ -578,22 +578,24 @@
     background: var(--accent-dim);
     padding: 2px 7px;
     border: 1px solid rgba(200,168,75,0.35);
-    margin-left: auto;
     white-space: nowrap;
   }
   [data-theme="light"] .result-id { border-color: rgba(154,122,32,0.35); }
 
-  .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .result-header-spacer { flex: 1; }  /* pushes tags + id to the right */
+
+  .tags { display: flex; gap: 4px; flex-wrap: wrap; align-items: baseline; }
   .tag {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: var(--fs-tag);
-    padding: 2px 8px;
-    border: 1px solid var(--border);
-    color: var(--text-dim);
+    font-size: 10px;
+    padding: 2px 7px;
+    border: 1px solid rgba(200,168,75,0.35);
+    color: var(--accent);
+    background: var(--accent-dim);
     letter-spacing: 0.04em;
+    white-space: nowrap;
   }
-  .tag.accent { border-color: var(--accent); color: var(--accent); }
-  .tag.promo  { border-color: #c84b4b; color: #c84b4b; }
+  .tag.promo { border-color: #c84b4b; color: #c84b4b; background: rgba(200,75,75,0.08); }
 
   .fields-grid {
     display: grid;
@@ -634,7 +636,26 @@
   .field.blank .field-label { color: var(--accent); opacity: 0.6; }
   .field.blank.hidden-blank .field-label { color: var(--text-dimmer); opacity: 1; }
 
-  .field-value { font-size: var(--fs-body); color: var(--text); word-break: break-all; }
+  .field-value { font-size: var(--fs-body); color: var(--text); word-break: break-word; }
+  .field.blank .field-value { color: var(--text-dimmer); font-style: italic; font-size: var(--fs-body); }
+
+  .field-notes .field-value {
+    max-height: 4.5em; /* ~3 lines */
+    overflow: hidden;
+    position: relative;
+  }
+  .field-notes.expanded .field-value { max-height: none; }
+  .notes-toggle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px 0 0;
+    letter-spacing: 0.04em;
+  }
+  .notes-toggle:hover { opacity: 0.8; }
   .field.blank .field-value { color: var(--text-dimmer); font-style: italic; font-size: var(--fs-body); }
 
   .sources-toggle {
@@ -749,6 +770,7 @@
     transition: border-color 0.15s, opacity 0.15s;
     display: block;
     background: var(--surface2);
+    touch-action: pan-y;
   }
   .card-image-panel img:hover { border-color: var(--accent); opacity: 0.9; }
 
@@ -1451,6 +1473,8 @@ TABS.forEach(({ btn, panel }) => {
     if (!isOpen) {
       document.getElementById(panel).classList.add('open');
       document.getElementById(btn).classList.add('active');
+      // If tab-bar is sticky (scrolled past original position), scroll so panel is visible
+      document.getElementById(panel).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   });
 });
@@ -1684,22 +1708,39 @@ function renderCard(row) {
   else if (row.title_original && row.title_original !== dispTitle) secondaryTitle = row.title_original;
   const relTitle = row.title_release
     ? ` <span class="result-title-release">[${esc(row.title_release)}]</span>` : '';
-  hdr.innerHTML = `
-    <span class="result-title">${esc(dispTitle)}${relTitle}</span>
-    ${secondaryTitle ? `<span class="result-title-ja">${esc(secondaryTitle)}</span>` : ''}
-    <span class="result-id">ID: ${row.release_id}</span>`;
-  div.appendChild(hdr);
+  // Build header
+  const titleSpan = document.createElement('span');
+  titleSpan.className = 'result-title';
+  titleSpan.innerHTML = esc(dispTitle) + relTitle;
+  hdr.appendChild(titleSpan);
 
-  // Tags
+  if (secondaryTitle) {
+    const jaSpan = document.createElement('span');
+    jaSpan.className = 'result-title-ja';
+    jaSpan.textContent = secondaryTitle;
+    hdr.appendChild(jaSpan);
+  }
+
+  const spacer = document.createElement('span');
+  spacer.className = 'result-header-spacer';
+  hdr.appendChild(spacer);
+
+  // Tags inline in header
   const tags = document.createElement('div');
   tags.className = 'tags';
-  if (row.content_type) tags.innerHTML += `<span class="tag accent">${esc(row.content_type)}</span>`;
-  if (row.year_made)         tags.innerHTML += `<span class="tag">${esc(row.year_made)}</span>`;
-  if (row.country_release_origin) tags.innerHTML += `<span class="tag">Origin: ${esc(row.country_release_origin)}</span>`;
+  if (row.content_type) tags.innerHTML += `<span class="tag">${esc(row.content_type)}</span>`;
+  if (row.year_made) tags.innerHTML += `<span class="tag">${esc(row.year_made)}</span>`;
   if (row.title_original_lang && row.title_original_lang !== 'en')
-    tags.innerHTML += `<span class="tag">Lang: ${esc(row.title_original_lang.toUpperCase())}</span>`;
-  if (row.promo === 'Y')  tags.innerHTML += `<span class="tag promo">PROMO</span>`;
-  div.appendChild(tags);
+    tags.innerHTML += `<span class="tag">${esc(row.title_original_lang.toUpperCase())}</span>`;
+  if (row.promo === 'Y') tags.innerHTML += `<span class="tag promo">PROMO</span>`;
+  if (tags.children.length) hdr.appendChild(tags);
+
+  const idSpan = document.createElement('span');
+  idSpan.className = 'result-id';
+  idSpan.textContent = `ID: ${row.release_id}`;
+  hdr.appendChild(idSpan);
+
+  div.appendChild(hdr);
 
   // Fields grid
   const grid = document.createElement('div');
@@ -1712,6 +1753,22 @@ function renderCard(row) {
     const isNotes = key === 'notes';
     field.className = 'field' + (isBlank ? ' blank' + (!highlightBlanks ? ' hidden-blank' : '') : '') + (isNotes ? ' field-notes' : '');
     field.innerHTML = `<div class="field-label">${label}</div><div class="field-value">${isBlank ? '—' : esc(v)}</div>`;
+    if (isNotes && !isBlank) {
+      // Add expand toggle after render, only if content overflows
+      const valueEl = field.querySelector('.field-value');
+      const toggle = document.createElement('button');
+      toggle.className = 'notes-toggle';
+      toggle.textContent = '[…]';
+      toggle.addEventListener('click', () => {
+        const expanded = field.classList.toggle('expanded');
+        toggle.textContent = expanded ? '[less]' : '[…]';
+      });
+      field.appendChild(toggle);
+      // Hide toggle if content doesn't overflow
+      requestAnimationFrame(() => {
+        if (valueEl.scrollHeight <= valueEl.clientHeight + 2) toggle.style.display = 'none';
+      });
+    }
     grid.appendChild(field);
   }
   div.appendChild(grid);
@@ -1910,6 +1967,21 @@ function buildImagePanel(images, releaseTitle) {
     panel.appendChild(arrowRow);
   }
 
+  // Touch swipe support for mobile
+  if (images.length > 1) {
+    let touchStartX = 0;
+    imgEl.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].clientX;
+    }, { passive: true });
+    imgEl.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 40) {
+        if (dx < 0) setImage(currentIdx + 1);
+        else        setImage(currentIdx - 1);
+      }
+    }, { passive: true });
+  }
+
   return panel;
 }
 
@@ -2049,10 +2121,10 @@ function triggerSearch() {
 // ── DB stats ───────────────────────────────────────────────────────────────
 async function loadMeta() {
   try {
-    const sql = `SELECT (SELECT COUNT(*) FROM releases) as releases, (SELECT COUNT(*) FROM titles) as titles`;
+    const sql = `SELECT (SELECT COUNT(*) FROM releases) as release_count, (SELECT COUNT(*) FROM titles) as title_count`;
     const d = queryDb(sql);
     document.getElementById('db-meta').textContent =
-      `${d[0].releases.toLocaleString()} releases · ${d[0].titles.toLocaleString()} titles`;
+      `${d[0].release_count.toLocaleString()} releases · ${d[0].title_count.toLocaleString()} titles`;
   } catch(e) {}
 }
 
