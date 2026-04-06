@@ -173,10 +173,13 @@
   }
   #search:focus { border-color: var(--accent); }
   #search::placeholder { color: var(--text-dimmer); }
-  #search.searching { animation: searchpulse 0.8s ease-in-out infinite; }
+  #search.searching {
+    border-color: var(--accent);
+    animation: searchpulse 0.7s ease-in-out infinite;
+  }
   @keyframes searchpulse {
-    0%, 100% { border-color: var(--border); }
-    50% { border-color: var(--accent); }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
 
   #search-clear {
@@ -194,7 +197,7 @@
     line-height: 1;
   }
   #search-clear:hover { color: var(--text); }
-  #search-wrap.has-value #search-clear { display: block; }
+  .search-wrap.has-value #search-clear { display: block; }
 
   .search-icon {
     position: absolute;
@@ -421,7 +424,7 @@
     top: calc(var(--header-h, 71px) + var(--tabbar-h, 45px));
     left: 0;
     right: 0;
-    z-index: 98;
+    z-index: 101;
     padding: 16px 24px;
     border-bottom: 1px solid var(--border);
     background: var(--surface);
@@ -1013,6 +1016,9 @@
       <label class="option-item">
         <input type="checkbox" id="filter-show-superseded"> Show superseded group images
       </label>
+      <label class="option-item">
+        <input type="checkbox" id="filter-hide-groups"> Hide all group images
+      </label>
     </div>
   </div>
 </div>
@@ -1147,6 +1153,7 @@ let filterHasImages = localStorage.getItem('v8hasimages') === '1';
 let imgShow = localStorage.getItem('v8imgshow') !== '0';  // default on
 let imgSide = localStorage.getItem('v8imgside') || 'left';
 let showSupersededGroups = localStorage.getItem('v8superseded') === '1';
+let hideGroupImages      = localStorage.getItem('v8hidegroups') === '1';
 
 // Canonical image type order: individual before group of same type,
 // cover first, then reverse, spine, tape, insert, then anything else.
@@ -1442,6 +1449,14 @@ document.getElementById('filter-show-superseded').addEventListener('change', e =
   triggerSearch();
 });
 document.getElementById('filter-show-superseded').checked = showSupersededGroups;
+
+document.getElementById('filter-hide-groups').addEventListener('change', e => {
+  hideGroupImages = e.target.checked;
+  localStorage.setItem('v8hidegroups', hideGroupImages ? '1' : '0');
+  Object.keys(imagesCache).forEach(k => delete imagesCache[k]);
+  triggerSearch();
+});
+document.getElementById('filter-hide-groups').checked = hideGroupImages;
 
 applyImgSettings();
 
@@ -1908,7 +1923,7 @@ function esc(s) {
 // ── Images ─────────────────────────────────────────────────────────────────
 
 async function fetchImages(releaseId) {
-  const cacheKey = `${releaseId}_${showSupersededGroups ? 'all' : 'sup'}`;
+  const cacheKey = `${releaseId}_${showSupersededGroups ? 'a' : 's'}_${hideGroupImages ? 'hg' : ''}`;
   if (imagesCache[cacheKey]) return imagesCache[cacheKey];
   const sql = `SELECT i.id, i.release_id, i.image_type, i.filename, i.url,
     i.source_slug, i.source_type, i.width, i.height,
@@ -1916,7 +1931,10 @@ async function fetchImages(releaseId) {
     FROM images i WHERE i.release_id = ${releaseId}`;
   try {
     let imgs = queryDb(sql);
-    if (!showSupersededGroups) {
+    // Remove all group images if hideGroupImages is on
+    if (hideGroupImages) {
+      imgs = imgs.filter(i => !(i.image_type || '').toLowerCase().endsWith('_group'));
+    } else if (!showSupersededGroups) {
       const individualTypes = new Set(
         imgs.filter(i => !(i.image_type || '').toLowerCase().endsWith('_group'))
             .map(i => (i.image_type || '').toLowerCase())
