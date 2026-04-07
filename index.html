@@ -203,9 +203,8 @@
   .logo span { color: var(--text-dimmer); font-weight: 400; }
 
   .search-wrap {
-    flex: 1 1 0;
+    flex: 0 1 480px;
     min-width: 120px;
-    max-width: 480px;
     position: relative;
   }
 
@@ -215,6 +214,7 @@
     color: var(--text-dimmer);
     white-space: nowrap;
     flex-shrink: 0;
+    margin-left: auto;
   }
 
   .tp-label {
@@ -1537,6 +1537,15 @@ TABS.forEach(({ btn, panel }) => {
     }
   });
 });
+
+// Keep open panel anchored to tab-bar bottom as user scrolls
+window.addEventListener('scroll', () => {
+  const openPanel = TABS.map(({ panel }) => document.getElementById(panel))
+    .find(el => el.classList.contains('open'));
+  if (openPanel) {
+    openPanel.style.top = document.getElementById('tab-bar').getBoundingClientRect().bottom + 'px';
+  }
+}, { passive: true });
 
 // ── Content type chips ─────────────────────────────────────────────────────
 function buildChips() {
