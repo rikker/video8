@@ -127,38 +127,6 @@
   @keyframes dbload { to { left: 150%; } }
 
   /* ── Header ───────────────────────────────────────────────────── */
-  header {
-    border-bottom: 1px solid var(--border);
-    padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    position: sticky;
-    top: 0;
-    background: var(--bg);
-    z-index: 100;
-    flex-wrap: wrap;
-    min-height: 57px;
-  }
-
-  .logo {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--accent);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-  .logo span { color: var(--text-dimmer); font-weight: 400; }
-
-  .search-wrap {
-    flex: 1 1 180px;
-    min-width: 180px;
-    max-width: 480px;
-    position: relative;
-  }
-
   #search {
     width: 100%;
     background: var(--surface);
@@ -209,13 +177,44 @@
     pointer-events: none;
   }
 
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+    min-height: 57px;
+  }
+
+  .logo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .logo span { color: var(--text-dimmer); font-weight: 400; }
+
+  .search-wrap {
+    flex: 1 1 0;
+    min-width: 120px;
+    max-width: 480px;
+    position: relative;
+  }
+
   .header-meta {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
     color: var(--text-dimmer);
     white-space: nowrap;
     flex-shrink: 0;
-    margin-left: auto;
   }
 
   .tp-label {
@@ -421,7 +420,7 @@
   #appearance-panel {
     display: none;
     position: fixed;
-    top: calc(var(--header-h, 71px) + var(--tabbar-h, 45px));
+    top: 116px; /* fallback only — overridden by JS at click time */
     left: 0;
     right: 0;
     z-index: 101;
@@ -1531,6 +1530,8 @@ TABS.forEach(({ btn, panel }) => {
     const isOpen = document.getElementById(panel).classList.contains('open');
     closeAllTabs();
     if (!isOpen) {
+      const bottom = document.getElementById('tab-bar').getBoundingClientRect().bottom;
+      document.getElementById(panel).style.top = bottom + 'px';
       document.getElementById(panel).classList.add('open');
       document.getElementById(btn).classList.add('active');
     }
@@ -2284,7 +2285,7 @@ function setHeaderHeight() {
 }
 // Run after first paint to ensure layout is complete
 requestAnimationFrame(() => { requestAnimationFrame(setHeaderHeight); });
-window.addEventListener('resize', setHeaderHeight);
+window.addEventListener('resize', () => { setHeaderHeight(); closeAllTabs(); });
 
 initDb();
 </script>
