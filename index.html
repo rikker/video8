@@ -559,6 +559,20 @@
     letter-spacing: 0.05em;
     border-bottom: 1px solid var(--border);
   }
+  .meta-pipe { margin: 0 8px; opacity: 0.4; }
+  .meta-clear-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    background: none;
+    border: 1px solid var(--accent);
+    padding: 1px 8px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .meta-clear-btn:hover { background: var(--accent-dim); }
 
   #adult-notice {
     display: none;
@@ -1641,7 +1655,7 @@ function updateActiveTags() {
 }
 
 // ── SQL builder ────────────────────────────────────────────────────────────
-function buildSQL(q, offset, countOnly, adultOnly = false, ignoreHasImages = false) {
+function buildSQL(q, offset, countOnly, adultOnly = false, ignoreHasImages = false, ignoreAllFilters = false) {
   const select = countOnly
     ? `SELECT COUNT(DISTINCT r.id) as count`
     : `SELECT
@@ -1666,25 +1680,27 @@ function buildSQL(q, offset, countOnly, adultOnly = false, ignoreHasImages = fal
 
   if (adultOnly) {
     conditions.push(`t.content_type = 'Adult'`);
-  } else if (selectedTypes.size > 0) {
+  } else if (!ignoreAllFilters && selectedTypes.size > 0) {
     const types = [...selectedTypes].map(t => `'${t.replace(/'/g,"''")}'`).join(',');
     conditions.push(`t.content_type IN (${types})`);
   } else {
     conditions.push(`t.content_type != 'Adult'`);
   }
 
-  if (filterCountry) {
-    const sc = filterCountry.replace(/'/g,"''");
-    conditions.push(`r.country_release = '${sc}'`);
-  }
+  if (!ignoreAllFilters) {
+    if (filterCountry) {
+      const sc = filterCountry.replace(/'/g,"''");
+      conditions.push(`r.country_release = '${sc}'`);
+    }
 
-  if (filterPublisher) {
-    const sp = filterPublisher.replace(/'/g,"''");
-    conditions.push(`r.id IN (SELECT rp2.release_id FROM release_publishers rp2 JOIN publishers p2 ON p2.id = rp2.publisher_id WHERE p2.name = '${sp}')`);
-  }
+    if (filterPublisher) {
+      const sp = filterPublisher.replace(/'/g,"''");
+      conditions.push(`r.id IN (SELECT rp2.release_id FROM release_publishers rp2 JOIN publishers p2 ON p2.id = rp2.publisher_id WHERE p2.name = '${sp}')`);
+    }
 
-  if (filterHasImages && !ignoreHasImages) {
-    conditions.push(`EXISTS (SELECT 1 FROM images i WHERE i.release_id = r.id)`);
+    if (filterHasImages && !ignoreHasImages) {
+      conditions.push(`EXISTS (SELECT 1 FROM images i WHERE i.release_id = r.id)`);
+    }
   }
 
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
@@ -2099,6 +2115,9 @@ async function search(q, append = false) {
     loadMoreEl.innerHTML = '<span class="spinner"></span> Loading…';
   }
 
+  // Yield to browser so spinner/animation can paint before synchronous sql.js blocks
+  await new Promise(r => setTimeout(r, 16));
+
   try {
     const [rows, count] = await Promise.all([
       fetchReleases(q, currentOffset),
@@ -2109,7 +2128,21 @@ async function search(q, append = false) {
 
     stateEl.style.display = 'none';
     metaEl.style.display = 'block';
-    metaEl.textContent = `${totalCount.toLocaleString()} result${totalCount !== 1 ? 's' : ''}${q ? ` for "${q}"` : ''}`;
+
+    // Build meta line — check if any non-adult filters are active
+    const filtersActive = selectedTypes.size > 0 || filterCountry || filterPublisher || filterHasImages;
+    let metaHtml = `${totalCount.toLocaleString()} result${totalCount !== 1 ? 's' : ''}${q ? ` for "${esc(q)}"` : ''}`;
+    if (!append && filtersActive) {
+      try {
+        const d = queryDb(buildSQL(q, 0, true, false, false, true));
+        const unfiltered = d[0]?.count || 0;
+        const extra = unfiltered - totalCount;
+        if (extra > 0) {
+          metaHtml += ` <span class="meta-pipe">|</span> ${extra.toLocaleString()} additional outside filters <button class="meta-clear-btn" onclick="clearAllFilters()">Clear filters</button>`;
+        }
+      } catch(e) {}
+    }
+    metaEl.innerHTML = metaHtml;
 
     // Check for hidden adult results
     if (!append && !showAdult()) {
@@ -2163,6 +2196,30 @@ async function search(q, append = false) {
 function triggerSearch() {
   sourcesCache = {};
   search(currentQuery);
+}
+
+function clearAllFilters() {
+  // Reset content type chips (but never auto-include Adult)
+  selectedTypes.forEach(ct => {
+    document.querySelector(`.chip[data-ct="${ct}"]`)?.classList.remove('selected');
+  });
+  selectedTypes.clear();
+
+  // Reset country
+  filterCountry = '';
+  document.getElementById('filter-country').value = '';
+
+  // Reset publisher
+  filterPublisher = '';
+  document.getElementById('filter-publisher').value = '';
+
+  // Reset has images
+  filterHasImages = false;
+  document.getElementById('filter-has-images').checked = false;
+  localStorage.setItem('v8hasimages', '0');
+
+  updateActiveTags();
+  triggerSearch();
 }
 
 // ── DB stats ───────────────────────────────────────────────────────────────
@@ -2225,7 +2282,8 @@ function setHeaderHeight() {
   document.documentElement.style.setProperty('--header-h', h + 'px');
   document.documentElement.style.setProperty('--tabbar-h', t + 'px');
 }
-setHeaderHeight();
+// Run after first paint to ensure layout is complete
+requestAnimationFrame(() => { requestAnimationFrame(setHeaderHeight); });
 window.addEventListener('resize', setHeaderHeight);
 
 initDb();
