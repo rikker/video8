@@ -183,6 +183,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
+    flex-wrap: wrap;
     position: sticky;
     top: 0;
     background: var(--bg);
@@ -203,8 +204,9 @@
   .logo span { color: var(--text-dimmer); font-weight: 400; }
 
   .search-wrap {
-    flex: 0 1 480px;
-    min-width: 120px;
+    flex: 1 1 180px;
+    min-width: 0;
+    max-width: 480px;
     position: relative;
   }
 
@@ -214,7 +216,6 @@
     color: var(--text-dimmer);
     white-space: nowrap;
     flex-shrink: 0;
-    margin-left: auto;
   }
 
   .tp-label {
@@ -769,7 +770,7 @@
     #filter-panel, #image-panel, #appearance-panel { padding: 14px 16px; }
     main { padding: 0 16px 48px; }
     .fields-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
-    .header-meta { display: none; }
+    .header-meta { font-size: 10px; }
     .card-image-panel { width: 80px; }
   }
 
@@ -802,7 +803,7 @@
     transition: border-color 0.15s, opacity 0.15s;
     display: block;
     background: var(--surface2);
-    touch-action: pan-y;
+    touch-action: manipulation;
   }
   .card-image-panel img:hover { border-color: var(--accent); opacity: 0.9; }
 
@@ -1493,6 +1494,19 @@ document.getElementById('expand-all-notes').addEventListener('change', e => {
   expandAllNotes = e.target.checked;
   localStorage.setItem('v8expandnotes', expandAllNotes ? '1' : '0');
   document.getElementById('results').classList.toggle('expand-all-notes', expandAllNotes);
+  // When turning off, re-evaluate each notes field so [more] shows if needed
+  if (!expandAllNotes) {
+    document.querySelectorAll('.field-notes').forEach(field => {
+      const valueEl = field.querySelector('.field-value');
+      const toggle  = field.querySelector('.notes-toggle');
+      if (!valueEl || !toggle) return;
+      // Remove expanded state so clamp applies
+      field.classList.remove('expanded');
+      toggle.textContent = '[more]';
+      // Show or hide toggle based on whether content overflows
+      toggle.style.display = valueEl.scrollHeight > valueEl.clientHeight + 2 ? '' : 'none';
+    });
+  }
 });
 if (expandAllNotes) {
   document.getElementById('expand-all-notes').checked = true;
@@ -1538,13 +1552,11 @@ TABS.forEach(({ btn, panel }) => {
   });
 });
 
-// Keep open panel anchored to tab-bar bottom as user scrolls
+// Close open panel on scroll
 window.addEventListener('scroll', () => {
-  const openPanel = TABS.map(({ panel }) => document.getElementById(panel))
-    .find(el => el.classList.contains('open'));
-  if (openPanel) {
-    openPanel.style.top = document.getElementById('tab-bar').getBoundingClientRect().bottom + 'px';
-  }
+  const anyOpen = TABS.some(({ panel }) =>
+    document.getElementById(panel).classList.contains('open'));
+  if (anyOpen) closeAllTabs();
 }, { passive: true });
 
 // ── Content type chips ─────────────────────────────────────────────────────
@@ -2043,7 +2055,7 @@ function buildImagePanel(images, releaseTitle) {
     }, { passive: true });
     imgEl.addEventListener('touchend', e => {
       const dx = e.changedTouches[0].clientX - touchStartX;
-      if (Math.abs(dx) > 40) {
+      if (Math.abs(dx) > 30) {
         if (dx < 0) setImage(currentIdx + 1);
         else        setImage(currentIdx - 1);
       }
