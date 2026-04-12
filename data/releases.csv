@@ -661,7 +661,7 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 661,625,,,CSWF-8007,1989.10.21,Japan,NTSC,121,"¥3,800",4-988009-800776,,Hi-Fi Mono/Digital Stereo Dolby Surround,,,Japanese,,"This release has a new lower price and CSWF catalog no, but 1985 copyright date is retained for artwork; actual release date is most likely 1989, due to the very low CSWF cat#. The earliest releases after RCA switched from 00HS to CSWF-800X apparently didn't update the copyright date to 1989. [Note: Confirmed in 1990 databook]"
 662,626,,,A-10761,,Japan,NTSC,99,"¥13,800",n/a,,Hi-Fi Mono/Digital Stereo Dolby Surround,,,Japanese,,
 663,626,,,00HS-80139 (sticker on spine),1987.09.21,Japan,NTSC,99,"¥13,800/¥12,950",,,Hi-Fi Mono/Digital Stereo Dolby Surround,,,Japanese,,
-664,627,,,SRWF-9850,,Japan,NTSC,112,"¥3,800",4-988009-985077,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,
+664,627,,,SRWF-9850,1991,Japan,NTSC,112,"¥3,800",4-988009-985077,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,
 665,628,,,SRWW-9840,,Japan,NTSC,91,"¥4,500",4-988009-984070,,Hi-Fi/Digital Stereo,,,Japanese,,Slightly different art for subbed (Aladdin+Jasmine silhouette on spine) vs. dubbed versions (Aladdin+Jasmine+Genie on spine)
 666,628,,,SRWW-9841,,Japan,NTSC,91,"¥4,500",4-988009-984179,,Hi-Fi/Digital Stereo,Japanese,Y,,,Slightly different art for subbed (Aladdin+Jasmine silhouette on spine) vs. dubbed versions (Aladdin+Jasmine+Genie on spine)
 667,629,,,SRWW-9435,,Japan,NTSC,75,"¥5,600",4-988009-943572,,Hi-Fi/Digital Mono,Japanese,Y,,,
@@ -1010,7 +1010,7 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 1010,885,,,00HS-80619,,Japan,NTSC,110,"¥14,000",4-988009-058474,,Hi-Fi Stereo,,,Japanese,,Warner navy blue spine release with navy blue cover background
 1011,886,,,CSWF-8092,1990.03.21,Japan,NTSC,115,"¥14,000",4-988009-809274,,Hi-Fi Mono/Digital Stereo,,,Japanese,,Warner navy blue spine release
 1012,886,,,SRWF-8885,1991.04.25 (in databook); 1990 (on insert),Japan,NTSC,115,"¥3,800",4-988009-888576,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,
-1013,887,,,SRWF-9632,,Japan,NTSC,,"¥4,700",,,,,,,,
+1013,887,,,SRWF-9632,1993,Japan,NTSC,118,"¥4,700",4-988009-963273,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,
 1014,888,,,CSWF-8159,1990.05.21,Japan,NTSC,133,"¥14,000",4-988009-815978,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,"Earlier release, same artwork, only major difference is CSWF cat# and higher price on spine"
 1015,888,,,SRWF-8884,1991.04.25,Japan,NTSC,133,"¥4,700",4-988009-888477,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,"Later release, same artwork, only major difference is SRWF cat# and lower price on spine"
 1016,889,,,00HS-80439,1988.12.01,Japan,NTSC,95,"¥12,950",,,Hi-Fi/Digital Mono,,,Japanese,,
@@ -1244,7 +1244,7 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 1244,1057,,,SRWF-8887,1991.04.25,Japan,NTSC,120,"¥3,800",4-988009-888774,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,Warner blue spine with gold shield release
 1245,1058,,,SRWF-9864,,Japan,NTSC,,"¥4,700",,,,,,,,
 1246,1059,,,00 HF-5,,Japan,NTSC,,,,,,,,,,
-1247,1060,,,CSWF-8031,1989.11.21,Japan,NTSC,98,"¥3,800",4-988009-803173 (extrapolated from cat#),,Hi-Fi Mono/Digital Stereo,,,Japanese,,RCA blue spine
+1247,1060,,,CSWF-8031,1989.11.21,Japan,NTSC,98,"¥3,800",4-988009-803173,,Hi-Fi Mono/Digital Stereo,,,Japanese,,RCA blue spine
 1248,1061,,,CSWF-8788,1990.12.21,Japan,NTSC,110,"¥4,700",4-988009-878874,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,Warner navy blue spine
 1249,1062,,,CSWF-8098,1990.03.01,Japan,NTSC,110,"¥13,000",4-988009-809878,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,
 1250,1063,,,A-10019,1984,Japan,NTSC,114,"¥13,800",n/a,,,,,Japanese,,Sticker over insert spine
@@ -1470,7 +1470,7 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 1470,1225,,,A-11058,1988,Japan,NTSC,85,"¥13,800",n/a,,Stereo,,,,,barcode sticker affixed to top edge of tape case with new 00HS series catalog no. Tape has original A series catalog number
 1471,1225,,,00HS-80431 (sticker on spine),1988.09.21,Japan,NTSC,85,"¥12,950",4-988009-772899,,Stereo,,,Japanese,,barcode sticker affixed to top edge of tape case with new 00HS series catalog no. Tape has original A series catalog number
 1472,1226,,,SRWF-9618,,Japan,NTSC,,"¥3,800",4-988009-961873,,Hi-Fi/Digital Stereo,,,Japanese,,
-1473,1227,,,00HS-80454,1989.05.21,Japan,NTSC,125,"¥13,000",,,Hi-Fi/Digital Stereo,,,Japanese,,"Note: RCA tapes with an 00HS- prefix catalog# and a round number price of ¥12,000, ¥13,000, ¥14,000 typically have barcodes and the 00HS number is printed on the spine. These were (mostly?) released in 1989, shortly before the switch to CSWF- numbering and the blue border re-releases, and price major price drops to ¥3,800 that RCA and Warner both did the same year. This is evidenced by the fact that the first CSWF- releases from RCA were also in 1989, and some still have a ¥13,000 price, presumably earlier in the year before the switch, while others were ¥3,800, presumably later in the year. In other words, 1989 was the transitional year between both pricing and catalog numbering for RCA."
+1473,1227,,,00HS-80454,1989.05.21,Japan,NTSC,125,"¥13,000",4-988009-062471,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,"Note: RCA tapes with an 00HS- prefix catalog# and a round number price of ¥12,000, ¥13,000, ¥14,000 typically have barcodes and the 00HS number is printed on the spine. These were (mostly?) released in 1989, shortly before the switch to CSWF- numbering and the blue border re-releases, and price major price drops to ¥3,800 that RCA and Warner both did the same year. This is evidenced by the fact that the first CSWF- releases from RCA were also in 1989, and some still have a ¥13,000 price, presumably earlier in the year before the switch, while others were ¥3,800, presumably later in the year. In other words, 1989 was the transitional year between both pricing and catalog numbering for RCA."
 1474,1227,,,CSWF-8744,1990.11.21,Japan,NTSC,125,"¥3,800",4-988009-874470,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,RCA blue border release
 1475,1228,,,CSWF-7109,1990.02.21,Japan,NTSC,128,"¥13,300",,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,
 1476,1229,,,SRWW-9512,1991,Japan,NTSC,,"¥3,400",4-988009-951270 (extrapolated),,,Japanese,Y,,,
@@ -3362,3 +3362,12 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 3363,3048,,,,,Japan,,,,,,,,,,,
 3364,3049,,,A-10754,1986,Japan,NTSC,106,"¥13,800",n/a,,Stereo,,,Japanese,,"First Japan release. No moon in the sky; no sidewalk running horizontally in front of the house. Clouds have a whiter hue against a dark gray sky, creating strong contrast with the yellow light in house window and bright red title lettering."
 3365,3050,,,#871,,US,NTSC,122,,n/a,,,,,,,Back of insert states 122 mins runtime; tape spine label states 121 mins.
+3366,3051,,,JAM-0011,,Japan,NTSC,50,"¥7,000",4-993534-100116,,Hi-Fi Stereo,,,,,Box set catalog# is JAM-S001. Branded as NHK VOOK (video book)
+3367,3052,,,JAM-0012,,Japan,NTSC,,"¥7,000",4-993534-100123 (extrapolated),,Hi-Fi Stereo,,,,,Box set catalog# is JAM-S001. Branded as NHK VOOK (video book)
+3368,3053,,,JAM-0013,,Japan,NTSC,,"¥7,000",4-993534-100130 (extrapolated),,Hi-Fi Stereo,,,,,Box set catalog# is JAM-S001. Branded as NHK VOOK (video book)
+3369,3054,,,JAM-0014,,Japan,NTSC,,"¥7,000",4-993534-100147 (extrapolated),,Hi-Fi Stereo,,,,,Box set catalog# is JAM-S001. Branded as NHK VOOK (video book)
+3370,3055,,,JAM-0015,,Japan,NTSC,,"¥7,000",4-993534-100154 (extrapolated),,Hi-Fi Stereo,,,,,Box set catalog# is JAM-S001. Branded as NHK VOOK (video book)
+3371,3056,,,,1991,Japan,NTSC,,,4-988013-613478,,,,,,,
+3372,3057,,,PSWR-1001,1990,Japan,NTSC,36,"¥4,000",4-988023-013497,,Hi-Fi/Digital Stereo,,,,,
+3373,3058,,,,,Japan,NTSC,,"¥2,500",4-988009-952772,,,,,,,
+3374,3059,,,#384,,US,NTSC,,,,,,,,,,

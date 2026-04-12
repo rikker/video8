@@ -625,7 +625,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 624,Action Jackson,en,,アクション・ジャクソン/大都会最前線,1988,Film,
 625,Against All Odds,en,,カリブの熱い夜,1984,Film,
 626,Agnes of God,en,,アグネス,1985,Film,
-627,Air America,en,,エア・アメリカ,1990,Film,
+627,Air America,en,,エア・アメリカ,1990,Film,US
 628,Aladdin,en,,アラジン,1992,Film,
 629,Alice in Wonderland,en,,ふしぎの国のアリス,1951,Film,
 630,Alice Sweet Alice [aka Holy Terror],en,,アリス・スィート・アリス,1976,Film,
@@ -885,7 +885,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 884,Let's Get Harry,en,,ハリー奪還,1986,Film,
 885,Lethal Weapon,en,,リーサル・ウェポン,1987,Film,
 886,Lethal Weapon 2,en,,リーサル・ウェポン２/炎の約束,1989,Film,
-887,Lethal Weapon 3,en,,リーサル・ウェポン3,1992,Film,
+887,Lethal Weapon 3,en,,リーサル・ウェポン3,1992,Film,US
 888,Licence to Kill,en,,007／消されたライセンス,1989,Film,
 889,Like Father Like Son,en,,ハモンド家の秘密,1987,Film,
 890,Little Buddha,en,,リトル・ブッダ,1993,Film,
@@ -993,7 +993,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 992,Radio Flyer,en,,ラジオ・フライヤー,1992,Film,
 993,Raging Bull,en,,レイジング・ブル,1980,Film,
 994,Rain Man,en,,レインマン,1988,Film,
-995,Rambo III,en,,ランボー3 怒りのアフガン,1988,Film,
+995,Rambo III,en,,ランボー3 怒りのアフガン,1988,Film,US
 996,Real Genius,en,,天才アカデミー,1985,Film,
 997,Rebel Without a Cause,en,,理由なき反抗 [Riyū naki hankō],1955,Film,
 998,Red Bronx [aka Rumble in the Bronx],en,,レッド・ブロンクス,1995,Film,
@@ -1058,7 +1058,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 1057,Superman III,en,,スーパーマンIII  電子の要塞,1983,Film,
 1058,Surviving the Game,en,,サバイビング・ゲーム,1994,Film,
 1059,Suspiria,en,,サスペリア,1977,Film,
-1060,Talking Heads - Stop Making Sense,en,,ストップ・メイキング・センストーキングヘッ,1984,Film,
+1060,Talking Heads - Stop Making Sense,en,,ストップ・メイキング・センストーキングヘッ,1984,Film,US
 1061,Tango and Cash,en,,デッドフォール,1989,Film,
 1062,Tap,en,,タップ,1989,Film,
 1063,Taxi Driver,en,,タクシードライバー [Takushī doraibā],1976,Film,
@@ -1225,7 +1225,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 1224,White Nights,en,,ホワイトナイッ,1985,Film,
 1225,White Water Summer,en,,グレート・ストリーム,1987,Film,
 1226,Who Framed Roger Rabbit?,en,,ロジャー・ラビット,1988,Film,
-1227,Willow,en,,ウィロー,1988,Film,
+1227,Willow,en,,ウィロー,1988,Film,US
 1228,Wings of Desire [Der Himmel über Berlin],de,,ベルリン・天使の詩,1987,Film,
 1229,Winnie the Pooh and a Day for Eeyore,en,,プーさんとイーヨーのいち日,1983,Film,
 1230,Winnie the Pooh and Christmas Too,en,,プーさんのメリークリスマス,1991,Film,
@@ -3049,3 +3049,12 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 3048,桜樹ルイ あなたの胸の中で,en,Rui Sakuragi: In Your Heart,,,Adult,Japan
 3049,Fright Night,en,,フライトナイト,1985,Film,US
 3050,The Phantom of the Opera,en,,,1925,Film,US
+3051,北極圈 1  探検 マンモスの墓場,ja,The Arctic 1: Expedition—The Mammoth Graveyard,,,TV,Japan
+3052,北極圈 2  氷雪の民,ja,The Arctic 2: People of Ice and Snow,,,TV,Japan
+3053,北極圈 3  大氷海をゆく,ja,The Arctic 3: Traversing the Great Ice Sea,,,TV,Japan
+3054,北極圏 4  オーディオグラフィック 流氷のかなたに,ja,The Arctic 4: Audiographic—Beyond the Drifting Ice,,,TV,Japan
+3055,北藤園 5  オーディオグラフィック オーロラの下で,ja,The Arctic 5: Audiographic—Beneath the Aurora,,,TV,Japan
+3056,スーパーマリオワールド  SUPER MARIO WORLD: SUPER MARIO BROS. 4 ガイドビデオ,ja,Super Mario World: Super Mario Bros 4 Guide Video,,1990,Other,Japan
+3057,"Wink: Winkissimo - Hawaii and L.A. Days, 1990",en,,,1990,Music,Japan
+3058,エゴン・ヒール・ツェッガーの30分でわかるウェーデルン,ja,Egon Hierzegger Wedeln in Just 30 Min.,,,Other,
+3059,Judy Garland,en,,,1956,TV,US
