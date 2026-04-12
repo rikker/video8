@@ -1565,7 +1565,7 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 1565,1313,,,CSWF-8195,1990.06.21,Japan,NTSC,89,"¥4,700",4-988009-819570,,,,,,,
 1566,1314,,,CSWF-8740,1990.11.21,Japan,NTSC,93,"¥2,980",4-988009-874074 (extrapolated),,Hi-Fi/Digital Mono,,,,,Cinemascope
 1567,1315,,,CSWF-8198,1990.06.21,Japan,NTSC,90,"¥4,700",4-988009-819877,,Hi-Fi/Digital Mono,,,,,
-1568,1316,,,CSWF-8196,1990.06.21,Japan,NTSC,126,"¥4,700",4-988009-819679,,Hi-Fi/Digital Stereoo,,,,,
+1568,1316,,,CSWF-8196,1990.06.21,Japan,NTSC,126,"¥4,700",4-988009-819679,,Hi-Fi/Digital Stereo,,,,,
 1569,1317,,,CSWF-8684,1990.10.21,Japan,NTSC,98,"¥4,700",4-988009-868479,,Hi-Fi/Digital Mono,,,,,Cinemascope
 1570,1318,,,CSWF-8200,,Japan,NTSC,126,"¥4,700",4-988009-820071,,Hi-Fi/Digital Mono,,,,,
 1571,1319,,,CSWF-8596,1985.11.25,Japan,NTSC,112,"¥11,200",n/a,,Hi-Fi/Digital Mono,,,,,
@@ -3372,3 +3372,4 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 3373,3058,,,,,Japan,NTSC,,"¥2,500",4-988009-952772,,,,,,,
 3374,3059,,,#384,,US,NTSC,,,,,,,,,,
 3375,3060,,,,,Netherlands,PAL,90,,,,,,,,,
+3376,3061,,,PSWR-1002,1990,Japan,NTSC,40,"¥4,800",4-988023-013503,,Hi-Fi/Digital Stereo,,,,,
