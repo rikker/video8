@@ -275,7 +275,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 274,My Girl,en,,,1991,Film,
 275,My Girl 2,en,,,1994,Film,
 276,My Life,en,,,1993,Film,
-277,My Uncle,en,,,1958,Film,
+277,Mon Oncle,fr,My Uncle,,1958,Film,France
 278,Naked Gun 33 1/3: The Final Insult,en,,,1994,Film,
 279,Nanami: The Inferno of First Love,en,,,1968,Film,
 280,National Gallery of Art: A Treasury of Masterpieces,en,,,1983,Film,
@@ -1417,7 +1417,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 1416,Goodyear Jazz Concert with Duke Ellington,en,,,,Film,
 1417,Hiroshima Mon Amour,en,,,1959,Film,
 1418,It's a Wonderful Life,en,,,1946,Film,
-1419,"Ivan the Terrible, Part II",en,,,1946,Film,
+1419,Иван Грозный Часть II,ru,"Ivan the Terrible, Part II",,1946,Film,Russia
 1420,Night of the Living Dead,en,,,1968,Film,
 1421,Open City,en,,,1945,Film,
 1422,Orpheus,en,,,1949,Film,
@@ -3060,3 +3060,4 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 3059,Judy Garland,en,,,1956,TV,US
 3060,The Howling,en,,,,Film,US
 3061,Wink: Wink First Live Shining Star,en,,,1990,Music,Japan
+3062,子猫物語,ja,The Adventures of Chatran [The Adventures of Milo & Otis],,1986,Film,Japan
