@@ -129,6 +129,8 @@
   /* ── Header ───────────────────────────────────────────────────── */
   #search {
     width: 100%;
+    box-sizing: border-box;
+    max-width: 100%;
     background: var(--surface);
     border: 1px solid var(--border);
     color: var(--text);
@@ -208,6 +210,7 @@
     min-width: 0;
     max-width: 480px;
     position: relative;
+    overflow: hidden;
   }
 
   .header-meta {
@@ -997,6 +1000,9 @@
       <label class="option-item">
         <input type="checkbox" id="expand-all-notes"> Expand all notes
       </label>
+      <label class="option-item">
+        <input type="checkbox" id="search-notes"> Search within notes
+      </label>
     </div>
   </div>
 </div>
@@ -1162,6 +1168,7 @@ let sortBy          = 'title_display';
 let sortDir         = 'ASC';
 let highlightBlanks = false;
 let expandAllNotes  = localStorage.getItem('v8expandnotes') === '1';
+let searchNotes     = localStorage.getItem('v8searchnotes') === '1';
 let filterHasImages = localStorage.getItem('v8hasimages') === '1';
 
 let imgShow = localStorage.getItem('v8imgshow') !== '0';  // default on
@@ -1490,6 +1497,12 @@ if (savedHL === '1') {
   document.getElementById('highlight-blanks').checked = true;
 }
 
+document.getElementById('search-notes').addEventListener('change', e => {
+  searchNotes = e.target.checked;
+  localStorage.setItem('v8searchnotes', searchNotes ? '1' : '0');
+  triggerSearch();
+});
+
 document.getElementById('expand-all-notes').addEventListener('change', e => {
   expandAllNotes = e.target.checked;
   localStorage.setItem('v8expandnotes', expandAllNotes ? '1' : '0');
@@ -1510,6 +1523,7 @@ document.getElementById('expand-all-notes').addEventListener('change', e => {
 });
 if (expandAllNotes) {
   document.getElementById('expand-all-notes').checked = true;
+  if (searchNotes) document.getElementById('search-notes').checked = true;
   document.getElementById('results').classList.add('expand-all-notes');
 }
 
@@ -1697,7 +1711,8 @@ function buildSQL(q, offset, countOnly, adultOnly = false, ignoreHasImages = fal
 
   if (q) {
     const safe = q.replace(/'/g, "''");
-    conditions.push(`(t.title_original LIKE '%${safe}%' OR t.title_en LIKE '%${safe}%' OR t.title_ja LIKE '%${safe}%' OR p.name LIKE '%${safe}%' OR r.catalog_number LIKE '%${safe}%' OR r.upc LIKE '%${safe}%' OR r.notes LIKE '%${safe}%')`);
+    const notesClause = searchNotes ? ` OR r.notes LIKE '%${safe}%'` : '';
+    conditions.push(`(t.title_original LIKE '%${safe}%' OR t.title_en LIKE '%${safe}%' OR t.title_ja LIKE '%${safe}%' OR p.name LIKE '%${safe}%' OR r.catalog_number LIKE '%${safe}%' OR r.upc LIKE '%${safe}%'${notesClause})`);
   }
 
   if (adultOnly) {
