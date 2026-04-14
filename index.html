@@ -1208,16 +1208,27 @@ function imgSortKey(a, b) {
   // (higher = better quality per tape shown)
   const aGroup = (a.image_type || '').toLowerCase().endsWith('_group');
   const bGroup = (b.image_type || '').toLowerCase().endsWith('_group');
-  if (aGroup && bGroup) {
-    const aPixels = (a.width || 0) * (a.height || 0);
-    const bPixels = (b.width || 0) * (b.height || 0);
-    const aLinks  = a.link_count || 1;
-    const bLinks  = b.link_count || 1;
-    const aScore  = aPixels / aLinks;
-    const bScore  = bPixels / bLinks;
-    if (bScore !== aScore) return bScore - aScore;  // higher score first
-    return bPixels - aPixels;  // tiebreak: higher res
+  // Apply trim_score to all images (not just groups) -- penalise wasted border.
+  // effective_pixels = raw_pixels * (1 - trim_score/100), NULL trim_score = no penalty.
+  function effectivePixels(img) {
+    const raw   = (img.width || 0) * (img.height || 0);
+    const trim  = (img.trim_score != null && img.trim_score !== '') ? parseFloat(img.trim_score) : 0;
+    return raw * (1 - trim / 100);
   }
+  if (aGroup && bGroup) {
+    const aEff   = effectivePixels(a);
+    const bEff   = effectivePixels(b);
+    const aLinks = a.link_count || 1;
+    const bLinks = b.link_count || 1;
+    const aScore = aEff / aLinks;
+    const bScore = bEff / bLinks;
+    if (Math.abs(bScore - aScore) > 0.5) return bScore - aScore;  // higher score first
+    return bEff - aEff;  // tiebreak: higher effective res
+  }
+  // For solo images with same type tier, sort by effective pixels desc
+  const aEff = effectivePixels(a);
+  const bEff = effectivePixels(b);
+  if (Math.abs(bEff - aEff) > 100) return bEff - aEff;
   return 0;
 }
 
@@ -1979,7 +1990,7 @@ async function fetchImages(releaseId) {
   const cacheKey = `${releaseId}_${showSupersededGroups ? 'a' : 's'}_${hideGroupImages ? 'hg' : ''}`;
   if (imagesCache[cacheKey]) return imagesCache[cacheKey];
   const sql = `SELECT i.id, i.release_id, i.image_type, i.filename, i.url,
-    i.source_slug, i.source_type, i.width, i.height,
+    i.source_slug, i.source_type, i.width, i.height, i.trim_score,
     (SELECT COUNT(*) FROM images i2 WHERE i2.filename = i.filename) as link_count
     FROM images i WHERE i.release_id = ${releaseId}`;
   try {

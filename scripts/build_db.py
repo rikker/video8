@@ -96,6 +96,7 @@ TABLES = {
             source_type TEXT,
             width INTEGER,
             height INTEGER,
+            trim_score REAL,
             notes TEXT
         )
     ''',
