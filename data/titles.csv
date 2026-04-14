@@ -777,7 +777,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 776,Father of the Bride,en,,花嫁のパパ,1991,Film,
 777,Fiddler on the Roof,en,,屋根の上のバイオリン弾き,1971,Film,
 778,Field of Dreams,en,,フィールド・オブ・ドリームス,1989,Film,
-779,Final Analysis,en,,愛という名の疑惑,1992,Film,
+779,Final Analysis,en,,愛という名の疑惑,1992,Film,US
 780,Flatliners,en,,フラットライナーズ,1990,Film,
 781,For a Few Dollars More,en,,夕陽のガンマン,1965,Film,
 782,For Keeps,en,,この愛に生きて,1988,Film,
@@ -1690,7 +1690,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 1689,MTB User Guide: Perfect R.V. Camping,en,,MTB パーフェクトRVキャンピング,,Video Magazine,
 1690,Myojo Hair Catalog - Miho Nakayama,en,,明星ヘアカタログ 中山美穂 [Myōjō hea katarogu Nakayama Miho],1990,Video Magazine,
 1691,Super Golf Digest Vol.1,en,,,1991,Video Magazine,
-1692,Super Golf Digest - The Wide World of Golf Vol.2,en,,,1991,Video Magazine,
+1692,Super Golf Digest Vol.2 - The Wide World of Golf,en,,,1991,Video Magazine,
 1693,Super Golf Digest Vol.3 - The Wide World of Golf,en,,,1991,Video Magazine,
 1694,Super Golf Digest Vol.4,en,,,1991,Video Magazine,
 1695,Super Golf Digest Vol.5 - The Wide World of Golf,en,,,1991,Video Magazine,
@@ -2303,7 +2303,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 2302,Enjoy Auto Camping Vol.1 Standard Camping,en,,Enjoy Auto Camping Vol.1 スタンダードオートキャンプ,1990,Other,Japan
 2303,Enjoy Auto Camping Vol.2 Four Seasons Outdoors,en,,Enjoy Auto Camping Vol.2 四季アウトドア,1990,Other,Japan
 2304,Enjoy Auto Camping Vol.3 Campsite & RV,en,,Enjoy Auto Camping Vol.3 キャンプサイト&RV,1990,Other,Japan
-2305,Euro-Girl Mieke - Miss Euro-Girl Holland  ユーロ・ガール  ミーケ,ja,,Euro-Girl Mieke - Miss Euro-Girl Holland  ユーロ・ガール  ミーケ,1990,Other,Japan
+2305,Euro-Girl Mieke - Miss Euro-Girl Holland  ユーロ・ガール  ミーケ,ja,,Euro-Girl Mieke - Miss Euro-Girl Holland  ユーロ・ガール  ミーケ,1990,Adult,Japan
 2306,"First Words Video by Tarō Gomi - Video Picture Book 1 - Cat, Cat, Cat",en,,五味太郎・ビデオ絵本 1 ねこ・ねこ・ねこ,1985,Other,Japan
 2307,"First Words Video by Tarō Gomi - Video Picture Book 2 - What, What, What",en,,五味太郎・ビデオ絵本 2 なに・なに・なに,1985,Other,Japan
 2308,"First Words Video by Tarō Gomi - Video Picture Book 3 - Hey, Hey, Hey",en,,五味太郎・ビデオ絵本 3 ねえ・ねえ・ねえ,1985,Other,Japan
@@ -3072,3 +3072,4 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 3071,高杉レイ スペシャル SPORTY ELEGANCE,ja,Rei Takasugi Special: Sporty Elegance,,,Adult,Japan
 3072,出血大制服 17 憂木瞳,ja,The Uniform Connection 17: Yuki Hitomi,,,Adult,Japan
 3073,憂木瞳  危ない寄り道帰り道,ja,Yuki Hitomi: A Perilous Detour on the Way Home,,,Adult,Japan
+3074,Euro-Girl Tara - Miss Euro-Girl Italy ユーロ・ガール  タ ラ,ja,Euro-Girl Tara - Miss Euro-Girl Italy,,1990,Adult,Japan

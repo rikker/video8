@@ -860,7 +860,7 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 860,776,,,SRWF-9620,,Japan,NTSC,105,"¥4,700",4-988009-962078,,Hi-Fi/Digital Stereo,,,Japanese,,
 861,777,,,"CSWF-8671, CSWF-8672",1990.10.21,Japan,NTSC,172,"¥4,800",4-988009-867175 (extrapolated),,Hi-Fi/Digital Stereo,,,Japanese,,
 862,778,,,SRWF-9688,,Japan,NTSC,107,"¥3,800",4-988009-968872,,Hi-Fi/Digital Stereo Dolby,,,Japanese,,
-863,779,,,SRWF-???? (fuzzy in pic),,Japan,NTSC,,"¥4,700",,,,,,Japanese,,
+863,779,,,SRWF-9607,,Japan,NTSC,,"¥4,700",,,,,,Japanese,,
 864,780,,,SRWF-8965,1991.08.23,Japan,NTSC,114,"¥4,700",4-988009-896571,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,
 865,781,,,CSWF-8081,1990.03.21 (in databook); 1989 (on insert),Japan,NTSC,127,"¥3,800",4-988009-808178,,Hi-Fi/Digital Mono,,,Japanese,,"""Clint Eastwood Best Collection"" Warner silver banner release"
 866,782,,,00HS-80449,1989.05.21,Japan,NTSC,98,"¥13,000",,,Hi-Fi Mono/Digital Stereo,,,Japanese,,
@@ -3385,3 +3385,4 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 3386,3071,,,PSY-42Ⓐ,,Japan,NTSC,30,,4-988156-778607,,Hi-Fi/Digital Mono,,,,,
 3387,3072,,,,,Japan,NTSC,50,"¥3,900",4-988009-962679,,,,,,,
 3388,3073,,,,,Japan,NTSC,60,"¥3,900",4-988009-969671,,,,,,,
+3389,3074,,,SRWW-216,1990,Japan,NTSC,,"¥2,800",,,,,,,,
