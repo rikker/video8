@@ -2573,7 +2573,7 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 2574,2282,,,,1989,US,NTSC,,,,,,,,,,
 2575,2283,,,,,Germany,PAL,,,,,,,,,,
 2576,2284,,,,,Japan,NTSC,,,,,,,,,,
-2577,2285,,,,,Japan,NTSC,,,,,,,,,,
+2577,2285,,,,1992,Japan,NTSC,120,"¥9,000",4-901780-213191,,Hi-Fi/Digital Stereo,,,,,
 2578,2286,,,CSWW-8207; Z-004,1989.10.06,Japan,NTSC,30,"¥2,000",4-985755-000047,,Hi-Fi/Digital Mono,,,,,
 2579,2287,,,CSWW-8208; Z-005,1989.10.06,Japan,NTSC,30,"¥2,000",4-985755-000054,,Hi-Fi/Digital Mono,,,,,
 2580,2288,,,,1990,Japan,NTSC,60,n/a,,,Hi-Fi/Digital Stereo,,,,,"Promotional video; marked 非売品 ""Not For Sale"" on the spine"
@@ -3386,3 +3386,4 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 3387,3072,,,,,Japan,NTSC,50,"¥3,900",4-988009-962679,,,,,,,
 3388,3073,,,,,Japan,NTSC,60,"¥3,900",4-988009-969671,,,,,,,
 3389,3074,,,SRWW-216,1990,Japan,NTSC,,"¥2,800",,,,,,,,
+3390,3075,,,A-10471,1986,Japan,NTSC,127,"¥13,800",n/a,,Hi-Fi Stereo,,,Japanese,,
