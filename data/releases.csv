@@ -2115,7 +2115,7 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 2116,1832,,,VAWA-8526,1990.12.10,Japan,NTSC,48,"¥4,900",4-988112-805262,,Digital Stereo,,,,,"One listing shows tape but not spine, and tape has VAM-8523; different release? Or just differeing numbers of tape vs. insert spine"
 2117,1833,,,00HS-80634,1989.07.21,Japan,NTSC,104,"¥13,000",,,Hi-Fi Mono/Digital Stereo,,,Japanese,,
 2118,1833,,,SRWF-9338,1991.12.12,Japan,NTSC,104,"¥3,800",4-988009-933870,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,
-2119,1834,,,,,Japan,NTSC,,,,,,,,,,
+2119,1834,,,8P88-1007,1986,Japan,NTSC,55,,n/a,,Digital Stereo,,,,,
 2120,1835,,,8P88-1001,1985,Japan,NTSC,58,"¥8,800",n/a,,Digital Stereo,,,,,
 2121,1836,,,CSWW-8125,1990.03.21,Japan,NTSC,60,"¥3,999",4-988009-812571,,Hi-Fi/Digital Stereo,,,,,
 2122,1837,,,69001-118,,Japan,NTSC,,"¥11,800",,,,,,,,
@@ -3098,8 +3098,8 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 3099,2785,,,CSWW-8348,1989.08.01,Japan,NTSC,50,,,,Hi-Fi/Digital Mono,,,,,Episodes 25-26
 3100,2786,,,,,Japan,NTSC,30,,,,,,,,,
 3101,2787,,,SRWW-9444,1991,Japan,NTSC,23,"¥2,800",4-988009-944470,,Hi-Fi/Digital Mono,,,,,
-3102,2788,,,SRWW-9446,1991,Japan,NTSC,23,"¥2,800",4-988009-944678,,Hi-Fi/Digital Mono,,,,,
-3103,2789,,,SRWW-9445,1991,Japan,NTSC,23,"¥2,800",4-988009-944579,,Hi-Fi/Digital Mono,,,,,
+3102,2788,,,SRWW-9445,1991,Japan,NTSC,23,"¥2,800",4-988009-944579,,Hi-Fi/Digital Mono,,,,,
+3103,2789,,,SRWW-9446,1991,Japan,NTSC,23,"¥2,800",4-988009-944678,,Hi-Fi/Digital Mono,,,,,
 3104,2790,,,SRWW-9440,,Japan,NTSC,,"¥3,400",4-988009-944074 (extrapolated),,,Japanese,Y,,,
 3105,2791,,,SRWW-9893,1994,Japan,NTSC,45,"¥2,800",4-988009-989372,,Stereo (Dual Mono),English/Japanese,,,,
 3106,2792,,,SRWW-9895,1995,Japan,NTSC,,"¥2,800",4-988009-989570,,Stereo (Dual Mono),English/Japanese,,,,
@@ -3374,3 +3374,5 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 3375,3060,,,,,Netherlands,PAL,90,,,,,,,,,
 3376,3061,,,PSWR-1002,1990,Japan,NTSC,40,"¥4,800",4-988023-013503,,Hi-Fi/Digital Stereo,,,,,
 3377,3062,,,DV-0039,1986,Japan,NTSC,93,"¥9,800",n/a,,,,,,,
+3378,3063,,,SRWF-9660,,Japan,NTSC,,"¥3,800",,,,,,,,"""Best Library"" FOX release"
+3379,3064,,,,,Japan,NTSC,,,,,,,,,,
