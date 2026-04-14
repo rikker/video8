@@ -813,9 +813,9 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 813,738,,,SRWF-9490,1992,Japan,NTSC,103,"¥3,800",4-988009-949079,,Hi-Fi/Digital Stereo,,,Japanese,,"Later release, black/white split on cover and spine background color"
 814,739,,,CSWF-8034,1989.12.01,Japan,NTSC,110,"¥13,000",,,Hi-Fi/Digital Stereo,,,Japanese,,
 815,740,,,SRWF-9999,1995,Japan,NTSC,128,"¥4,700",4-988009-999975,,Hi-Fi/Digital Stereo Dolby Surround,,,Japanese,,Widescreen
-816,741,,,SRWW-9621,,Japan,NTSC,,"¥3,400",4-988009-962177 (extrapolated),,,Japanese,Y,,,
+816,741,,,SRWW-9621,,Japan,NTSC,30,"¥3,400",4-988009-962177 (extrapolated),,,Japanese,Y,,,
 817,742,,,SRWW-9622,,Japan,NTSC,30,"¥3,400",4-988009-962276,,Hi-Fi/Digital Mono,Japanese,Y,,,
-818,743,,,SRWW-9623,,Japan,NTSC,,"¥3,400",4-988009-962375 (extrapolated),,,Japanese,Y,,,
+818,743,,,SRWW-9623,,Japan,NTSC,30,"¥3,400",4-988009-962375 (extrapolated),,,Japanese,Y,,,
 819,744,,,SRWW-9624,,Japan,NTSC,,"¥3,400",4-988009-962474,,,Japanese,Y,,,
 820,745,,,SRWW-9765,,Japan,NTSC,,"¥3,400",4-988009-976570 (extrapolated),,,Japanese,Y,,,
 821,746,,,SRWW-9853,,Japan,NTSC,,,,,,Japanese,Y,,,
@@ -2085,7 +2085,7 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 2086,1804,,,VAWJ-8841,1990.05.21,Japan,NTSC,51,"¥3,800",4-988112-808416 (on sticker on outer shrink),,Stereo,,,,,
 2087,1805,,,EN-501,,Japan,NTSC,81,"¥10,800",,,Mono,,,,,
 2088,1806,,,8P88-1002,1985,Japan,NTSC,,,,,,,,,,
-2089,1807,,,,1985,Japan,NTSC,53,,n/a,,Digital Stereo,,,,,
+2089,1807,,,PVE-2003,1985,Japan,NTSC,53,"¥8,800",n/a,,Digital Stereo,,,,,
 2090,1808,,,PVE-0003,1985,Japan,NTSC,108,"¥13,800",n/a,,Digital Stereo,,,,,
 2091,1809,,,VAM-8039,1989.05.24,Japan,NTSC,60,"¥5,000",,,Digital Stereo,,,,,
 2092,1810,,,,1990,Japan,NTSC,,,,,,,,,,
@@ -3377,3 +3377,8 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 3378,3063,,,SRWF-9660,,Japan,NTSC,,"¥3,800",,,,,,,,"""Best Library"" FOX release"
 3379,3064,,,,,Japan,NTSC,,,,,,,,,,
 3380,3065,,,,1991,Japan,NTSC,,,,,,,,,,
+3381,3066,,,MEP-R013V8M,1995.08,Japan,NTSC,,"¥3,800",,,,,,,,"Box set with CD and 8mm video tape. One of two released for this album, the other is subtitled ~Virtue Style~ and has a VHS tape instead of 8mm."
+3382,3067,,,,,Japan,NTSC,,NFS,,,,,,,Y,Presumed to exist because vol.2 exists
+3383,3068,,,,,Japan,NTSC,30,NFS,,,Digital Stereo,,,,Y,"Music compilation promo tape, includes a mix of BGV and music videos"
+3384,3069,,,09PE-2,,Japan,NTSC,,,,,,,,,,
+3385,3070,,,88C69-8005?? (fuzzy in pic),,Japan,NTSC,,,,,,,,,,

@@ -740,12 +740,12 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 739,Dirty Rotten Scoundrels,en,,ペテン師とサギ師/だまされてリビエラ,1988,Film,
 740,Disclosure,en,,ディスクロージャー,1994,Film,
 741,Disney Sing-Along Songs 1: Heigh-Ho,en,,シング・アロング・ソング Vol. 1 ハイ・ホー,1987,Film,
-742,Disney Sing-Along Songs 2: You Can Fly!,en,,シング・アロング・ソング Vol. 2,1988,Film,
-743,Disney Sing-Along Songs 3: Under the Sea,en,,シング・アロング・ソング Vol. 3,1990,Film,
-744,Disney Sing-Along Songs 4: Be Our Guest,en,,シング・アロング・ソング Vol. 4,1992,Film,
+742,Disney Sing-Along Songs 2: You Can Fly!,en,,シング・アロング・ソング Vol. 2 きみもとべるよ！,1988,Film,
+743,Disney Sing-Along Songs 3: Under the Sea,en,,シング・アロング・ソング Vol. 3 アンダー・ザ・シー,1990,Film,
+744,Disney Sing-Along Songs 4: Be Our Guest,en,,シング・アロング・ソング Vol. 4 美女と野獣,1992,Film,
 745,Disney Sing-Along Songs 5: Friend Like Me,en,,シング・アロング・ソング Vol. 5,1993,Film,
 746,Disney Sing-Along Songs 6: Euro Disneyland,en,,シング・アロング・ソング Vol. 6 ユーロ・ディズニーランド,,Film,
-747,Disney Sing-Along Songs 7: The Bare Necessities,en,,,1987,Film,
+747,Disney Sing-Along Songs 7: The Bare Necessities,en,,シング・アロング・ソング Vol. 7 ザ・ベアー・ネセシティ,1987,Film,
 748,Disney Sing-Along Songs 8,en,,,,Film,
 749,Disney Sing-Along Songs 9: Circle of Life,en,,,1994,Film,
 750,Diva,en,,ディーバ,1981,Film,
@@ -1947,7 +1947,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 1946,Ryuichi Sakamoto - Neo Geo,en,,坂本龍一  NEO GEO,1987,Music,Japan
 1947,Ryuichi Sakamoto - TV War,en,,坂本龍一  TV WAR,1985,Music,Japan
 1948,Saburō Tokitō in Australia - Heart & Soul,en,,時任三郎 IN オーストラリア Heart & Soul,1986,Music,Japan
-1949,Sadao Watanabe - Parker's Mood - Sadao Watanabe Live At Bravas Club '85,en,,渡辺貞夫　パーカーズ・ムード,1985,Music,Japan
+1949,Sadao Watanabe - Parker's Mood - Live At Bravas Club '85,en,,渡辺貞夫　パーカーズ・ムード,1985,Music,Japan
 1950,Seiji Ozawa [小澤 征爾] - Ozawa,ja,,Seiji Ozawa [小澤 征爾] - Ozawa,1986,Music,Japan
 1951,Seiji Ozawa [小澤 征爾] - Boston Sympony Orchestra: Richard Strauss - Also sprach Zarathustra; Brahms - Symphony No.1 in C Minor,ja,,Seiji Ozawa [小澤 征爾] - Boston Sympony Orchestra: Richard Strauss - Also sprach Zarathustra; Brahms - Symphony No.1 in C Minor,1986,Music,Japan
 1952,Seiko Matsuda - Live at the Budokan - Amusement Park,en,,,1991,Music,Japan
@@ -3064,3 +3064,8 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 3063,How to Steal a Million,en,,おしゃれ泥棒,1966,Film,US
 3064,男と女のパーティーシーショット術,ja,Party Pickup Techniques for Men and Women,,,Other,Japan
 3065,SONY 1991年末 ウォークマン・ソナホーク CM集,ja,Sony Late 1991 Walkman & Sonahawk Commercial Compilation,,1991,Other,Japan
+3066,Baiser - Pictures ~Vice Style~,en,,,1995,Music,Japan
+3067,Sony Video8 SOFT HI-LIGHT Vol.1,en,,,,Music,Japan
+3068,Sony Video8 SOFT HI-LIGHT Vol.2,en,,,,Music,Japan
+3069,渡辺貞夫　ラブ・ソング,en,Sadao Watanabe - Love Song - Live At Bravas Club '85,,,Music,Japan
+3070,ヘンデル 水上の音楽  ヨーロピアン・ドリームス,en,G.F. Handel: Wassermusik,,,Music,
