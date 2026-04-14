@@ -2777,7 +2777,7 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 2778,2484,,,68HS-5002,1987.05.21,Japan,NTSC,40,"¥6,800 (printed on spine); ¥6,380 (in databook)",,,Hi-Fi Mono/Digital Stereo,,,,,BGV
 2779,2485,,,78HS-5008,1987.06.21,Japan,NTSC,45,"¥7,800 (printed on spine); ¥7,320 (in databook)",,,Hi-Fi Mono/Digital Stereo,,,,,BGV
 2780,2486,,,,,UK,PAL,,,,,,,,,,
-2781,1363,,,,,Films,PAL,116,,,,,,,,Y,"RCA promotional release in generic promo slipcover. These all use the same standard base design with b&w RCA/Columbia logo in top left, and the label says ""(C) Artwork and Design 1986"" regardless of the year the film came out (even some post 1986, such as Punch Line). Actual distribution date of these promos seems to be more like 1989/90, but it's possible some were produced earlier. Need more info."
+2781,1363,,,,,US,PAL,116,,,,,,,,Y,"RCA promotional release in generic promo slipcover. These all use the same standard base design with b&w RCA/Columbia logo in top left, and the label says ""(C) Artwork and Design 1986"" regardless of the year the film came out (even some post 1986, such as Punch Line). Actual distribution date of these promos seems to be more like 1989/90, but it's possible some were produced earlier. Need more info."
 2782,2487,,,,,Films,PAL,89,,,,,,,,Y,"RCA promotional release in generic promo slipcover. These all use the same standard base design with b&w RCA/Columbia logo in top left, and the label says ""(C) Artwork and Design 1986"" regardless of the year the film came out (even some post 1986, such as Punch Line). Actual distribution date of these promos seems to be more like 1989/90, but it's possible some were produced earlier. Need more info."
 2783,2488,,,,,Films,PAL,96,,,,,,,,Y,"RCA promotional release in generic promo slipcover. These all use the same standard base design with b&w RCA/Columbia logo in top left, and the label says ""(C) Artwork and Design 1986"" regardless of the year the film came out (even some post 1986, such as Punch Line). Actual distribution date of these promos seems to be more like 1989/90, but it's possible some were produced earlier. Need more info."
 2784,2489,,,,1986,Films,PAL,95,,,,,,,,Y,"RCA promotional release in generic promo slipcover. These all use the same standard base design with b&w RCA/Columbia logo in top left, and the label says ""(C) Artwork and Design 1986"" regardless of the year the film came out (even some post 1986, such as Punch Line). Actual distribution date of these promos seems to be more like 1989/90, but it's possible some were produced earlier. Need more info."
@@ -3382,3 +3382,6 @@ id,title_id,title_release,title_release_lang,catalog_number,release_date,country
 3383,3068,,,,,Japan,NTSC,30,NFS,,,Digital Stereo,,,,Y,"Music compilation promo tape, includes a mix of BGV and music videos"
 3384,3069,,,09PE-2,,Japan,NTSC,,,,,,,,,,
 3385,3070,,,88C69-8005?? (fuzzy in pic),,Japan,NTSC,,,,,,,,,,
+3386,3071,,,PSY-42Ⓐ,,Japan,NTSC,30,,4-988156-778607,,Hi-Fi/Digital Mono,,,,,
+3387,3072,,,,,Japan,NTSC,50,"¥3,900",4-988009-962679,,,,,,,
+3388,3073,,,,,Japan,NTSC,60,"¥3,900",4-988009-969671,,,,,,,
