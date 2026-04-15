@@ -488,7 +488,6 @@
   }
   .chip:hover { border-color: var(--text-dim); }
   .chip.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
-  .chip.adult-chip.selected { background: rgba(200,75,75,0.1); border-color: #c84b4b; color: #c84b4b; }
 
   .filter-select {
     background: var(--surface2);
@@ -1039,6 +1038,9 @@
       <label class="option-item">
         <input type="checkbox" id="filter-hide-groups"> Hide all group images
       </label>
+      <label class="option-item">
+        <input type="checkbox" id="filter-show-adult"> Show adult releases in search results
+      </label>
     </div>
   </div>
 </div>
@@ -1244,8 +1246,11 @@ function imageUrl(img) {
 
 const imagesCache = {};
 
-// Adult is excluded unless explicitly in selectedTypes
-function showAdult() { return selectedTypes.has('Adult'); }
+// Adult shown only when checkbox is explicitly checked
+function showAdult() {
+  const cb = document.getElementById('filter-show-adult');
+  return cb ? cb.checked : false;
+}
 
 // ── Fields ─────────────────────────────────────────────────────────────────
 const FIELDS = [
@@ -1276,7 +1281,7 @@ const IMPORTANT_BLANK = new Set([
   'audio_language','subtitle_language'
 ]);
 
-const CONTENT_TYPES = ['Film','TV','Music','Video Magazine','Adult','Other'];
+const CONTENT_TYPES = ['Film','TV','Music','Video Magazine','Other'];
 
 // ── Theme system ───────────────────────────────────────────────────────────
 const ACCENTS = {
@@ -1538,6 +1543,12 @@ if (expandAllNotes) {
   document.getElementById('results').classList.add('expand-all-notes');
 }
 
+document.getElementById('filter-show-adult').addEventListener('change', () => {
+  imagesCache = {};
+  updateActiveTags();
+  triggerSearch();
+});
+
 document.getElementById('filter-has-images').addEventListener('change', e => {
   filterHasImages = e.target.checked;
   localStorage.setItem('v8hasimages', filterHasImages ? '1' : '0');
@@ -1590,7 +1601,7 @@ function buildChips() {
   container.innerHTML = '';
   CONTENT_TYPES.forEach(ct => {
     const btn = document.createElement('button');
-    btn.className = 'chip' + (ct === 'Adult' ? ' adult-chip' : '');
+    btn.className = 'chip';
     btn.textContent = ct;
     btn.dataset.ct = ct;
     btn.addEventListener('click', () => {
@@ -1678,6 +1689,15 @@ function updateActiveTags() {
     });
   });
 
+  if (showAdult()) {
+    addTag('Adult: shown', () => {
+      document.getElementById('filter-show-adult').checked = false;
+      imagesCache = {};
+      updateActiveTags();
+      triggerSearch();
+    });
+  }
+
   if (filterCountry) addTag(`Country: ${filterCountry}`, () => {
     filterCountry = '';
     document.getElementById('filter-country').value = '';
@@ -1726,12 +1746,13 @@ function buildSQL(q, offset, countOnly, adultOnly = false, ignoreHasImages = fal
     conditions.push(`(t.title_original LIKE '%${safe}%' OR t.title_en LIKE '%${safe}%' OR t.title_ja LIKE '%${safe}%' OR p.name LIKE '%${safe}%' OR r.catalog_number LIKE '%${safe}%' OR r.upc LIKE '%${safe}%'${notesClause})`);
   }
 
-  if (adultOnly) {
-    conditions.push(`t.content_type = 'Adult'`);
-  } else if (!ignoreAllFilters && selectedTypes.size > 0) {
+  if (!ignoreAllFilters && selectedTypes.size > 0) {
     const types = [...selectedTypes].map(t => `'${t.replace(/'/g,"''")}'`).join(',');
-    conditions.push(`t.content_type IN (${types})`);
-  } else {
+    const typeFilter = showAdult()
+      ? `t.content_type IN (${types})`
+      : `t.content_type IN (${types}) AND t.content_type != 'Adult'`;
+    conditions.push(typeFilter);
+  } else if (!showAdult()) {
     conditions.push(`t.content_type != 'Adult'`);
   }
 
@@ -1922,7 +1943,7 @@ function renderCard(row) {
   div.appendChild(srcList);
 
   // ── Image panel (lazy-loaded via IntersectionObserver) ─────────
-  if (imgShow && row.content_type !== 'Adult') {
+  if (imgShow && (row.content_type !== 'Adult' || showAdult())) {
     const releaseId = row.release_id;
     const title     = row.title_display || row.title_original;
 
@@ -1987,12 +2008,19 @@ function esc(s) {
 // ── Images ─────────────────────────────────────────────────────────────────
 
 async function fetchImages(releaseId) {
-  const cacheKey = `${releaseId}_${showSupersededGroups ? 'a' : 's'}_${hideGroupImages ? 'hg' : ''}`;
+  const cacheKey = `${releaseId}_${showSupersededGroups ? 'a' : 's'}_${hideGroupImages ? 'hg' : ''}_${showAdult() ? 'adult' : ''}`;
   if (imagesCache[cacheKey]) return imagesCache[cacheKey];
   const sql = `SELECT i.id, i.release_id, i.image_type, i.filename, i.url,
     i.source_slug, i.source_type, i.width, i.height, i.trim_score,
     (SELECT COUNT(*) FROM images i2 WHERE i2.filename = i.filename) as link_count
-    FROM images i WHERE i.release_id = ${releaseId}`;
+    FROM images i WHERE i.release_id = ${releaseId}
+    AND NOT EXISTS (
+      SELECT 1 FROM images i3
+      JOIN releases r ON r.id = i3.release_id
+      JOIN titles t   ON t.id = r.title_id
+      WHERE i3.filename = i.filename
+      AND t.content_type = 'Adult'
+    )`;
   try {
     let imgs = queryDb(sql);
     // Remove all group images if hideGroupImages is on
@@ -2231,13 +2259,16 @@ async function search(q, append = false) {
 
     // Check for hidden adult results
     if (!append && !showAdult()) {
-      const adultSql = buildSQL(q, 0, true, true);
+      const safe = (currentQuery || '').replace(/'/g, "''");
+      const adultSql = safe
+        ? `SELECT COUNT(DISTINCT r.id) as count FROM releases r JOIN titles t ON t.id = r.title_id WHERE t.content_type = 'Adult' AND (t.title_original LIKE '%${safe}%' OR t.title_en LIKE '%${safe}%' OR t.title_ja LIKE '%${safe}%')`
+        : `SELECT COUNT(DISTINCT r.id) as count FROM releases r JOIN titles t ON t.id = r.title_id WHERE t.content_type = 'Adult'`;
       try {
         const d = queryDb(adultSql);
         const n = d[0]?.count || 0;
         if (n > 0) {
           noticeEl.style.display = 'block';
-          noticeEl.textContent = `⚠ ${n} Adult title${n !== 1 ? 's' : ''} hidden — select "Adult" in Filters to include ${n !== 1 ? 'them' : 'it'}`;
+          noticeEl.textContent = `⚠ ${n} Adult title${n !== 1 ? 's' : ''} hidden — check "Show adult releases" in Filters to show ${n !== 1 ? 'them' : 'it'}`;
         }
       } catch(e) {}
     }
@@ -2284,7 +2315,7 @@ function triggerSearch() {
 }
 
 function clearAllFilters() {
-  // Reset content type chips (but never auto-include Adult)
+  // Reset content type chips
   selectedTypes.forEach(ct => {
     document.querySelector(`.chip[data-ct="${ct}"]`)?.classList.remove('selected');
   });
