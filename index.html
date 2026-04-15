@@ -2015,7 +2015,44 @@ async function fetchImages(releaseId) {
         return !base || !individualTypes.has(base);
       });
     }
-    const sorted = imgs.sort(imgSortKey);
+    // If no solo cover exists, promote the best cover_group to position 1.
+    // "Best" = highest effective pixels / link_count (same formula as imgSortKey).
+    // We do this by temporarily overriding sourceTier for the winning cover_group
+    // so it sorts above everything else, while leaving all other sort logic intact.
+    const hasSoloCover = imgs.some(i =>
+      (i.image_type || '').toLowerCase() === 'cover'
+    );
+    if (!hasSoloCover) {
+      const coverGroups = imgs.filter(i =>
+        (i.image_type || '').toLowerCase() === 'cover_group'
+      );
+      if (coverGroups.length > 0) {
+        function _eff(img) {
+          const raw  = (img.width || 0) * (img.height || 0);
+          const trim = (img.trim_score != null && img.trim_score !== '')
+            ? parseFloat(img.trim_score) : 0;
+          return raw * (1 - trim / 100);
+        }
+        // Pick best cover_group by effective pixels / link_count
+        const best = coverGroups.reduce((a, b) => {
+          const aS = _eff(a) / (a.link_count || 1);
+          const bS = _eff(b) / (b.link_count || 1);
+          return bS > aS ? b : a;
+        });
+        best._promotedCover = true;  // flag for sort
+      }
+    }
+
+    const sorted = imgs.sort((a, b) => {
+      // Promoted cover_group always wins first position
+      if (a._promotedCover) return -1;
+      if (b._promotedCover) return  1;
+      return imgSortKey(a, b);
+    });
+
+    // Clean up promotion flag
+    imgs.forEach(i => { delete i._promotedCover; });
+
     imagesCache[cacheKey] = sorted;
     return sorted;
   } catch(e) {
