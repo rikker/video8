@@ -1192,20 +1192,24 @@ const IMG_TYPE_ORDER = [
 //   0: scan           (highest-quality originals)
 //   1: collection     (iCollect photos of personally-owned tapes)
 //   2: archive_crop   (split from a group image via split_images.py)
-//   3: archive_deskew (perspective-corrected archive image)
-//   4: archive solo   (unmodified archive)
-//   5: archive group  (shared image used for multiple releases)
+//   3: archive_good   (archive image declared crop-correct as-is —
+//                       original pixels, no resampling loss)
+//   4: archive_deskew (perspective-corrected archive image —
+//                       has been through a warp interpolation)
+//   5: archive solo   (unmodified archive)
+//   6: archive group  (shared image used for multiple releases)
 const SOURCE_TIER = {
   'scan':           0,
   'collection':     1,
   'archive_crop':   2,
-  'archive_deskew': 3,
+  'archive_good':   3,
+  'archive_deskew': 4,
 };
 function sourceTier(img) {
   const st = (img.source_type || '').toLowerCase();
   if (st in SOURCE_TIER) return SOURCE_TIER[st];
   // archive: group types rank lower than individual types
-  return (img.image_type || '').toLowerCase().endsWith('_group') ? 5 : 4;
+  return (img.image_type || '').toLowerCase().endsWith('_group') ? 6 : 5;
 }
 
 function imgSortKey(a, b) {
