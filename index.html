@@ -1188,14 +1188,24 @@ const IMG_TYPE_ORDER = [
   'insert', 'insert_group',
 ];
 
-// Source tier order: scans first, then personal collection, then archive
-// individual images, then archive group images.
-const SOURCE_TIER = { 'scan': 0, 'collection': 1 };
+// Source tier order:
+//   0: scan           (highest-quality originals)
+//   1: collection     (iCollect photos of personally-owned tapes)
+//   2: archive_crop   (split from a group image via split_images.py)
+//   3: archive_deskew (perspective-corrected archive image)
+//   4: archive solo   (unmodified archive)
+//   5: archive group  (shared image used for multiple releases)
+const SOURCE_TIER = {
+  'scan':           0,
+  'collection':     1,
+  'archive_crop':   2,
+  'archive_deskew': 3,
+};
 function sourceTier(img) {
   const st = (img.source_type || '').toLowerCase();
   if (st in SOURCE_TIER) return SOURCE_TIER[st];
   // archive: group types rank lower than individual types
-  return (img.image_type || '').toLowerCase().endsWith('_group') ? 3 : 2;
+  return (img.image_type || '').toLowerCase().endsWith('_group') ? 5 : 4;
 }
 
 function imgSortKey(a, b) {
@@ -2043,36 +2053,24 @@ async function fetchImages(releaseId) {
         return !base || !individualTypes.has(base);
       });
     }
-    // If no solo cover exists, promote the best cover_group to position 1.
-    // "Best" = highest effective pixels / link_count (same formula as imgSortKey).
-    // We do this by temporarily overriding sourceTier for the winning cover_group
-    // so it sorts above everything else, while leaving all other sort logic intact.
-    const hasSoloCover = imgs.some(i =>
-      (i.image_type || '').toLowerCase() === 'cover'
-    );
-    if (!hasSoloCover) {
-      const coverGroups = imgs.filter(i =>
-        (i.image_type || '').toLowerCase() === 'cover_group'
-      );
-      if (coverGroups.length > 0) {
-        function _eff(img) {
-          const raw  = (img.width || 0) * (img.height || 0);
-          const trim = (img.trim_score != null && img.trim_score !== '')
-            ? parseFloat(img.trim_score) : 0;
-          return raw * (1 - trim / 100);
-        }
-        // Pick best cover_group by effective pixels / link_count
-        const best = coverGroups.reduce((a, b) => {
-          const aS = _eff(a) / (a.link_count || 1);
-          const bS = _eff(b) / (b.link_count || 1);
-          return bS > aS ? b : a;
-        });
-        best._promotedCover = true;  // flag for sort
-      }
+    // Always promote the single best-available cover image to position 1.
+    // "Best cover" means: an image whose image_type is 'cover' or 'cover_group',
+    // selected by the normal imgSortKey priority (so a scan solo cover beats
+    // an iCollect cover, which beats an archive_crop cover, ..., which beats
+    // a cover_group).  If no cover-like image exists, no promotion happens
+    // and the sort proceeds normally.
+    const coverLike = imgs.filter(i => {
+      const t = (i.image_type || '').toLowerCase();
+      return t === 'cover' || t === 'cover_group';
+    });
+    if (coverLike.length > 0) {
+      // Sort by imgSortKey and take the first
+      const bestCover = coverLike.slice().sort(imgSortKey)[0];
+      bestCover._promotedCover = true;
     }
 
     const sorted = imgs.sort((a, b) => {
-      // Promoted cover_group always wins first position
+      // Promoted cover always wins first position
       if (a._promotedCover) return -1;
       if (b._promotedCover) return  1;
       return imgSortKey(a, b);
