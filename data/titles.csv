@@ -464,7 +464,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 463,The Russia House,en,,,1990,Film,
 464,The Secret of NIMH,en,,,1982,Film,
 465,The Snowman,en,,,1982,Film,
-466,The Southerner,en,,,1945,Film,
+466,The Southerner,en,,,1945,Film,US
 467,The Sure Thing,en,,,1985,Film,
 468,The Temp,en,,,1993,Film,
 469,The Thing Called Love,en,,,1993,Film,
@@ -541,7 +541,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 540,Short Circuit,en,,,1986,Film,
 541,Sid and Nancy,en,,,1986,Film,
 542,Tai-Pan,en,,,1986,Film,
-543,The New Adventures of Pippi Longstocking,en,,,1988,Film,
+543,The New Adventures of Pippi Longstocking,en,,長くつ下ピッピの冒険物語,1988,Film,US
 544,The Quick and the Dead,en,,,1995,Film,
 545,Wise Guys,en,,,1986,Film,
 546,Playing Beatie Bow,en,,,1985,Film,
@@ -602,7 +602,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 601,The Witches of Eastwick,en,,,1987,Film,
 602,101 Dalmatians,en,,１０１匹わんちゃん,1961,Film,
 603,12 Angry Men,en,,十二人の怒れる男,1957,Film,
-604,2001: A Space Odyssey,en,,２００１年宇宙の旅,1968,Film,
+604,2001: A Space Odyssey,en,,２００１年宇宙の旅,1968,Film,US
 605,2010: The Year We Make Contact,en,,２０１０年,1984,Film,
 606,55 Days at Peking,en,,北京の５５日,1963,Film,
 607,8½,en,,フェリーニの8½,1963,Film,
@@ -652,7 +652,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 651,Batman Returns,en,,バットマン リターンズ,1992,Film,
 652,Battle of Britain,en,,空軍大戦略,1969,Film,
 653,Beauty and the Beast,en,,美女と野獣,1991,Film,
-654,Beetlejuice,en,,ビートルジュース,1988,Film,
+654,Beetlejuice,en,,ビートルジュース,1988,Film,US
 655,Ben-Hur,en,,ベン・ハー,1959,Film,
 656,Betrayed,en,,背信の日々,1988,Film,
 657,Beyond the Poseidon Adventure,en,,ポセイドン・アドベンチャー２,1979,Film,
@@ -665,7 +665,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 664,Blade Runner [International Cut],en,,ブレードランナー,1982,Film,
 665,Blade Runner: Complete Version,en,,ブレードランナー 完全版,1992,Film,
 666,Blade Runner: The Director's Cut,en,,ディレクターズカット ブレードランナー 最終版,1982,Film,
-667,Blind Date,en,,ブラインド・デート,1987,Film,
+667,Blind Date,en,,ブラインド・デート,1987,Film,US
 668,Blown Away,en,,ブローン・アウェイ,1994,Film,US
 669,Blue Thunder,en,,ブルーサンダー [Burū sandā],1983,Film,
 670,Body Double,en,,ボディ・ダブル,1984,Film,
@@ -674,15 +674,15 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 673,Bonnie and Clyde,en,,俺たちに明日はない,1967,Film,
 674,Born Free,en,,野生のエルザ,1966,Film,
 675,Born Yesterday,en,,ボーン・イエスタデイ,1993,Film,
-676,Bram Stoker's Dracula,en,,ドラキュラ,1992,Film,
+676,Bram Stoker's Dracula,en,,ドラキュラ,1992,Film,US
 677,Braveheart,en,,ブレイブハート,1995,Film,
 678,Breathless,en,,ブレスレス,1983,Film,
 679,"Bright Lights, Big City",en,,再会の街,1988,Film,
 680,Broadway Danny Rose,en,,ブロードウェイのダニー・ローズ,1984,Film,
 681,Bugsy,en,,バグジー,1991,Film,
 682,Bull Durham,en,,さよならゲーム,1988,Film,
-683,Bullitt,en,,ブリット,1968,Film,
-684,Butch Cassidy and the Sundance Kid,en,,明日に向って撃て!,1969,Film,
+683,Bullitt,en,,ブリット,1968,Film,US
+684,Butch Cassidy and the Sundance Kid,en,,明日に向って撃て!,1969,Film,US
 685,Caravaggio,en,,カラヴァッジオ,1986,Film,
 686,Care Bears Movie II: A New Generation,en,,おとぎの星のこぐまたち,1986,Film,
 687,Carmen,en,,カルメン,1984,Film,
@@ -702,7 +702,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 701,City Slickers,en,,シティ・スリッカーズ,1991,Film,
 702,Class,en,,恋のスクランブル,1983,Film,
 703,Cliffhanger,en,,クリフハンガー,1993,Film,
-704,Close Encounters of the Third Kind Special Edition,en,,未知との遭遇  特別編,1977,Film,
+704,Close Encounters of the Third Kind Special Edition,en,,未知との遭遇  特別編,1977,Film,US
 705,Cobra,en,,コブラ,1986,Film,
 706,Cocktail,en,,カクテル,1988,Film,
 707,Cocoon,en,,コクーン,1985,Film,
@@ -819,7 +819,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 818,"Good Luck, Donald",en,,がんばれ、ドナルド,1992,Film,
 819,"Goodbye, Children [Au revoir les enfants]",en,,さよなら子供たち,1987,Film,
 820,Goodfellas,en,,グッドフェローズ,1990,Film,
-821,Goonies,en,,グーニーズ,1985,Film,
+821,The Goonies,en,,グーニーズ,1985,Film,US
 822,Gorillas in the Mist,en,,愛は霧のかなたに,1988,Film,
 823,Gremlins,en,,グレムリン,1984,Film,
 824,Gremlins 2: The New Batch,en,,グレムリン2 新・種・誕・生,1990,Film,
@@ -869,7 +869,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 868,Kramer vs. Kramer,en,,クレイマー、クレイマー,1979,Film,
 869,Krull,en,,銀河伝説クルール,1983,Film,
 870,L'Amant [aka The Lover],en,,愛人 [ラマン],1992,Film,
-871,La Bamba,en,,ラ・バンバ,1987,Film,
+871,La Bamba,en,,ラ・バンバ,1987,Film,US
 872,La Cage Aux Folles [Birds of a Feather],en,,Mrレディ Mrマダム [Misutā redi Misutā madamu],1978,Film,
 873,La Cage Aux Folles 3: The Wedding,en,,Mr.レディMr.マダム3 ウエディングベル,1985,Film,
 874,La Passante du Sans-Souci [The Passerby],en,,サン・スーシの女,1982,Film,
@@ -887,7 +887,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 886,Lethal Weapon 2,en,,リーサル・ウェポン２/炎の約束,1989,Film,
 887,Lethal Weapon 3,en,,リーサル・ウェポン3,1992,Film,US
 888,Licence to Kill,en,,007／消されたライセンス,1989,Film,
-889,Like Father Like Son,en,,ハモンド家の秘密,1987,Film,
+889,Like Father Like Son,en,,ハモンド家の秘密,1987,Film,US
 890,Little Buddha,en,,リトル・ブッダ,1993,Film,
 891,Little Man Tate,en,,リトルマン・テイト,1991,Film,
 892,Little Nikita,en,,リトル・ニキータ,1988,Film,
@@ -977,7 +977,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 976,Point of No Return [aka The Assassin],en,,アサシン,1993,Film,
 977,Police Academy,en,,ポリスアカデミー,1984,Film,
 978,Police Academy 6: Under Siege,en,,ポリスアカデミー６ バトルロイヤル,1989,Film,
-979,Police Story 3: Supercop,en,,ポリス・ストーリー３,1992,Film,
+979,Police Story 3: Supercop,en,,ポリス・ストーリー３,1992,Film,Hong Kong
 980,Poltergeist,en,,ポルターガイスト,1982,Film,
 981,Predator,en,,プレデター,1987,Film,
 982,Predator 2,en,,プレデター２,1990,Film,
@@ -1019,12 +1019,12 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 1018,Sailor Moon R: The Movie,en,,劇場版 美少女戦士セーラームーンR,1993,Film,
 1019,Sailor Moon S,en,,,,Film,
 1020,Scarecrow,en,,スケアクロウ [Sukeakurō],1973,Film,
-1021,September,en,,セプテンバー,1987,Film,
+1021,September,en,,セプテンバー,1987,Film,US
 1022,四大少林寺,zh,Shaolin: The Blood Mission,真説・少林寺,1984,Film,
 1023,Sheena,en,,シーナ,1984,Film,
 1024,Short Circuit,en,,ショート・サーキット,1986,Film,
 1025,Short Circuit 2,en,,ショート・サーキット２ がんばれ！ジョニー５,1988,Film,
-1026,Silverado,en,,シルバラード,1985,Film,
+1026,Silverado,en,,シルバラード,1985,Film,US
 1027,Sinbad and the Eye of the Tiger,en,,シンドバッド虎の目大冒険,1977,Film,
 1028,Singin' in the Rain,en,,雨に唄えば,1952,Film,
 1029,Single White Female,en,,ルームメイト,1992,Film,
@@ -1038,7 +1038,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 1037,Spacehunter: Adventures in the Forbidden Zone,en,,スペースハンター,1983,Film,
 1038,Speed,en,,スピード,1994,Film,
 1039,Spider-Man,en,,スパイダーマン,1977,Film,
-1040,St. Elmo's Fire,en,,セント・エルモス・ファイアー [Sento Erumosu faiā],1985,Film,
+1040,St. Elmo's Fire,en,,セント・エルモス・ファイアー [Sento Erumosu faiā],1985,Film,US
 1041,Stand By Me,en,,スタンド・バイ・ミー,1986,Film,
 1042,Star Wars,en,,スター・ウォーズ,1977,Film,
 1043,Stardust Memories,en,,スターダスト・メモリー [Sutādasuto memorī],1980,Film,
@@ -1205,7 +1205,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 1204,Twin Dragons [Twin Dragon],en,,ツイン・ドラゴン [Tsuin doragon],1992,Film,
 1205,Twin Peaks,en,,ツイン・ピークス,1989,Film,
 1206,Twin Peaks: Fire Walk With Me,en,,ツイン・ピークス/ローラ・パーマー最期の7日間,1992,Film,
-1207,Un Dimanche à La Campagne [A Sunday in the Country],fr,,田舎の日曜日,1984,Film,
+1207,Un Dimanche à La Campagne,fr,A Sunday in the Country,田舎の日曜日,1984,Film,France
 1208,Under Siege,en,,沈黙の戦艦,1992,Film,
 1209,Unforgiven,en,,許されざる者,1992,Film,
 1210,Universal Soldier,en,,ユニバーサル・ソルジャー,1992,Film,
@@ -1268,7 +1268,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 1267,Awakenings,en,,レナードの朝,1990,Film,
 1268,Roxanne,en,,愛しのロクサーヌ,1987,Film,
 1269,State of Grace,en,,ステート・オブ・グレース,1990,Film,
-1270,Police Academy 5: Assignment Miami Beach,en,,ポリスアカデミー5／マイアミ特別勤務,1988,Film,
+1270,Police Academy 5: Assignment Miami Beach,en,,ポリスアカデミー5／マイアミ特別勤務,1988,Film,US
 1271,Home of the Brave: A Film by Laurie Anderson,en,,ローリー・アンダーソン 0&1,1986,Film,
 1272,The Glass Menagerie,en,,ガラスの動物園,1987,Film,
 1273,Amazing Grace and Chuck [aka Silent Voice],en,,,1987,Film,
@@ -1279,7 +1279,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 1278,I Give My All,en,,みんなあげちゃう♡ [Minna Agechau],1987,Film,Japan
 1279,Jazz on a Summer's Day,en,,真夏の夜のジャズ,1959,Film,
 1280,The Misfits,en,,荒馬と女,1961,Film,
-1281,Pelle the Conqueror [Pelle Erobreren],en,,ペレ,1987,Film,
+1281,Pelle Erobreren,da,Pelle the Conqueror,ペレ,1987,Film,Denmark
 1282,My Life as a Dog [Mitt liv som hund],en,,マイライフ・アズ・ア・ドッグ,1985,Film,
 1283,A Distant Cry From Spring,en,,遙かなる山の呼び声,1980,Film,Japan
 1284,A House in the Quarter,en,,五番町夕霧楼 [Gobancho yugiriro],1963,Film,Japan
@@ -1338,7 +1338,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 1337,Sensei,en,,せんせい,1989,Film,Japan
 1338,Shanghai Rhapsody,en,,上海バンスキング,1984,Film,Japan
 1339,Sun in the Last Days of the Shogunate,en,,幕末太陽傳 [Bakumatsu Taiyōden],1957,Film,Japan
-1340,Take Me Out to Snowland,en,,私をスキーに連れてって,1987,Film,Japan
+1340,私をスキーに連れてって,ja,Take Me Out to Snowland,私をスキーに連れてって,1987,Film,Japan
 1341,The Call of the Foghorn,en,,霧笛が俺を呼んでいる [Mutekiga Ore o Yondeiru],1960,Film,Japan
 1342,The Discarnates,en,,異人たちとの夏 [Ijin Tachi to no Natsu],1988,Film,Japan
 1343,The Flying Luna Clipper,en,,ザ・フライング・ルナ・クリッパー,1987,Film,Japan
@@ -1695,7 +1695,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 1694,Super Golf Digest Vol.4,en,,,1991,Video Magazine,
 1695,Super Golf Digest Vol.5 - The Wide World of Golf,en,,,1991,Video Magazine,
 1696,Super Golf Digest Vol.6,en,,,1992,Video Magazine,
-1697,Golf Digest Video - Driver Instruction,en,,ゴルフダイジェスト 飛距離アップの練習法  ドライバーマンなテクニック,,Video Magazine,
+1697,ゴルフダイジェスト  DRIVER INSTRUCTION  飛距離アップの練習法  ドライバーマンなテクニック,ja,Golf Digest Video - Driver Instruction,ゴルフダイジェスト 飛距離アップの練習法  ドライバーマンなテクニック,1992,Video Magazine,
 1698,Pia 8mm Video Magazine - Pia's Night,en,,ぴあ8mmビデオマガジン  ぴあ's NIGHT,1988,Video Magazine,
 1699,Pia 8mm Video Magazine - Pia Map,en,,ぴあ8mmビデオマガジン  ぴあ MAP,1989,Video Magazine,
 1700,Pia 8mm Video Magazine - Tokyo Trip,en,,ぴあ8mmビデオマガジン  東京トリップ,1989,Video Magazine,
@@ -1796,7 +1796,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 1795,Branford Marsalis - Steep,en,,ブランフォード・マルサリス,1988,Music,
 1796,Bros - Push Over,en,,,1989,Music,
 1797,Bruce Springsteen - Video Anthology 1978-88,en,,ブルース・スプリングスティーン Video Anthology 1977-88,1989,Music,
-1798,Carpenters - Yesterday Once More,en,,カーペンターズ  イエスタデイ・ワンス・モア,1985,Music,
+1798,Carpenters - Yesterday Once More,en,,カーペンターズ  イエスタデイ・ワンス・モア,1985,Music,US
 1799,Christine McVie - The Video Album,en,,,1984,Music,
 1800,Cinderella - Tales From The Gypsy Road,en,,シンデレラ  テイルズ・フロム・ザ・ジプシー・ロード,1990,Music,
 1801,"David Bowie - Serious Moonlight - Concert 1983 P.N.E. Coliseum, Vancouver, Canada",en,,,1984,Music,
@@ -1829,7 +1829,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 1828,Huey Lewis and the News - The Heart of Rock 'N' Roll,en,,ヒューイ・ルイス＆ザ・ニュース  ハート・オブ・ロックン・ロール,1985,Music,
 1829,Iron Maiden - Live After Death: World Slavery Tour '85,en,,アイアン・メイデン・ライブ  死霊復活,1985,Music,
 1830,Jack DeJohnette's Special Edition - Live at the Montreal Jazz Festival 1988,en,,ジャック・ディジョネット スペシャル・エディション・ライヴ '88,1988,Music,
-1831,Janet Jackson - Rhythm Nation 1814,en,,ジャネット・ジャクソン  リズム・ネイション1814,1989,Music,
+1831,Janet Jackson - Rhythm Nation 1814,en,,ジャネット・ジャクソン  リズム・ネイション1814,1989,Music,US
 1832,Janet Jackson - The Rhythm Nation Compilation,en,,ジャネット・ジャクソン  リズム・ネイション,1990,Music,
 1833,John Lennon - Imagine,en,,イマジン,1988,Music,
 1834,John Lennon - Live in New York City,en,,ジョン・レノン・ライヴ,1972,Music,US
@@ -1853,7 +1853,7 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 1852,Oscar Peterson The Quartet Live,en,,オスカー・ピーターソンWithジョーパス・ライヴ,1987,Music,
 1853,Over Night Success,en,,オーバーナイトサクセス,1985,Music,
 1854,Paul Mauriat - Classical Elegance,en,,ポール・モーリア  クラシカル・エレガンス,1988,Music,
-1855,Paul Simon - The Paul Simon Special,en,,,,Music,
+1855,Paul Simon - The Paul Simon Special,en,,ポール・サイモン・スペシャル,1977,Music,US
 1856,Pink Floyd In Concert - Delicate Sound Of Thunder,en,,ピンク・フロイド　光〜PERFECT LIVE,1989,Music,
 1857,Queen - Magic Tour Live (Live in Budapest),en,,クイーン マジック・ツアー・ライヴ,1987,Music,
 1858,Rock 'N' Roll: The Greatest Years '63,en,,ロック映像年鑑 '63,1989,Music,
@@ -2566,8 +2566,8 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 2565,"Conan, The Boy in Future 5 [Future Boy Conan]",en,,未来少年コナン 5 [Mirai Shōnen Konan],1995,TV,
 2566,"Conan, The Boy in Future 6 [Future Boy Conan]",en,,未来少年コナン 6 [Mirai Shōnen Konan],1995,TV,
 2567,"Conan, The Boy in Future 7 [Future Boy Conan]",en,,未来少年コナン 7 [Mirai Shōnen Konan],1995,TV,
-2568,Demon Beast Invasion,en,,妖獣教室 [Yōjū Kyōshitsu],1990,TV,
-2569,Demon Beast Invasion 2,en,,妖獣教室 2 [Yōjū Kyōshitsu],1990,TV,
+2568,妖獣教室 [Yōjū Kyōshitsu],ja,Demon Beast Invasion,妖獣教室 [Yōjū Kyōshitsu],1990,TV,
+2569,妖獣教室 2 [Yōjū Kyōshitsu],ja,Demon Beast Invasion 2,妖獣教室 2 [Yōjū Kyōshitsu],1990,TV,
 2570,Dragonball Z: Bio-Broly,en,,,1994,Film,
 2571,Duck Tales - Fool of the Nile,en,,ダックテイルズ スフィンクスの伝説,1993,TV,
 2572,Duck Tales - Little Duckaroos,en,,ダックテイルズ ゴーストタウンの謎,1993,TV,
@@ -3082,3 +3082,12 @@ id,title_original,title_original_lang,title_en,title_ja,year_made,content_type,c
 3082,短期集中講座 2  ウェーデルン編,ja,Short Intensive Course 2: Wedeln,,1990,Other,Japan
 3083,短期集中講座 1,en,Short Intensive Course 1: Parallel,,,Other,Japan
 3084,Hideaki Tokunaga - myself vol. 2,en,,德永英明  myself vol. 2,1989,Music,Japan
+3085,Princess Princess - Dolls in Las Vegas,en,,,1992,Music,Japan
+3086,Classical Europe - Hi8 Demonstration Tape,en,,,1993,Other,
+3087,Platoon,en,,プラトーン,1986,Film,US
+3088,Zimmer mit Aussicht,de,A Room With a View,,,Film,
+3089,ゴルフダイジェスト  IMPACT MACHINE  練習場インストラクション  インパクトを身につける練習法,ja,Golf Digest Video - Impact Machine,,1992,Video Magazine,Japan
+3090,Roxanne,en,,愛しのロクサーヌ,1987,Film,US
+3091,Close Encounters of the Third Kind Special Edition,en,,未知との遭遇  特別編,1977,Film,US
+3092,Like Father Like Son,en,,ハモンド家の秘密,1987,Film,US
+3093,"Suddenly, Last Summer",en,,去年の夏 突然に [Kyonen no natsu totsuzen ni],1959,Film,
