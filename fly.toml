@@ -1,0 +1,18 @@
+# fly.toml app configuration file generated for video8 on 2026-11-02T09:27:45Z
+#
+# See https://docs.fly.io/reference/configuration for information about how to use this file.
+#
+
+app = 'video8'
+
+[[restart]]
+  policy = 'never'
+  processes = ['app']
+  retries = 10
+
+[[services]]
+  concurrency = { hard_limit = 25, soft_limit = 20 }
+  internal_port = 8080
+  ports = [{ handlers = ['http'], port = 80 }, { handlers = ['tls', 'http'], port = 443 }]
+  protocol = 'tcp'
+  tcp_checks = [{ interval = '10s', timeout = '2s' }]
